@@ -1,0 +1,146 @@
+= Running With the Supervisor Tool
+
+Once in the 'documentation' directory, the following is a guide to running your Genetic Algorithm Hyperparameter Optimization workflow.
+
+The user is encouraged to clone the home directory of this README file, change the model being sourced and the hyperparameter space, then run the HPO workflow with their model.
+
+== Setup
+
+First, setup by executing the following commands:
+
+- `git clone https://github.com/ECP-CANDLE/Supervisor.git` (this clones the supervisor repository)
+- `export PATH=~/Supervisor/bin:$PATH` (this allows you to use the supervisor tool) (make sure to have cloned the supervisor repository first)
+- If on lambda: `mkdir -p /tmp/data` (this makes the directory to read/write data and output on lambda if it doesn't already exist)
+- If on polaris: `mkdir -p /home/<user>/output` (this makes a directory to read/write data and output on polaris if it doesn't already exist) (replace <user> with your name on the system)
+- If on other computing systems: 'mkdir -p </somewhere_you_can_read_and_write_files>'
+
+== Example Command
+
+[source, bash]
+----
+supervisor lambda GA cfg-1.sh
+----
+
+This command will use the 'supervisor' tool to run the Genetic Algorithm ('GA') workflow using the 'cfg-1.sh' file on the 'lambda' computing system. In the case of using a different computing system, that computing system should replace lambda in the command.
+
+== The cfg-1.sh file
+
+The default file looks like:
+
+[source, bash]
+----
+source_cfg -v cfg-my-settings.sh
+
+export CANDLE_MODEL_TYPE="SINGULARITY"
+export MODEL_NAME=/software/improve/images/DeepTTC.sif
+export PARAM_SET_FILE=general_params.json
+----
+
+File explanation:
+- `source_cfg -v cfg-my-settings.sh`. This line says that the workflow should source the 'cfg-my-settings.sh' file for workflow parameters.
+- `export CANDLE_MODEL_TYPE="SINGULARITY"`. This line says to use singularity containers for the workflow.
+- `export MODEL_NAME=/software/improve/images/DeepTTC.sif`. This line says to use the DeepTTC model in the workflow.
+- `export PARAM_SET_FILE=general_params.json`. This line says to use the 'general_params.json' file for the model's hyperparameter space.
+
+To run a different model in the workflow, change the 'MODEL_NAME' line. For example, `export MODEL_NAME=/software/improve/images/GraphDRP.sif` would run GraphDRP.
+
+== The cfg-my-settings.sh file
+
+The default file looks like:
+
+[source, bash]
+----
+echo SETTINGS
+
+# General Settings
+export PROCS=3
+export PPN=3
+export WALLTIME=01:00:00
+export NUM_ITERATIONS=1
+export POPULATION_SIZE=2
+
+# GA Settings
+export STRATEGY='mu_plus_lambda'
+export OFF_PROP=0.5
+export MUT_PROB=0.8
+export CX_PROB=0.2
+export MUT_INDPB=0.5
+export CX_INDPB=0.5
+export TOURNAMENT_SIZE=3
+
+# Lambda Settings
+# export CANDLE_DATA_DIR=/tmp/data
+# export CANDLE_CUDA_OFFSET=1
+
+# Polaris Settings
+# export CANDLE_DATA_DIR=/home/weaverr/output
+# export QUEUE="debug"
+----
+
+Using `export` sets parameters for the workflow.
+
+Settings Explanation:
+- `PROCS` sets the number of processes to run at a time. Two processes are used for the workflow, while the others are dedicated to running the models, so `PROCS=3` runs 1 model at a time for example. It's recommended to set PROCS=(POPULATION_SIZE/2)+2 with default GA settings.
+- `PPN` sets the number of processes per node(GPU). This, along with PROCS, set the number of GPUs being used at a time. Note that PPN must fit the abilities of the GPUs on your computation system. It's recommended to set PPN as high as PROCS or what the computation system will allow.
+- `WALLTIME` sets the maximum time that the model can be left running on the computation system.
+- `NUM_ITERATIONS` sets the number of generations in the genetic algorithm. Note that this is one more than the number of evolutions... if `NUM_ITERATINS=1`, then the starting population is evaluated, but no evolutions happen.
+- `POPULATION_SIZE` is as labelled.
+- `STRATEGY, OFF_PROP, MUT_PROB, CX_PROB, MUT_INDPB, CX_INDPB, TOURNAMENT_SIZE` are all parameters for the genetic algorithm used for hyperparameter optimization. Default parameters are sufficient and robust, but see README.md for more detail.
+- `CANDLE_DATA_DIR` sets where to read/write your data/results. On lambda, this could be set to /tmp/data, whereas on polaris, it could be set to /home/weaverr/output. Other systems would be set to whatever path you gave to the 'mkdir -p </somewhere_you_can_read_and_write_files>' command.
+- `CANDLE_CUDA_OFFSET` sets the starting point of 'CUDA_VISIBLE_DEVICES'. With the default value of 1, the workflow will use GPU #1, then GPU #2 if needed, and so on. This is used on lambda because the 0th GPU does not have the required space for the cancer data.
+- `QUEUE` sets the type of job you're submitting to Polaris. Make sure to align `PROCS`, `PPN`, and `WALLTIME` with the queue you submit to Polaris. You can find information on Polaris job submitting link:https://docs.alcf.anl.gov/polaris/running-jobs/[here].
+
+Other computation sytems may have other parameters that you need to export.
+
+== The general_params.json file
+
+The default file looks like:
+
+[source, json]
+----
+[
+
+  {
+    "name": "activation",
+    "type": "categorical",
+    "element_type": "string",
+    "values": [
+      "softmax",
+      "elu",
+      "softplus",
+      "softsign",
+      "relu",
+      "tanh",
+      "sigmoid",
+      "hard_sigmoid",
+      "linear"
+    ]
+  },
+
+  {
+    "name": "learning_rate",
+    "type": "float",
+    "lower": 0.000001,
+    "upper": 0.2,
+    "sigma": 0.05
+  },
+
+  {
+    "name": "batch_size",
+    "type": "ordered",
+    "element_type": "int",
+    "values": [32, 64, 128],
+    "sigma": 1
+  },
+
+  {
+    "name": "epochs",
+    "type": "constant",
+    "value": 5
+  }
+
+]
+----
+
+This file is made to be applicable to the large majority of models by using common hyperparameters to vary. The user is encouraged to adapt this file depending on the model and their desired hyperparameters of study.
+
