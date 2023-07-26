@@ -31,8 +31,8 @@ def pearsonr(x, y):
 
     # If an input is constant, the correlation coefficient is not defined.
     if bool((x == x[0]).all()) or bool((y == y[0]).all()):
-        #raise ValueError('Constant input, r is not defined.')
-        print('Constant input, r is not defined.')
+        raise ValueError('Constant input, r is not defined.')
+        #print('Constant input, r is not defined.')
 
     mx = x - torch.mean(x)
     my = y - torch.mean(y)
