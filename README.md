@@ -45,15 +45,25 @@ Install CANDLE package
 ```sh
 pip install git+https://github.com/ECP-CANDLE/candle_lib@develop
 ```
+## Example usage
+This is a sample code for cross study analysis (as of June 2023) using improve_utils functions. The code has been tested for CCLE and CTRP datasets. 
+The csa data can be found in lambda: /homes/pvasanthakumari/Cross_study_analysis_May2023/csa_data.
+Copy the csa_data to your local directory within /csa_data/ for execution.
+
+preprocess.py handles all the preprocessing steps. You can specify the study name and splits within the preprocess.py.
 
 ## Example usage
-Model Training
+Preprocessing
 ```sh
-python train.py
+bash preprocess.sh
 ```
-Model Testing
+Training
 ```sh
-python infer.py
+bash train.sh CUDA_VISIBLE_DEVICES /candle_data_dir
+```
+Testing
+```sh
+bash infer.sh CUDA_VISIBLE_DEVICES /candle_data_dir
 ```
 
 ## References
