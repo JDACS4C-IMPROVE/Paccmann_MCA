@@ -6,7 +6,7 @@
 ####################################################################
 ## Exceute preprocess script for your model with the CMD arguments ##
 ####################################################################
-preprocess="/usr/local/Paccmann_MCA/preprocess.py"
+preprocess=/homes/pvasanthakumari/Cross_study_analysis_May2023/preprocess_CSA.py
 
 
 CUDA_VISIBLE_DEVICES=$1

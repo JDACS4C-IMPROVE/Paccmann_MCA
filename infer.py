@@ -4,7 +4,6 @@ from test_paccmann import main
 
 
 # This should be set outside as a user environment variable
-#os.environ['CANDLE_DATA_DIR'] = '/homes/brettin/Singularity/workspace/data_dir/'
 file_path = os.path.dirname(os.path.realpath(__file__))
 
 
@@ -101,8 +100,6 @@ additional_definitions = [
 ]
 
 required = None
-
-
 # experimental
 supported_definitions = ['data_url','train_data','val_data','shuffle','feature_subsample']
 
@@ -118,7 +115,7 @@ class PaccmannMCA_candle(candle.Benchmark):
 
 def initialize_parameters():
     preprocessor_bmk = PaccmannMCA_candle(file_path,
-        'paccmannmca_default_model.txt',
+        'Paccmann_MCA_default_model.txt',
         'pytorch',
         prog='PaccmannMCA_candle',
         desc='Data Preprocessor'
@@ -126,15 +123,22 @@ def initialize_parameters():
     #Initialize parameters
     candle_data_dir = os.getenv("CANDLE_DATA_DIR")
     gParameters = candle.finalize_parameters(preprocessor_bmk)
-    return gParameters
+    params = preprocess(gParameters)
+    return params
 
 def preprocess(params):
     # Model-specific changes
-    params['test_data'] = os.environ['CANDLE_DATA_DIR'] + '/common/Data/'+params['test_data']
-    params['gep_filepath'] = os.environ['CANDLE_DATA_DIR'] + '/common/Data/'+params['gep_filepath']
-    params['smi_filepath'] = os.environ['CANDLE_DATA_DIR'] + '/common/Data/'+params['smi_filepath']
-    params['gene_filepath'] = os.environ['CANDLE_DATA_DIR'] + '/common/Data/'+params['gene_filepath']
-    params['smiles_language_filepath'] = os.environ['CANDLE_DATA_DIR'] + '/common/Data/'+params['smiles_language_filepath']
+    params['test_data']= str(file_path+'/candle_data_dir/Data/'+params['test_data'])
+    params['gep_filepath']= str(file_path+'/candle_data_dir/Data/'+params['gep_filepath'])
+    params['smi_filepath'] = str(file_path+'/candle_data_dir/Data/'+params['smi_filepath'])
+    params['gene_filepath']=str(file_path+'/candle_data_dir/Data/'+params['gene_filepath'])
+    params['smiles_language_filepath'] = str(file_path+'/candle_data_dir/Data/'+params['smiles_language_filepath'])
+
+    #params['test_data'] = os.environ['CANDLE_DATA_DIR'] + '/Data/'+params['test_data']
+    #params['gep_filepath'] = os.environ['CANDLE_DATA_DIR'] + '/Data/'+params['gep_filepath']
+    #params['smi_filepath'] = os.environ['CANDLE_DATA_DIR'] + '/Data/'+params['smi_filepath']
+    #params['gene_filepath'] = os.environ['CANDLE_DATA_DIR'] + '/Data/'+params['gene_filepath']
+    #params['smiles_language_filepath'] = os.environ['CANDLE_DATA_DIR'] + '/Data/'+params['smiles_language_filepath']
     return params
 
 
@@ -150,14 +154,15 @@ def run(params):
     model_params = {key: params[key] for key in model_param_key}
     params['model_params'] = model_params
     args = candle.ArgumentStruct(**params)
-    main(args.test_data,
+    scores = main(args.test_data,
         args.gep_filepath, args.smi_filepath, args.gene_filepath,
         args.smiles_language_filepath, args.output_dir,
         args.model_name, args.model_params)
+    #print('IMPROVE_RESULT RMSE:\t' + str(scores['rmse']))
+    print('IMPROVE_RESULT R-squared:\t' + str(scores['r2']))
 
 def candle_main():
     params = initialize_parameters()
-    params = preprocess(params)
     run(params)
     
 if __name__ == "__main__":

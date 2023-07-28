@@ -1,13 +1,23 @@
 import candle
 import os
-from paccmannmca_baseline_pytorch import main
+from Paccmann_MCA_baseline_pytorch import main
 import json
+import csv
+import numpy as np
+import pandas as pd
+from pathlib import Path
+from math import sqrt
+from scipy import stats
+from typing import List, Union, Optional
+import shutil
+import improve_utils
+from improve_utils import improve_globals as ig
 
 
-# This should be set outside as a user environment variable
-#os.environ['CANDLE_DATA_DIR'] = '/homes/brettin/Singularity/workspace/data_dir/'
+# Currently this code requires CSG data to present in this directory
+
+
 file_path = os.path.dirname(os.path.realpath(__file__))
-
 
 additional_definitions = [
     {'name': 'gep_filepath',
@@ -119,7 +129,7 @@ class PaccmannMCA_candle(candle.Benchmark):
 
 def initialize_parameters():
     preprocessor_bmk = PaccmannMCA_candle(file_path,
-        'paccmannmca_default_model.txt',
+        'Paccmann_MCA_default_model.txt',
         'pytorch',
         prog='PaccmannMCA_candle',
         desc='Data Preprocessor'
@@ -128,16 +138,92 @@ def initialize_parameters():
     gParameters = candle.finalize_parameters(preprocessor_bmk)
     return gParameters
 
-def preprocess(params):
-    fname='Data_MCA.zip'
-    origin=params['data_url']
-    # Download and unpack the data in CANDLE_DATA_DIR
-    candle.file_utils.get_file(fname, origin)
+def run(params):
+    # Settings:
+    y_col_name = "auc"
+    split = 0
+    source_data_name = "CCLE"
 
+    # Load train
+    rs_tr = improve_utils.load_single_drug_response_data_v2(
+        source=source_data_name,
+        split_file_name=f"{source_data_name}_split_{split}_train.txt",
+        y_col_name=y_col_name)
+
+    # Load val
+    rs_vl = improve_utils.load_single_drug_response_data_v2(
+        source=source_data_name,
+        split_file_name=f"{source_data_name}_split_{split}_val.txt",
+        y_col_name=y_col_name)
+
+    # Load test
+    rs_te = improve_utils.load_single_drug_response_data_v2(
+        source=source_data_name,
+        split_file_name=f"{source_data_name}_all.txt",
+        y_col_name=y_col_name)
+
+    print("\nResponse train data", rs_tr.shape)
+    print("Response val data", rs_vl.shape)
+    print("Response test data", rs_te.shape)
+    # Load omic feature data
+    ge = improve_utils.load_gene_expression_data(gene_system_identifier="Gene_Symbol")
+    # Load drug feature data
+    sm = improve_utils.load_smiles_data()
+    sm = sm.set_index(['improve_chem_id'])
+    print(f"Total unique cells: {rs_tr[ig.canc_col_name].nunique()}")
+    print(f"Total unique drugs: {rs_tr[ig.drug_col_name].nunique()}")
+    assert len(set(rs_tr[ig.canc_col_name]).intersection(set(ge.index))) == rs_tr[ig.canc_col_name].nunique(), "Something is missing..."
+    assert len(set(rs_tr[ig.drug_col_name]).intersection(set(sm.index))) == rs_tr[ig.drug_col_name].nunique(), "Something is missing..."
+    
+    # Modify files to be compatible with Paccmann_MCA
+    #smiles
+    if not os.path.isfile(file_path+'/candle_data_dir/Data/smiles.smi'):
+        sm_new = pd.DataFrame(columns = ['SMILES', 'DrugID'])
+        sm_new['SMILES'] = sm['smiles'].values
+        sm_new['DrugID'] = sm.index.values
+        #sm_new.to_csv(str(os.environ['CANDLE_DATA_DIR']+'/smiles.smi'), index=False)
+        sm_new.to_csv(str(file_path+'/candle_data_dir/Data/smiles.csv'), index=False)
+
+        # save smiles as .smi format as required by the code
+        newfile = str(file_path+'/candle_data_dir/Data/smiles.smi')
+        file = str(file_path+'/candle_data_dir/Data/smiles.csv')
+        with open(file,'r') as csv_file:
+            csv_reader = csv.reader(csv_file)
+            next(csv_reader)  ## skip one line (the first one)
+            for line in csv_reader:
+                with open(newfile, 'a') as new_txt:    #new file has .txt extn
+                    txt_writer = csv.writer(new_txt, delimiter = '\t') #writefile
+                    txt_writer.writerow(line)   #write the lines to file`
+
+    #response data
+    rs_tr = rs_tr.drop(columns = ['source'])
+    rs_tr = rs_tr.rename(columns = {'improve_chem_id':'drug', 'improve_sample_id':'cell_line', 'auc1':'IC50'})
+    #rs_tr.to_csv(str(os.environ['CANDLE_DATA_DIR']+'/'+params['train_data']))
+    rs_tr.to_csv(str(file_path+'/candle_data_dir/Data/train.csv'))
+
+    rs_vl = rs_vl.drop(columns = ['source'])
+    rs_vl = rs_vl.rename(columns = {'improve_chem_id':'drug', 'improve_sample_id':'cell_line', 'auc1':'IC50'})
+    #rs_vl.to_csv(str(os.environ['CANDLE_DATA_DIR']+'/'+params['val_data']))
+    rs_vl.to_csv(str(file_path+'/candle_data_dir/Data/val.csv'))
+
+    rs_te = rs_te.drop(columns = ['source'])
+    rs_te = rs_te.rename(columns = {'improve_chem_id':'drug', 'improve_sample_id':'cell_line', 'auc1':'IC50'})
+    #rs_te.to_csv(str(os.environ['CANDLE_DATA_DIR']+'/'+params['test_data']))
+    rs_te.to_csv(str(file_path+'/candle_data_dir/Data/test.csv'))
+    
+    if not os.path.isfile(file_path+'/candle_data_dir/Data/gene_expression.csv'):
+        #gene expression
+        ge.index.name = 'CancID'
+        #ge.to_csv(str(os.environ['CANDLE_DATA_DIR']+'/gene_expression.csv'))
+        ge.to_csv(str(file_path+'/candle_data_dir/Data/gene_expression.csv'))
+
+    #Other files needed for Paccmann_MCA
+    shutil.copy(os.path.join(file_path,'csa_data','raw_data','x_data','2128_genes.pkl'),os.path.join(file_path,'candle_data_dir','Data','2128_genes.pkl') )
+    shutil.copy(os.path.join(file_path,'csa_data','raw_data','x_data','smiles_language_chembl_gdsc_ccle.pkl'),os.path.join(file_path,'candle_data_dir','Data','smiles_language_chembl_gdsc_ccle.pkl') )
 
 def candle_main():
     params = initialize_parameters()
-    preprocess(params)
+    run(params)
 
 if __name__ == "__main__":
     candle_main()

@@ -1,11 +1,10 @@
 import candle
 import os
-from paccmannmca_baseline_pytorch import main
+from Paccmann_MCA_baseline_pytorch import main
 import json
 
 
 # This should be set outside as a user environment variable
-#os.environ['CANDLE_DATA_DIR'] = '/homes/brettin/Singularity/workspace/data_dir/'
 file_path = os.path.dirname(os.path.realpath(__file__))
 
 
@@ -119,7 +118,7 @@ class PaccmannMCA_candle(candle.Benchmark):
 
 def initialize_parameters():
     preprocessor_bmk = PaccmannMCA_candle(file_path,
-        'paccmannmca_default_model.txt',
+        'Paccmann_MCA_default_model.txt',
         'pytorch',
         prog='PaccmannMCA_candle',
         desc='Data Preprocessor'
@@ -127,15 +126,16 @@ def initialize_parameters():
     #Initialize parameters
     candle_data_dir = os.getenv("CANDLE_DATA_DIR")
     gParameters = candle.finalize_parameters(preprocessor_bmk)
-    return gParameters
+    params = preprocess(gParameters)
+    return params
 
 def preprocess(params):
-    params['train_data'] = os.environ['CANDLE_DATA_DIR'] + '/common/Data/'+params['train_data']
-    params['val_data'] = os.environ['CANDLE_DATA_DIR'] + '/common/Data/'+params['val_data']
-    params['gep_filepath'] = os.environ['CANDLE_DATA_DIR'] + '/common/Data/'+params['gep_filepath']
-    params['smi_filepath'] = os.environ['CANDLE_DATA_DIR'] + '/common/Data/'+params['smi_filepath']
-    params['gene_filepath'] = os.environ['CANDLE_DATA_DIR'] + '/common/Data/'+params['gene_filepath']
-    params['smiles_language_filepath'] = os.environ['CANDLE_DATA_DIR'] + '/common/Data/'+params['smiles_language_filepath']
+    params['train_data'] = os.environ['CANDLE_DATA_DIR'] + '/Data/'+params['train_data']
+    params['val_data'] = os.environ['CANDLE_DATA_DIR'] + '/Data/'+params['val_data']
+    params['gep_filepath'] = os.environ['CANDLE_DATA_DIR'] + '/Data/'+params['gep_filepath']
+    params['smi_filepath'] = os.environ['CANDLE_DATA_DIR'] + '/Data/'+params['smi_filepath']
+    params['gene_filepath'] = os.environ['CANDLE_DATA_DIR'] + '/Data/'+params['gene_filepath']
+    params['smiles_language_filepath'] = os.environ['CANDLE_DATA_DIR'] + '/Data/'+params['smiles_language_filepath']
     """ 
     params["train_data"] = candle.get_file(params['train_data'], origin, datadir=params['data_dir'], cache_subdir=None)
     params["val_data"] = candle.get_file(params['val_data'], origin, datadir=params['data_dir'], cache_subdir=None)
@@ -152,12 +152,11 @@ def run(params):
     scores = main(params)
     with open(params['output_dir'] + "/scores.json", "w", encoding="utf-8") as f:
         json.dump(scores, f, ensure_ascii=False, indent=4)
-    #print('IMPROVE_RESULT RMSE:\t' + str(scores['rmse']))
-    print("\nIMPROVE_RESULT val_loss:\t{}\n".format(scores["val_loss"]))
+    print('IMPROVE_RESULT RMSE:\t' + str(scores['rmse']))
+    print('IMPROVE_RESULT R-squared:\t' + str(scores['r2']))
 
 def candle_main():
     params = initialize_parameters()
-    params = preprocess(params)
     run(params)
 
 if __name__ == "__main__":

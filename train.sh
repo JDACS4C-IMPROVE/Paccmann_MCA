@@ -10,8 +10,8 @@
 # arg 3 CANDLE_CONFIG
 
 ### Path to your CANDLEized model's main Python script###
-CANDLE_MODEL=/usr/local/Paccmann_MCA/train.py
-
+#CANDLE_MODEL=/usr/local/Paccmann_MCA/train.py
+CANDLE_MODEL=/homes/pvasanthakumari/Cross_study_analysis_May2023/train.py
 if [ $# -lt 2 ] ; then
         echo "Illegal number of parameters"
         echo "CUDA_VISIBLE_DEVICES and CANDLE_DATA_DIR are required"
