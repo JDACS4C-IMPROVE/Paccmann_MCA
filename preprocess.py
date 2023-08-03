@@ -1,6 +1,6 @@
 import candle
 import os
-from Paccmann_MCA_baseline_pytorch import main
+from train_paccmann import main
 import json
 import csv
 import numpy as np
