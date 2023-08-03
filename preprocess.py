@@ -138,11 +138,17 @@ def initialize_parameters():
     gParameters = candle.finalize_parameters(preprocessor_bmk)
     return gParameters
 
-def run(params):
-    # Settings:
+def run(params): 
+    # Settings: Ideally we need these from default_model.txt
     y_col_name = "auc"
     split = 0
     source_data_name = "CCLE"
+    target_data_name = "CCLE"
+    
+    if source_data_name == target_data_name:
+        split_target_file_name=f"{target_data_name}_split_{split}_test.txt",
+    else:
+        split_target_file_name=f"{target_data_name}_all.txt",
 
     # Load train
     rs_tr = improve_utils.load_single_drug_response_data_v2(
@@ -158,8 +164,8 @@ def run(params):
 
     # Load test
     rs_te = improve_utils.load_single_drug_response_data_v2(
-        source=source_data_name,
-        split_file_name=f"{source_data_name}_all.txt",
+        source=target_data_name,
+        split_file_name=split_target_file_name,
         y_col_name=y_col_name)
 
     print("\nResponse train data", rs_tr.shape)
