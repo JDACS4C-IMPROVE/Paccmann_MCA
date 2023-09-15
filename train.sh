@@ -10,8 +10,10 @@
 # arg 3 CANDLE_CONFIG
 
 ### Path to your CANDLEized model's main Python script###
-CANDLE_MODEL=/usr/local/Paccmann_MCA/Paccmann_MCA_baseline_pytorch.py
-
+#CANDLE_MODEL=/usr/local/Paccmann_MCA/Paccmann_MCA_baseline_pytorch.py
+IMPROVE_MODEL_DIR=${IMPROVE_MODEL_DIR:-$( dirname -- "$0" )}
+CANDLE_MODEL=Paccmann_MCA_baseline_pytorch.py
+CANDLE_MODEL=${IMPROVE_MODEL_DIR}/${CANDLE_MODEL}
 if [ $# -lt 2 ] ; then
         echo "Illegal number of parameters"
         echo "CUDA_VISIBLE_DEVICES and CANDLE_DATA_DIR are required"
