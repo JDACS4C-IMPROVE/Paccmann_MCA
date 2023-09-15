@@ -6,13 +6,14 @@
 ####################################################################
 ## Exceute preprocess script for your model with the CMD arguments ##
 ####################################################################
-preprocess="/usr/local/Paccmann_MCA/preprocess.py"
-
+IMPROVE_MODEL_DIR=${IMPROVE_MODEL_DIR:-$( dirname -- "$0" )}
+CANDLE_MODEL=preprocess.py
+CANDLE_MODEL=${IMPROVE_MODEL_DIR}/${CANDLE_MODEL}
 
 CUDA_VISIBLE_DEVICES=$1
 CANDLE_DATA_DIR=$2
 
-CMD="python3 ${preprocess}"
+CMD="python3 ${CANDLE_MODEL}"
 
 
 echo "using container "

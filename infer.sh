@@ -6,13 +6,15 @@
 ####################################################################
 ## Exceute inference script for your model with the CMD arguments ##
 ####################################################################
-infer="/usr/local/Paccmann_MCA/infer.py"
+IMPROVE_MODEL_DIR=${IMPROVE_MODEL_DIR:-$( dirname -- "$0" )}
+CANDLE_MODEL=infer.py
+CANDLE_MODEL=${IMPROVE_MODEL_DIR}/${CANDLE_MODEL}
 
 
 CUDA_VISIBLE_DEVICES=$1
 CANDLE_DATA_DIR=$2
 
-CMD="python3 ${infer}"
+CMD="python3 ${CANDLE_MODEL}"
 
 
 echo "using container "
