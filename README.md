@@ -46,14 +46,32 @@ Install CANDLE package
 pip install git+https://github.com/ECP-CANDLE/candle_lib@develop
 ```
 
-## Example usage
-Model Training
+## Example usage without container
+
+Preprocess (optional)
 ```sh
-python train.py
+bash preprocess.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR
 ```
-Model Testing
+Training
 ```sh
-python infer.py
+bash train.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR
+```
+Testing
+```sh
+bash infer.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR
+```
+
+## Example usage with container
+Model definition file 'Paccmann_MCA.def' is located [_here_](https://github.com/JDACS4C-IMPROVE/Singularity/tree/develop/definitions) 
+
+Build Singularity 
+```sh
+singularity build --fakeroot Paccmann_MCA.sif Paccmann_MCA.def 
+```
+
+Execute within container
+```sh
+singularity exec --nv Paccmann_MCA.sif train.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR
 ```
 
 ## References
