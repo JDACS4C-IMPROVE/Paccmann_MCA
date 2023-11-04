@@ -46,7 +46,7 @@ Install CANDLE package
 pip install git+https://github.com/ECP-CANDLE/candle_lib@develop
 ```
 
-## Example usage without container
+## Example usage with conda environment
 
 Preprocess (optional)
 ```sh
