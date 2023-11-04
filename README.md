@@ -48,7 +48,11 @@ pip install git+https://github.com/ECP-CANDLE/candle_lib@develop
 # Using Default Data
 
 ## Example usage with conda environment
-
+Set environment variables:
+```sh
+export CANDLE_DATA_DIR=candle_data_dir
+export CUDA_VISIBLE_DEVICES=0
+```
 **Preprocess (optional)**
 ```sh
 bash preprocess.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR
