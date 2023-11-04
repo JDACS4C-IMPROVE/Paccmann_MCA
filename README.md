@@ -49,15 +49,15 @@ pip install git+https://github.com/ECP-CANDLE/candle_lib@develop
 
 ## Example usage with conda environment
 
-Preprocess (optional)
+**Preprocess (optional)**
 ```sh
 bash preprocess.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR
 ```
-Training
+**Training**
 ```sh
 bash train.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR
 ```
-Testing
+**Testing**
 ```sh
 bash infer.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR
 ```
@@ -104,7 +104,7 @@ wget -P csa_data/raw_data/splits https://ftp.mcs.anl.gov/pub/candle/public/impro
 wget -P csa_data/raw_data/splits https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/benchmark-data-pilot1/csa_data/raw_data/splits/CCLE_split_0_test.txt
 ```
 ## To run the models:
-Preprocess (optional)
+**Preprocess (optional)**
 ```sh
 bash preprocess_csa.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR $SPLIT $TRAIN_SOURCE $TEST_SOURCE
 ```
@@ -112,7 +112,7 @@ for example (split=0, train source=CCLE, test source=CCLE):
 ```sh
 bash preprocess_csa.sh 1 candle_data_dir 0 CCLE CCLE
 ```
-Training
+**Training**
 ```sh
 bash train_csa.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR
 ```
@@ -120,7 +120,7 @@ for example:
 ```sh
 bash train_csa.sh 1 candle_data_dir
 ```
-Testing
+**Testing**
 ```sh
 bash infer_csa.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR
 ```
