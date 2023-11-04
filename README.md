@@ -90,6 +90,10 @@ mkdir csa_data/raw_data/splits
 mkdir candle_data_dir
 mkdir candle_data_dir/CSA_data
 ```
+Activate conda environment
+```
+conda activate paccmann_predictor
+```
 Follow these steps to download data from the IMPROVE FTP:
 ```
 wget -P csa_data/raw_data/y_data https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/benchmark-data-pilot1/csa_data/raw_data/y_data/response.tsv
