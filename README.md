@@ -1,7 +1,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://github.com/PaccMann/paccmann_predictor/actions/workflows/build.yml/badge.svg)](https://github.com/PaccMann/paccmann_predictor/actions/workflows/build.yml)
 
-# paccmann_predictor
+# PACCMANN PREDICTOR
 
 Drug interaction prediction with PaccMann.
 
@@ -45,7 +45,7 @@ Install CANDLE package
 ```sh
 pip install git+https://github.com/ECP-CANDLE/candle_lib@develop
 ```
-# USING DEFAULT DATA
+# Using Default Data
 
 ## Example usage with conda environment
 
@@ -74,7 +74,7 @@ Execute within container
 ```sh
 singularity exec --nv Paccmann_MCA.sif train.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR
 ```
-# USING BENCHMARK DATA FOR CROSS-STUDY ANALYSIS
+# Using Benchmark Data for Cross-Study Analysis
 
 
 ## References
