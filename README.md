@@ -75,6 +75,50 @@ Execute within container
 singularity exec --nv Paccmann_MCA.sif train.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR
 ```
 # Using Benchmark Data for Cross-Study Analysis
+Clone the develop branch of this repository.
+Directory structure to use the IMPROVE benchmark data 
+```
+mkdir csa_data
+mkdir csa_data/raw_data
+mkdir csa_data/raw_data/y_data
+mkdir csa_data/raw_data/x_data
+mkdir csa_data/raw_data/splits
+mkdir candle_data_dir
+mkdir candle_data_dir/CSA_data
+```
+Follow these steps to download data from the IMPROVE FTP:
+```
+wget -P csa_data/raw_data/y_data https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/benchmark-data-pilot1/csa_data/raw_data/y_data/response.tsv
+
+wget -P csa_data/raw_data/x_data https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/benchmark-data-pilot1/csa_data/raw_data/x_data/cancer_gene_expression.tsv
+
+wget -P csa_data/raw_data/x_data https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/benchmark-data-pilot1/csa_data/raw_data/x_data/drug_SMILES.tsv
+```
+
+To train and test on CCLE split 0, download these files from the IMPROVE FTP:
+If we want to train on CCLE training data and test on CCLE testing data we also download the split files:
+```
+wget -P csa_data/raw_data/splits https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/benchmark-data-pilot1/csa_data/raw_data/splits/CCLE_split_0_train.txt
+
+wget -P csa_data/raw_data/splits https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/benchmark-data-pilot1/csa_data/raw_data/splits/CCLE_split_0_val.txt
+
+wget -P csa_data/raw_data/splits https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/benchmark-data-pilot1/csa_data/raw_data/splits/CCLE_split_0_test.txt
+```
+## To run the models:
+Preprocess (optional)
+```sh
+bash preprocess.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR $SPLIT $TRAIN_SOURCE $TEST_SOURCE
+for example:
+bash preprocess.sh 1 candle_data_dir 0 CCLE CCLE
+```
+Training
+```sh
+bash train.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR
+```
+Testing
+```sh
+bash infer.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR
+```
 
 
 ## References
