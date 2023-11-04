@@ -96,7 +96,6 @@ wget -P csa_data/raw_data/x_data https://ftp.mcs.anl.gov/pub/candle/public/impro
 ```
 
 To train and test on CCLE split 0, download these files from the IMPROVE FTP:
-If we want to train on CCLE training data and test on CCLE testing data we also download the split files:
 ```
 wget -P csa_data/raw_data/splits https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/benchmark-data-pilot1/csa_data/raw_data/splits/CCLE_split_0_train.txt
 
