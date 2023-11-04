@@ -107,17 +107,27 @@ wget -P csa_data/raw_data/splits https://ftp.mcs.anl.gov/pub/candle/public/impro
 ## To run the models:
 Preprocess (optional)
 ```sh
-bash preprocess.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR $SPLIT $TRAIN_SOURCE $TEST_SOURCE
-for example:
-bash preprocess.sh 1 candle_data_dir 0 CCLE CCLE
+bash preprocess_csa.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR $SPLIT $TRAIN_SOURCE $TEST_SOURCE
+```
+for example (split=0, train source=CCLE, test source=CCLE):
+```sh
+bash preprocess_csa.sh 1 candle_data_dir 0 CCLE CCLE
 ```
 Training
 ```sh
-bash train.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR
+bash train_csa.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR
+```
+for example:
+```sh
+bash train_csa.sh 1 candle_data_dir
 ```
 Testing
 ```sh
-bash infer.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR
+bash infer_csa.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR
+```
+for example:
+```sh
+bash infer_csa.sh 1 candle_data_dir
 ```
 
 
