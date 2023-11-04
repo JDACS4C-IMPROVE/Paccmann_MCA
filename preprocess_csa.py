@@ -1,6 +1,5 @@
 import candle
 import os
-from Paccmann_MCA_baseline_pytorch import main
 import json
 import csv
 import numpy as np
@@ -129,7 +128,7 @@ class PaccmannMCA_candle(candle.Benchmark):
 
 def initialize_parameters():
     preprocessor_bmk = PaccmannMCA_candle(file_path,
-        'Paccmann_MCA_default_model.txt',
+        'Paccmann_MCA_default_model_csa.txt',
         'pytorch',
         prog='PaccmannMCA_candle',
         desc='Data Preprocessor'
@@ -139,6 +138,12 @@ def initialize_parameters():
     return gParameters
 
 def run(params):
+    #Download model specific files
+    fname='Data_MCA.zip'
+    origin=params['data_url']
+    # Download and unpack the data in CANDLE_DATA_DIR
+    candle.file_utils.get_file(fname, origin)
+
     # Settings:
     y_col_name = "auc"
     split = os.environ['SPLIT']
@@ -178,16 +183,16 @@ def run(params):
     
     # Modify files to be compatible with Paccmann_MCA
     #smiles
-    if not os.path.isfile(file_path+'/candle_data_dir/Data/smiles.smi'):
+    if not os.path.isfile(file_path+'/candle_data_dir/CSA_data/smiles.smi'):
         sm_new = pd.DataFrame(columns = ['SMILES', 'DrugID'])
         sm_new['SMILES'] = sm['smiles'].values
         sm_new['DrugID'] = sm.index.values
         #sm_new.to_csv(str(os.environ['CANDLE_DATA_DIR']+'/smiles.smi'), index=False)
-        sm_new.to_csv(str(file_path+'/candle_data_dir/Data/smiles.csv'), index=False)
+        sm_new.to_csv(str(file_path+'/candle_data_dir/CSA_data/smiles.csv'), index=False)
 
         # save smiles as .smi format as required by the code
-        newfile = str(file_path+'/candle_data_dir/Data/smiles.smi')
-        file = str(file_path+'/candle_data_dir/Data/smiles.csv')
+        newfile = str(file_path+'/candle_data_dir/CSA_data/smiles.smi')
+        file = str(file_path+'/candle_data_dir/CSA_data/smiles.csv')
         with open(file,'r') as csv_file:
             csv_reader = csv.reader(csv_file)
             next(csv_reader)  ## skip one line (the first one)
@@ -200,27 +205,27 @@ def run(params):
     rs_tr = rs_tr.drop(columns = ['source'])
     rs_tr = rs_tr.rename(columns = {'improve_chem_id':'drug', 'improve_sample_id':'cell_line', 'auc1':'IC50'})
     #rs_tr.to_csv(str(os.environ['CANDLE_DATA_DIR']+'/'+params['train_data']))
-    rs_tr.to_csv(str(file_path+'/candle_data_dir/Data/train.csv'))
+    rs_tr.to_csv(str(file_path+'/candle_data_dir/CSA_data/train.csv'))
 
     rs_vl = rs_vl.drop(columns = ['source'])
     rs_vl = rs_vl.rename(columns = {'improve_chem_id':'drug', 'improve_sample_id':'cell_line', 'auc1':'IC50'})
     #rs_vl.to_csv(str(os.environ['CANDLE_DATA_DIR']+'/'+params['val_data']))
-    rs_vl.to_csv(str(file_path+'/candle_data_dir/Data/val.csv'))
+    rs_vl.to_csv(str(file_path+'/candle_data_dir/CSA_data/val.csv'))
 
     rs_te = rs_te.drop(columns = ['source'])
     rs_te = rs_te.rename(columns = {'improve_chem_id':'drug', 'improve_sample_id':'cell_line', 'auc1':'IC50'})
     #rs_te.to_csv(str(os.environ['CANDLE_DATA_DIR']+'/'+params['test_data']))
-    rs_te.to_csv(str(file_path+'/candle_data_dir/Data/test.csv'))
+    rs_te.to_csv(str(file_path+'/candle_data_dir/CSA_data/test.csv'))
     
-    if not os.path.isfile(file_path+'/candle_data_dir/Data/gene_expression.csv'):
+    if not os.path.isfile(file_path+'/candle_data_dir/CSA_data/gene_expression.csv'):
         #gene expression
         ge.index.name = 'CancID'
         #ge.to_csv(str(os.environ['CANDLE_DATA_DIR']+'/gene_expression.csv'))
-        ge.to_csv(str(file_path+'/candle_data_dir/Data/gene_expression.csv'))
+        ge.to_csv(str(file_path+'/candle_data_dir/CSA_data/gene_expression.csv'))
 
     #Other files needed for Paccmann_MCA
-    shutil.copy(os.path.join(file_path,'csa_data','raw_data','x_data','2128_genes.pkl'),os.path.join(file_path,'candle_data_dir','Data','2128_genes.pkl') )
-    shutil.copy(os.path.join(file_path,'csa_data','raw_data','x_data','smiles_language_chembl_gdsc_ccle.pkl'),os.path.join(file_path,'candle_data_dir','Data','smiles_language_chembl_gdsc_ccle.pkl') )
+    shutil.copy(os.path.join(file_path,'candle_data_dir','common','Data','2128_genes.pkl'),os.path.join(file_path,'candle_data_dir','CSA_data','2128_genes.pkl') )
+    shutil.copy(os.path.join(file_path,'candle_data_dir','common','Data','smiles_language_chembl_gdsc_ccle.pkl'),os.path.join(file_path,'candle_data_dir','CSA_data','smiles_language_chembl_gdsc_ccle.pkl') )
 
 def candle_main():
     params = initialize_parameters()

@@ -236,6 +236,7 @@ def main(params):
         val_loss_a = val_loss / len(val_loader)
         if epoch == 0:
             min_val_loss = val_loss_a
+            scores['r2'] = r2
             scores['val_loss'] = val_loss_a
             scores['scc'] = val_spearman_a
             scores['pcc'] = val_pearson_a.cpu().detach().numpy().tolist()
@@ -243,7 +244,7 @@ def main(params):
         if val_loss_a<min_val_loss:
             min_val_loss = val_loss_a
             #Creating a dictionary with the scores
-            #scores['r2'] = r2
+            scores['r2'] = r2
             #scores['mean_absolute_error'] = mean_absolute_error
             scores['val_loss'] = val_loss_a
             scores['scc'] = val_spearman_a

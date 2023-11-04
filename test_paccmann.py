@@ -201,6 +201,7 @@ def main(
     pred['True'] = ((pred['True']*1000).apply(np.round))/1000
     pred_fname = str(model_dir+'/results/pred.csv')
     pred.to_csv(pred_fname, index=False)
+    return scores
 
 
 if __name__ == '__main__':

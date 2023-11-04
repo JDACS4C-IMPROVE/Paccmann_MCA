@@ -115,7 +115,7 @@ class PaccmannMCA_candle(candle.Benchmark):
 
 def initialize_parameters():
     preprocessor_bmk = PaccmannMCA_candle(file_path,
-        'Paccmann_MCA_default_model.txt',
+        'Paccmann_MCA_default_model_csa.txt',
         'pytorch',
         prog='PaccmannMCA_candle',
         desc='Data Preprocessor'
@@ -128,11 +128,11 @@ def initialize_parameters():
 
 def preprocess(params):
     # Model-specific changes
-    params['test_data']= str(file_path+'/candle_data_dir/Data/'+params['test_data'])
-    params['gep_filepath']= str(file_path+'/candle_data_dir/Data/'+params['gep_filepath'])
-    params['smi_filepath'] = str(file_path+'/candle_data_dir/Data/'+params['smi_filepath'])
-    params['gene_filepath']=str(file_path+'/candle_data_dir/Data/'+params['gene_filepath'])
-    params['smiles_language_filepath'] = str(file_path+'/candle_data_dir/Data/'+params['smiles_language_filepath'])
+    params['test_data']= str(file_path+'/candle_data_dir/CSA_data/'+params['test_data'])
+    params['gep_filepath']= str(file_path+'/candle_data_dir/CSA_data/'+params['gep_filepath'])
+    params['smi_filepath'] = str(file_path+'/candle_data_dir/CSA_data/'+params['smi_filepath'])
+    params['gene_filepath']=str(file_path+'/candle_data_dir/CSA_data/'+params['gene_filepath'])
+    params['smiles_language_filepath'] = str(file_path+'/candle_data_dir/CSA_data/'+params['smiles_language_filepath'])
 
     #params['test_data'] = os.environ['CANDLE_DATA_DIR'] + '/Data/'+params['test_data']
     #params['gep_filepath'] = os.environ['CANDLE_DATA_DIR'] + '/Data/'+params['gep_filepath']
@@ -158,7 +158,7 @@ def run(params):
         args.gep_filepath, args.smi_filepath, args.gene_filepath,
         args.smiles_language_filepath, args.output_dir,
         args.model_name, args.model_params)
-    #print('IMPROVE_RESULT RMSE:\t' + str(scores['rmse']))
+    print('IMPROVE_RESULT RMSE:\t' + str(scores['rmse']))
     print('IMPROVE_RESULT R-squared:\t' + str(scores['r2']))
 
 def candle_main():
