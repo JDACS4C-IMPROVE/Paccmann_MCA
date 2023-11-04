@@ -45,6 +45,7 @@ Install CANDLE package
 ```sh
 pip install git+https://github.com/ECP-CANDLE/candle_lib@develop
 ```
+# USING DEFAULT DATA
 
 ## Example usage with conda environment
 
@@ -61,7 +62,7 @@ Testing
 bash infer.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR
 ```
 
-## Example usage with container
+## Example usage with singularity container
 Model definition file 'Paccmann_MCA.def' is located [_here_](https://github.com/JDACS4C-IMPROVE/Singularity/tree/develop/definitions) 
 
 Build Singularity 
@@ -73,6 +74,8 @@ Execute within container
 ```sh
 singularity exec --nv Paccmann_MCA.sif train.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR
 ```
+# USING BENCHMARK DATA FOR CROSS-STUDY ANALYSIS
+
 
 ## References
 
