@@ -104,7 +104,7 @@ wget -P csa_data/raw_data/splits https://ftp.mcs.anl.gov/pub/candle/public/impro
 wget -P csa_data/raw_data/splits https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/benchmark-data-pilot1/csa_data/raw_data/splits/CCLE_split_0_test.txt
 ```
 ## To run the models:
-**Preprocess (optional)**
+**Preprocess**
 ```sh
 bash preprocess_csa.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR $SPLIT $TRAIN_SOURCE $TEST_SOURCE
 ```
