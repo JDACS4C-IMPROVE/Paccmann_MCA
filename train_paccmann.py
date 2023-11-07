@@ -175,10 +175,10 @@ def main(params):
     # Candle checkpointing
     ckpt = candle.CandleCkptPyTorch(params)
     ckpt.set_model({"model": model, "optimizer": optimizer})
-    J = ckpt.restart(model)
-    if J is not None:
-        initial_epoch = J["epoch"]
-        print("restarting from ckpt: initial_epoch: %i" % initial_epoch)
+    #J = ckpt.restart(model)
+    #if J is not None:
+    #    initial_epoch = J["epoch"]
+    #    print("restarting from ckpt: initial_epoch: %i" % initial_epoch)
     
     scores = {}
     for epoch in range(params['epochs']):

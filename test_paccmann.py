@@ -183,6 +183,7 @@ def main(
     scores['mean_absolute_error'] = mean_absolute_error
     scores['spearmanr'] = test_spearman_a
     scores['pearsonr'] = test_pearson_a.cpu().detach().numpy().tolist()
+    scores['rmse'] = test_rmse_a
     logger.info(
         f"\t **** TESTING  **** "
         f"loss: {test_loss_a:.5f}, "
