@@ -130,12 +130,12 @@ def initialize_parameters():
     return params
 
 def preprocess(params):
-    params['train_data'] = os.environ['CANDLE_DATA_DIR'] + '/Data/'+params['train_data']
-    params['val_data'] = os.environ['CANDLE_DATA_DIR'] + '/Data/'+params['val_data']
-    params['gep_filepath'] = os.environ['CANDLE_DATA_DIR'] + '/Data/'+params['gep_filepath']
-    params['smi_filepath'] = os.environ['CANDLE_DATA_DIR'] + '/Data/'+params['smi_filepath']
-    params['gene_filepath'] = os.environ['CANDLE_DATA_DIR'] + '/Data/'+params['gene_filepath']
-    params['smiles_language_filepath'] = os.environ['CANDLE_DATA_DIR'] + '/Data/'+params['smiles_language_filepath']
+    params['train_data'] = os.environ['CANDLE_DATA_DIR'] + '/CSA_data/'+params['train_data']
+    params['val_data'] = os.environ['CANDLE_DATA_DIR'] + '/CSA_data/'+params['val_data']
+    params['gep_filepath'] = os.environ['CANDLE_DATA_DIR'] + '/CSA_data/'+params['gep_filepath']
+    params['smi_filepath'] = os.environ['CANDLE_DATA_DIR'] + '/CSA_data/'+params['smi_filepath']
+    params['gene_filepath'] = os.environ['CANDLE_DATA_DIR'] + '/CSA_data/'+params['gene_filepath']
+    params['smiles_language_filepath'] = os.environ['CANDLE_DATA_DIR'] + '/CSA_data/'+params['smiles_language_filepath']
     """ 
     params["train_data"] = candle.get_file(params['train_data'], origin, datadir=params['data_dir'], cache_subdir=None)
     params["val_data"] = candle.get_file(params['val_data'], origin, datadir=params['data_dir'], cache_subdir=None)
