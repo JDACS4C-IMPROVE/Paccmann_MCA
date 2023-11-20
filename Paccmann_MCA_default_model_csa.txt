@@ -1,4 +1,15 @@
 [Global_Params]
+[Preprocess]
+ml_data_outdir = "./ml_data"
+x_data_canc_files = [["cancer_gene_expression.tsv", ["Gene_Symbol"]]]
+x_data_drug_files = [["drug_SMILES.tsv"]]
+y_data_files = [["response.tsv"]]
+train_split_file = "gCSI_split_0_train.txt"
+val_split_file = "gCSI_split_0_val.txt"
+test_split_file = "gCSI_split_0_test.txt"
+use_lincs = False
+scaling = None
+
 gep_filepath = 'gene_expression.csv'
 smi_filepath = 'smiles.smi'
 gene_filepath = '2128_genes.pkl'
@@ -28,7 +39,7 @@ val_data = 'val.csv'
 data_url = 'https://ftp.mcs.anl.gov/pub/candle/public/improve/model_curation_data/Paccmann_MCA/Data_MCA.zip'
 output_dir = 'Output'
 model_name = 'Paccmann_MCA'
-epochs = 200
+epochs = 1
 learning_rate = 0.001
 dropout = 0.5
 dense = [1024, 512]
