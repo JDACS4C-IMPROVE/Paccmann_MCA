@@ -13,7 +13,6 @@ from improve import drug_resp_pred as drp
 from sklearn.preprocessing import StandardScaler, MaxAbsScaler, MinMaxScaler, RobustScaler
 import joblib
 
-
 file_path = os.path.dirname(os.path.realpath(__file__))
 
 # Model-specific params (Model: Paccmann_MCA)
@@ -200,8 +199,6 @@ def scale_df(df, scaler_name: str="std", scaler=None, verbose: bool=False):
 def run(params):
     params = frm.build_paths(params)  # paths to raw data
     processed_outdir = frm.create_ml_data_outpath(params)
-    print("\nProcessed outdir")
-    print(processed_outdir)
 
     print("\nLoading omics data...")
     oo = drp.OmicsLoader(params)
@@ -215,7 +212,6 @@ def run(params):
     sm = dd.dfs['drug_SMILES.tsv']  # get the needed drug x data
     # Modify files to be compatible with Paccmann_MCA (Model specific modification)
     sm_new = pd.DataFrame(columns = ['SMILES', 'DrugID'])
-    print(sm.columns)
     sm_new['SMILES'] = sm['canSMILES'].values
     sm_new['DrugID'] = sm.index.values
     
