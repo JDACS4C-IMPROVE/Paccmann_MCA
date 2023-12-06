@@ -13,6 +13,7 @@ from improve import drug_resp_pred as drp
 from sklearn.preprocessing import StandardScaler, MaxAbsScaler, MinMaxScaler, RobustScaler
 import joblib
 from pathlib import Path
+import candle
 
 
 file_path = os.path.dirname(os.path.realpath(__file__))
@@ -192,9 +193,17 @@ def run(params):
                 with open(newfile, 'a') as new_txt:    #new file has .txt extn
                     txt_writer = csv.writer(new_txt, delimiter = '\t') #writefile
                     txt_writer.writerow(line)   #write the lines to file`
-
         # Save Gene expression
         ge.to_csv(os.path.join(Path(params["ml_data_outdir"]),'gene_expression.csv'))
+
+        ## Download model specific files
+        fname='Data_MCA.zip'
+        origin=params['data_url']
+        candle.file_utils.get_file(fname, origin)
+        #Other files needed for Paccmann_MCA
+        shutil.copy(os.path.join(os.environ['CANDLE_DATA_DIR'],'common','Data','2128_genes.pkl'),os.path.join(Path(params["ml_data_outdir"]),'2128_genes.pkl') )
+        shutil.copy(os.path.join(os.environ['CANDLE_DATA_DIR'],'common','Data','smiles_language_chembl_gdsc_ccle.pkl'),os.path.join(Path(params["ml_data_outdir"]),'smiles_language_chembl_gdsc_ccle.pkl') )
+
 
 def main():
     params = frm.initialize_parameters(
