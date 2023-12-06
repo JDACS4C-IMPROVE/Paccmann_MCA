@@ -182,27 +182,27 @@ def run(params):
         df_y = df_y.rename(columns = {'improve_chem_id':'drug', 'improve_sample_id':'cell_line', 'auc':'IC50'}) # Model specfic change in column names
         frm.save_stage_ydf(df_y, params, stage)
 
-        # Save SMILES as .smi format as required by the model (Model specific)
-        sm_new.to_csv(Path(params["ml_data_outdir"]) / "smiles.csv", index=False)
-        newfile = os.path.join(Path(params["ml_data_outdir"]),'smiles.smi')
-        file = os.path.join(Path(params["ml_data_outdir"]),'smiles.csv')
-        with open(file,'r') as csv_file:
-            csv_reader = csv.reader(csv_file)
-            next(csv_reader)  ## skip one line (the first one)
-            for line in csv_reader:
-                with open(newfile, 'a') as new_txt:    #new file has .txt extn
-                    txt_writer = csv.writer(new_txt, delimiter = '\t') #writefile
-                    txt_writer.writerow(line)   #write the lines to file`
-        # Save Gene expression
-        ge.to_csv(os.path.join(Path(params["ml_data_outdir"]),'gene_expression.csv'))
+    # Save SMILES as .smi format as required by the model (Model specific)
+    sm_new.to_csv(Path(params["ml_data_outdir"]) / "smiles.csv", index=False)
+    newfile = os.path.join(Path(params["ml_data_outdir"]),'smiles.smi')
+    file = os.path.join(Path(params["ml_data_outdir"]),'smiles.csv')
+    with open(file,'r') as csv_file:
+        csv_reader = csv.reader(csv_file)
+        next(csv_reader)  ## skip one line (the first one)
+        for line in csv_reader:
+            with open(newfile, 'a') as new_txt:    #new file has .txt extn
+                txt_writer = csv.writer(new_txt, delimiter = '\t') #writefile
+                txt_writer.writerow(line)   #write the lines to file`
+    # Save Gene expression
+    ge.to_csv(os.path.join(Path(params["ml_data_outdir"]),'gene_expression.csv'))
 
-        ## Download model specific files
-        fname='Data_MCA.zip'
-        origin=params['data_url']
-        candle.file_utils.get_file(fname, origin)
-        #Other files needed for Paccmann_MCA
-        shutil.copy(os.path.join(os.environ['CANDLE_DATA_DIR'],'common','Data','2128_genes.pkl'),os.path.join(Path(params["ml_data_outdir"]),'2128_genes.pkl') )
-        shutil.copy(os.path.join(os.environ['CANDLE_DATA_DIR'],'common','Data','smiles_language_chembl_gdsc_ccle.pkl'),os.path.join(Path(params["ml_data_outdir"]),'smiles_language_chembl_gdsc_ccle.pkl') )
+    ## Download model specific files
+    fname='Data_MCA.zip'
+    origin=params['data_url']
+    candle.file_utils.get_file(fname, origin)
+    #Other files needed for Paccmann_MCA
+    shutil.copy(os.path.join(os.environ['CANDLE_DATA_DIR'],'common','Data','2128_genes.pkl'),os.path.join(Path(params["ml_data_outdir"]),'2128_genes.pkl') )
+    shutil.copy(os.path.join(os.environ['CANDLE_DATA_DIR'],'common','Data','smiles_language_chembl_gdsc_ccle.pkl'),os.path.join(Path(params["ml_data_outdir"]),'smiles_language_chembl_gdsc_ccle.pkl') )
 
 
 def main():
