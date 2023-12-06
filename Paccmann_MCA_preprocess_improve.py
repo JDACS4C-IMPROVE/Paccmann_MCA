@@ -12,6 +12,8 @@ from improve import framework as frm
 from improve import drug_resp_pred as drp
 from sklearn.preprocessing import StandardScaler, MaxAbsScaler, MinMaxScaler, RobustScaler
 import joblib
+from pathlib import Path
+
 
 file_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -140,65 +142,10 @@ preprocess_params = model_preproc_params + drp_preproc_params
 req_preprocess_args = [ll["name"] for ll in preprocess_params]
 req_preprocess_args.extend(["y_col_name", "model_outdir"])
 
-def scale_df(df, scaler_name: str="std", scaler=None, verbose: bool=False):
-    """ Returns a dataframe with scaled data.
-
-    It can create a new scaler or use the scaler passed or return the
-    data as it is. If `scaler_name` is None, no scaling is applied. If
-    `scaler` is None, a new scaler is constructed. If `scaler` is not
-    None, and `scaler_name` is not None, the scaler passed is used for
-    scaling the data frame.
-
-    Args:
-        df: Pandas dataframe to scale.
-        scaler_name: Name of scikit learn scaler to apply. Options:
-                     ["minabs", "minmax", "std", "none"]. Default: std
-                     standard scaling.
-        scaler: Scikit object to use, in case it was created already.
-                Default: None, create scikit scaling object of
-                specified type.
-        verbose: Flag specifying if verbose message printing is desired.
-                 Default: False, no verbose print.
-
-    Returns:
-        pd.Dataframe: dataframe that contains drug response values.
-        scaler: Scikit object used for scaling.
-    """
-    if scaler_name is None or scaler_name == "none":
-        if verbose:
-            print("Scaler is None (no df scaling).")
-        return df, None
-
-    # Scale data
-    # Select only numerical columns in data frame
-    df_num = df.select_dtypes(include="number")
-
-    if scaler is None: # Create scikit scaler object
-        if scaler_name == "std":
-            scaler = StandardScaler()
-        elif scaler_name == "minmax":
-            scaler = MinMaxScaler()
-        elif scaler_name == "minabs":
-            scaler = MaxAbsScaler()
-        elif scaler_name == "robust":
-            scaler = RobustScaler()
-        else:
-            print(f"The specified scaler ({scaler_name}) is not implemented (no df scaling).")
-            return df, None
-
-        # Scale data according to new scaler
-        df_norm = scaler.fit_transform(df_num)
-    else: # Apply passed scikit scaler
-        # Scale data according to specified scaler
-        df_norm = scaler.transform(df_num)
-
-    # Copy back scaled data to data frame
-    df[df_num.columns] = df_norm
-    return df, scaler
 
 def run(params):
     params = frm.build_paths(params)  # paths to raw data
-    processed_outdir = frm.create_ml_data_outpath(params)
+    frm.create_outdir(outdir=params["ml_data_outdir"])
 
     print("\nLoading omics data...")
     oo = drp.OmicsLoader(params)
@@ -215,14 +162,10 @@ def run(params):
     sm_new['SMILES'] = sm['canSMILES'].values
     sm_new['DrugID'] = sm.index.values
     
-    if not os.path.exists(processed_outdir):
-        os.makedirs(processed_outdir, exist_ok=True)
-    
     stages = {"train": params["train_split_file"],
               "val": params["val_split_file"],
               "test": params["test_split_file"]}
 
-    scaler = None
     for stage, split_file in stages.items():
 
         # ---------------------------------
@@ -235,29 +178,13 @@ def run(params):
         df_y, df_canc = drp.get_common_samples(df1=df_response, df2=ge,
                                                ref_col=params["canc_col_name"])
         print(df_y[[params["canc_col_name"], params["drug_col_name"]]].nunique())
-
-        # Scale features using training data
-        if stage == "train":
-            # Scale data
-            df_canc, scaler = scale_df(df_canc, scaler_name=params["scaling"])
-            # Store scaler object
-            if params["scaling"] is not None and params["scaling"] != "none":
-                scaler_fpath = processed_outdir / params["scaler_fname"]
-                joblib.dump(scaler, scaler_fpath)
-                print("Scaler object created and stored in: ", scaler_fpath)
-        else:
-            # Use passed scikit scaler object
-            df_canc, _ = scale_df(df_canc, scaler=scaler)
-
-        df_y = df_y[[params["drug_col_name"], params["canc_col_name"], params["y_col_name"]]]
-        data_fname = frm.build_ml_data_name(params, stage,'.csv')  # e.g., data_fname = train_data.pt
-        y_data_fname = f"{stage}_{params['y_data_suffix']}.csv"
-        df_y.to_csv(processed_outdir / y_data_fname, index=False)
+        df_y = df_y.rename(columns = {'improve_chem_id':'drug', 'improve_sample_id':'cell_line', 'auc':'IC50'}) # Model specfic change in column names
+        frm.save_stage_ydf(df_y, params, stage)
 
         # Save SMILES as .smi format as required by the model (Model specific)
-        sm_new.to_csv(processed_outdir / "smiles.csv", index=False)
-        newfile = os.path.join(file_path,processed_outdir,'smiles.smi')
-        file = os.path.join(file_path,processed_outdir,'smiles.csv')
+        sm_new.to_csv(Path(params["ml_data_outdir"]) / "smiles.csv", index=False)
+        newfile = os.path.join(Path(params["ml_data_outdir"]),'smiles.smi')
+        file = os.path.join(Path(params["ml_data_outdir"]),'smiles.csv')
         with open(file,'r') as csv_file:
             csv_reader = csv.reader(csv_file)
             next(csv_reader)  ## skip one line (the first one)
@@ -267,7 +194,7 @@ def run(params):
                     txt_writer.writerow(line)   #write the lines to file`
 
         # Save Gene expression
-        ge.to_csv(os.path.join(file_path,processed_outdir,'gene_expression.csv'))
+        ge.to_csv(os.path.join(Path(params["ml_data_outdir"]),'gene_expression.csv'))
 
 def main():
     params = frm.initialize_parameters(
@@ -276,7 +203,7 @@ def main():
         additional_definitions=preprocess_params,
         required=req_preprocess_args,
     )
-    processed_outdir = run(params)
+    run(params)
     print("\nFinished Paccmann MCA pre-processing (transformed raw DRP data to model input ML data).")
 
 if __name__ == "__main__":
