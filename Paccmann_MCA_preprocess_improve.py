@@ -152,8 +152,7 @@ def run(params):
     oo = drp.OmicsLoader(params)
     print(oo)
     ge = oo.dfs['cancer_gene_expression.tsv']  # get the needed canc x data
-    ge.index.name = 'CancID' #Model specific modification
-
+    
     print("\nLoading drugs data...")
     dd = drp.DrugsLoader(params)
     print(dd)
@@ -179,10 +178,18 @@ def run(params):
         df_y, df_canc = drp.get_common_samples(df1=df_response, df2=ge,
                                                ref_col=params["canc_col_name"])
         print(df_y[[params["canc_col_name"], params["drug_col_name"]]].nunique())
-        df_y = df_y.rename(columns = {'improve_chem_id':'drug', 'improve_sample_id':'cell_line', 'auc':'IC50'}) # Model specfic change in column names
+
+        df_y = df_y[[params["drug_col_name"], params["canc_col_name"], params["y_col_name"]]]
+        df_y = df_y.rename(columns = {'improve_chem_id':'drug', 'improve_sample_id':'cell_line'}) # Model specfic change in column names
+        df_y['IC50'] = df_y['auc']
+        df_y.reset_index(inplace=True)
         frm.save_stage_ydf(df_y, params, stage)
+        # [Req] Create data name
+        #data_fname = frm.build_ml_data_name(params, stage)
 
     # Save SMILES as .smi format as required by the model (Model specific)
+    if os.path.exists(os.path.join(Path(params["ml_data_outdir"]),'smiles.smi')): # Remove smiles.smi to prevent duplicates
+        os.remove(os.path.join(Path(params["ml_data_outdir"]),'smiles.smi'))
     sm_new.to_csv(Path(params["ml_data_outdir"]) / "smiles.csv", index=False)
     newfile = os.path.join(Path(params["ml_data_outdir"]),'smiles.smi')
     file = os.path.join(Path(params["ml_data_outdir"]),'smiles.csv')
@@ -194,6 +201,8 @@ def run(params):
                 txt_writer = csv.writer(new_txt, delimiter = '\t') #writefile
                 txt_writer.writerow(line)   #write the lines to file`
     # Save Gene expression
+    ge=ge.rename(columns={'improve_sample_id':'CancID'})
+    ge=ge.set_index('CancID')
     ge.to_csv(os.path.join(Path(params["ml_data_outdir"]),'gene_expression.csv'))
 
     ## Download model specific files

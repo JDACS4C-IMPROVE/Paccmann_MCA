@@ -32,11 +32,16 @@ def main(params):
     smiles_language_filepath = params['smiles_language_filepath']
     output_dir = params['output_dir']
     model_name = params['model_name']
+    model_outdir = params['model_outdir']
 
     logger = logging.getLogger(f'{model_name}')
     # Create model directory and dump files
     #model_dir = os.path.join(output_dir, model_name)
-    model_dir = output_dir
+    #model_dir = output_dir
+    if os.path.exists(model_outdir):
+        model_dir = model_outdir
+    else:
+        model_dir = output_dir
     os.makedirs(os.path.join(model_dir, 'weights'), exist_ok=True)
     os.makedirs(os.path.join(model_dir, 'results'), exist_ok=True)
 
@@ -86,7 +91,7 @@ def main(params):
         dataset=train_dataset,
         batch_size=params['batch_size'],
         shuffle=True,
-        drop_last=True,
+        drop_last=False,
         num_workers=params.get('num_workers', 0)
     )
 
@@ -128,8 +133,8 @@ def main(params):
     val_loader = torch.utils.data.DataLoader(
         dataset=val_dataset,
         batch_size=params['batch_size'],
-        shuffle=True,
-        drop_last=True,
+        shuffle=False,
+        drop_last=False,
         num_workers=params.get('num_workers', 0)
     )
     logger.info(
@@ -264,12 +269,12 @@ def main(params):
             pred['IC50'] = ((pred['IC50']*1000).apply(np.round))/1000
             pred['True'] = ((pred['True']*1000).apply(np.round))/1000
             pred_fname = str(model_dir+'/results/val_pred.csv')
-            pred.to_csv(pred_fname, index=False)
+            #pred.to_csv(pred_fname, index=False)
 
         ckpt.ckpt_epoch(epoch, val_loss_a)
 
     logger.info('Done with training, models saved, shutting down.')
-    return scores
+    return labels, predictions
 
 if __name__ == '__main__':
     main(params)
