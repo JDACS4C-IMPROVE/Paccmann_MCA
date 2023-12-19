@@ -164,19 +164,3 @@ def candle_main():
 if __name__ == "__main__":
     candle_main()
 
-##################
-
-df = pd.read_csv(file_path + '/smiles.csv')    
-smles = df['SMILES'].tolist()
-drg_id = df['DrugID'].tolist()
-# Function to find duplicated items in a list - Lists duplicate smile strings and their drug id's
-from collections import defaultdict
-def list_duplicates(seq):
-    tally = defaultdict(list)
-    for i,item in enumerate(seq):
-        tally[item].append(drg_id[i])
-    return ((key,locs) for key,locs in tally.items() 
-                            if len(locs)>1)
-
-for dup in sorted(list_duplicates(smles)):
-    print(dup)
