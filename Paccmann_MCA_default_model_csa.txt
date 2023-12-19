@@ -9,6 +9,7 @@ val_split_file = "gCSI_split_0_val.txt"
 test_split_file = "gCSI_split_0_test.txt"
 use_lincs = False
 scaling = None
+infer_outdir = "./out_infer"
 
 gep_filepath = 'gene_expression.csv'
 smi_filepath = 'smiles.smi'

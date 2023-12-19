@@ -64,15 +64,22 @@ parser.add_argument(
 # yapf: enable
 
 
-def main(
-    test_data, gep_filepath,
-    smi_filepath, gene_filepath, smiles_language_filepath, output_dir,
-    model_name, model_params
-):
+def main(params):
 
+    test_data = params['test_data']
+    gep_filepath = params['gep_filepath']
+    smi_filepath = params['smi_filepath']
+    gene_filepath = params['gene_filepath']
+    smiles_language_filepath = params['smiles_language_filepath']
+    output_dir = params['output_dir']
+    model_name = params['model_name']
+    model_outdir = params['model_outdir']
     logger = logging.getLogger(f'{model_name}')
-    # Process parameter file:
-    params = model_params
+    if os.path.exists(model_outdir):
+        model_dir = model_outdir
+    else:
+        model_dir = output_dir
+
 
     # Create model directory 
     model_dir = os.path.join(output_dir, model_name)
@@ -124,8 +131,8 @@ def main(
     test_loader = torch.utils.data.DataLoader(
         dataset=test_dataset,
         batch_size=params['batch_size'],
-        shuffle=True,
-        drop_last=True,
+        shuffle=False,
+        drop_last=False,
         num_workers=params.get('num_workers', 0)
     )
     logger.info(
@@ -192,8 +199,8 @@ def main(
     )
     # Save scores and final preds
     save_dir = str(model_dir+'/results/results.json')
-    with open(save_dir, 'w') as fp:
-        json.dump(scores, fp)
+    #with open(save_dir, 'w') as fp:
+        #json.dump(scores, fp)
     pred = pd.DataFrame({"True": labels, "Pred": predictions}).reset_index()
     te_df1 = test_loader.dataset.drug_sensitivity_df[['drug','cell_line', 'IC50']].reset_index()
     te_df = te_df1.rename(columns={'drug': 'DrugID', 'cell_line': 'CancID', 'IC50':'IC50'})
@@ -201,17 +208,11 @@ def main(
     pred['IC50'] = ((pred['IC50']*1000).apply(np.round))/1000
     pred['True'] = ((pred['True']*1000).apply(np.round))/1000
     pred_fname = str(model_dir+'/results/pred.csv')
-    pred.to_csv(pred_fname, index=False)
-    return scores
+    #pred.to_csv(pred_fname, index=False)
+    #return scores
+    return labels, predictions
 
 
 if __name__ == '__main__':
-    # parse arguments
-    args = parser.parse_args()
     # run the training
-    main(
-        args.test_data,
-        args.gep_filepath, args.smi_filepath, args.gene_filepath,
-        args.smiles_language_filepath, args.output_dir, 
-        args.model_name, args.model_params
-    )
+    main(params)
