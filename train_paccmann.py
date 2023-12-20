@@ -246,6 +246,8 @@ def main(params):
             scores['scc'] = val_spearman_a
             scores['pcc'] = val_pearson_a.cpu().detach().numpy().tolist()
             scores['rmse'] = val_rmse_a
+            pred_sel = predictions
+            label_sel = labels
         if val_loss_a<min_val_loss:
             min_val_loss = val_loss_a
             #Creating a dictionary with the scores
@@ -255,6 +257,8 @@ def main(params):
             scores['scc'] = val_spearman_a
             scores['pcc'] = val_pearson_a.cpu().detach().numpy().tolist()
             scores['rmse'] = val_rmse_a
+            pred_sel = predictions
+            label_sel = labels
             logger.info(
                 f"\t **** VALIDATION  **** "
                 f"loss: {val_loss_a:.5f}, "
@@ -274,7 +278,7 @@ def main(params):
         ckpt.ckpt_epoch(epoch, val_loss_a)
 
     logger.info('Done with training, models saved, shutting down.')
-    return labels, predictions
+    return label_sel, pred_sel
 
 if __name__ == '__main__':
     main(params)
