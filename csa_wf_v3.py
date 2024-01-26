@@ -66,14 +66,15 @@ print_fn(f"File path: {fdir}")
 
 ### Source and target data sources
 ## Set 1 - full analysis
-source_datasets = ["CCLE", "CTRPv2", "gCSI", "GDSCv1", "GDSCv2"]
+#source_datasets = ["CCLE", "CTRPv2", "gCSI", "GDSCv1", "GDSCv2"]
+source_datasets = ['GDSCv1']
 target_datasets = ["CCLE", "CTRPv2", "gCSI", "GDSCv1", "GDSCv2"]
 
 only_cross_study = False
 
 ## Splits
 # split_nums = []  # all splits
-split_nums = [1, 4, 7]
+split_nums = [4]
 
 ## Parameters of the experiment/run/workflow
 # TODO: this should be stored as the experiment metadata that we can go back check
@@ -81,7 +82,7 @@ split_nums = [1, 4, 7]
 # epochs = 30
 # epochs = 50
 # epochs = 70
-epochs = 1
+epochs = 200
 # epochs = 150
 
 def build_split_fname(source, split, phasea):
@@ -122,7 +123,6 @@ for source_data_name in source_datasets:
     for split in split_nums:
         print_fn(f"Split id {split} out of {len(split_nums)} splits.")
         # Check that train, val, and test are available. Otherwise, continue to the next split.
-        # split = 11
         # files_joined = [str(s) for s in split_files]
         # TODO: check this!
         for phase in ["train", "val", "test"]:

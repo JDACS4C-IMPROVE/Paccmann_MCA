@@ -10,6 +10,8 @@ test_split_file = "gCSI_split_0_test.txt"
 use_lincs = False
 scaling = None
 infer_outdir = "./out_infer"
+cuda_name = "cuda:7"
+y_col_name = 'auc'
 
 gep_filepath = 'gene_expression.csv'
 smi_filepath = 'smiles.smi'
