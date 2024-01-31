@@ -226,4 +226,3 @@ for source_data_name in source_datasets:
 
 timer.display_timer(print_fn)
 print_fn("Finished a full cross-study run.")
-
