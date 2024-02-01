@@ -186,6 +186,12 @@ def main(params):
     #    print("restarting from ckpt: initial_epoch: %i" % initial_epoch)
     
     scores = {}
+
+    # Early stop params
+    best_score = np.inf
+    best_epoch = -1
+    patience_monitor = 0  
+
     for epoch in range(params['epochs']):
 
         model.train()
@@ -226,7 +232,7 @@ def main(params):
                 labels.append(y)
                 loss = model.loss(y_hat, y.to(device))
                 val_loss += loss.item()
-
+        val_loss_a = val_loss / len(val_loader)
         predictions = np.array(
             [p.cpu() for preds in predictions for p in preds]
         ,dtype = np.float )
@@ -238,21 +244,12 @@ def main(params):
         mean_absolute_error = sklearn.metrics.mean_absolute_error(y_true=labels, y_pred=predictions)
         r2 = sklearn.metrics.r2_score(y_true=labels, y_pred=predictions)
         val_rmse_a = np.sqrt(np.mean((predictions - labels)**2))
-        val_loss_a = val_loss / len(val_loader)
-        if epoch == 0:
-            min_val_loss = val_loss_a
+
+        # Implement early stopping
+        if val_loss_a<best_score:
+            torch.save(model.state_dict(), params['modelpath'])
+            best_epoch = epoch + 1
             scores['r2'] = r2
-            scores['val_loss'] = val_loss_a
-            scores['scc'] = val_spearman_a
-            scores['pcc'] = val_pearson_a.cpu().detach().numpy().tolist()
-            scores['rmse'] = val_rmse_a
-            pred_sel = predictions
-            label_sel = labels
-        if val_loss_a<min_val_loss:
-            min_val_loss = val_loss_a
-            #Creating a dictionary with the scores
-            scores['r2'] = r2
-            #scores['mean_absolute_error'] = mean_absolute_error
             scores['val_loss'] = val_loss_a
             scores['scc'] = val_spearman_a
             scores['pcc'] = val_pearson_a.cpu().detach().numpy().tolist()
@@ -273,7 +270,16 @@ def main(params):
             pred['IC50'] = ((pred['IC50']*1000).apply(np.round))/1000
             pred['True'] = ((pred['True']*1000).apply(np.round))/1000
             pred_fname = str(model_dir+'/results/val_pred.csv')
-            #pred.to_csv(pred_fname, index=False)
+            patience_monitor=0
+        else:
+            patience_monitor=patience_monitor+1
+        if patience_monitor == params['patience']:
+            logger.info("Model did not improve after 20 epochs. Terminate model training")
+            logger.info(f"best epoch: {best_epoch}, "
+                f"Validation loss: {val_loss_a:.3f}")
+            break
+
+        ##########
 
         ckpt.ckpt_epoch(epoch, val_loss_a)
 

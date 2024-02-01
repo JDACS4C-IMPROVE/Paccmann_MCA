@@ -126,7 +126,7 @@ def run(params):
     params['smi_filepath'] =Path(params["ml_data_outdir"]) / params['smi_filepath']
     params['gene_filepath'] = Path(params["ml_data_outdir"]) / params['gene_filepath']
     params['smiles_language_filepath'] = Path(params["ml_data_outdir"]) / params['smiles_language_filepath']
-
+    params['modelpath'] = modelpath
 
 
     val_true, val_pred = main(params)

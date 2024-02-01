@@ -12,6 +12,9 @@ scaling = None
 infer_outdir = "./out_infer"
 cuda_name = "cuda:7"
 y_col_name = 'auc'
+model_file_name = "model"
+model_file_format = ".pt"
+patience = 20
 
 gep_filepath = 'gene_expression.csv'
 smi_filepath = 'smiles.smi'
