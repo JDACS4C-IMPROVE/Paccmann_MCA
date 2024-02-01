@@ -191,7 +191,8 @@ for source_data_name in source_datasets:
                       "--ml_data_outdir", str(ml_data_outdir),
                       "--model_outdir", str(model_outdir),
                       "--epochs", str(epochs),
-                      "--y_col_name", y_col_name
+                      "--y_col_name", y_col_name,
+                      "--ckpt_directory", str(model_outdir)
                 ]
                 result = subprocess.run(train_run, capture_output=True,
                                         text=True, check=True)

@@ -147,8 +147,6 @@ def run(params):
         outdir=params["model_outdir"], metrics=metrics_list
     )
 
-    shutil.copy(os.path.join(params['output_dir'], 'ckpts/best/model.h5'), os.path.join(params['model_outdir'], 'model.h5'))
-    shutil.copy(os.path.join(params['output_dir'], 'ckpts/best/ckpt-info.json'), os.path.join(params['model_outdir'], 'ckpt-info.json'))
     return val_scores
 
 def candle_main():
