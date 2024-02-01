@@ -154,10 +154,10 @@ def main(params):
     checkpoint=torch.load(os.path.join(params['modelpath']))
     #checkpoint=torch.load(os.path.join(output_dir,'ckpts','best','model.h5' ))
     #checkpoint = torch.load(str(file_path + '/save/ckpts/best/model.h5'))
-    model.load_state_dict(checkpoint['model_state_dict'])
-    optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+    #model.load_state_dict(checkpoint['model_state_dict'])
+    #optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
     model.load_state_dict(torch.load(params['modelpath']))
-    optimizer.load_state_dict(torch.load(params['modelpath']))
+    #optimizer.load_state_dict(torch.load(params['modelpath']))
     #epoch = checkpoint['epoch']
     #oss = checkpoint['loss'] 
 
