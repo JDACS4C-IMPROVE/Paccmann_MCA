@@ -284,7 +284,7 @@ def main(params):
         ckpt.ckpt_epoch(epoch, val_loss_a)
 
     logger.info('Done with training, models saved, shutting down.')
-    return label_sel, pred_sel
+    return label_sel, pred_sel, params
 
 if __name__ == '__main__':
     main(params)
