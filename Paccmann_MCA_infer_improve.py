@@ -1,4 +1,5 @@
 import candle
+import pickle
 import os
 from pathlib import Path
 from test_paccmann import main
@@ -48,11 +49,9 @@ def candle_main():
         additional_definitions=additional_definitions,
         required=None,
     )
-    with open("Paccmann_MCA_default_model_csa.txt", "r") as f:
-        for line in f:
-            if 'smiles_vocabulary_size' in line:
-                vocab_size = line.split("=")[-1].strip("'\n ")
-    params['smiles_vocabulary_size'] = int(vocab_size)
+    with open(os.path.join(params['model_outdir'], 'final_params.pickle'), 'rb') as handle:
+        b = pickle.load(handle)
+    params['smiles_vocabulary_size'] = int(b['smiles_vocabulary_size'])
 
     test_scores = run(params)
     print("\nFinished model inference.")

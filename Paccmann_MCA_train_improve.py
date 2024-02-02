@@ -1,4 +1,5 @@
 import candle
+import pickle
 import os
 from train_paccmann import main
 import json
@@ -129,7 +130,7 @@ def run(params):
 
 
 
-    val_true, val_pred = main(params)
+    val_true, val_pred, params_train = main(params)
     
     # [Req] Save raw predictions in dataframe
     frm.store_predictions_df(
@@ -146,6 +147,9 @@ def run(params):
         y_true=val_true, y_pred=val_pred, stage="val",
         outdir=params["model_outdir"], metrics=metrics_list
     )
+    # Dump train_params into model outdir
+    with open(os.path.join(params['model_outdir'], 'final_params.pickle'), 'wb') as handle:
+        pickle.dump(params_train, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
     return val_scores
 
