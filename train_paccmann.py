@@ -178,8 +178,8 @@ def main(params):
         save_top_model.format('epoch', '0', params.get('model_fn', 'mca'))
     )
     # Candle checkpointing
-    ckpt = candle.CandleCkptPyTorch(params)
-    ckpt.set_model({"model": model, "optimizer": optimizer})
+    #ckpt = candle.CandleCkptPyTorch(params)
+    #ckpt.set_model({"model": model, "optimizer": optimizer})
     #J = ckpt.restart(model)
     #if J is not None:
     #    initial_epoch = J["epoch"]
@@ -249,6 +249,7 @@ def main(params):
         if val_loss_a<best_score:
             torch.save(model.state_dict(), params['modelpath'])
             best_epoch = epoch + 1
+            best_score = val_loss_a
             scores['r2'] = r2
             scores['val_loss'] = val_loss_a
             scores['scc'] = val_spearman_a
@@ -271,6 +272,7 @@ def main(params):
             pred['True'] = ((pred['True']*1000).apply(np.round))/1000
             pred_fname = str(model_dir+'/results/val_pred.csv')
             patience_monitor=0
+            params['best_epoch'] = best_epoch
         else:
             patience_monitor=patience_monitor+1
         if patience_monitor == params['patience']:
@@ -278,10 +280,10 @@ def main(params):
             logger.info(f"best epoch: {best_epoch}, "
                 f"Validation loss: {val_loss_a:.3f}")
             break
-
+        
         ##########
 
-        ckpt.ckpt_epoch(epoch, val_loss_a)
+        #ckpt.ckpt_epoch(epoch, val_loss_a)
 
     logger.info('Done with training, models saved, shutting down.')
     return label_sel, pred_sel, params
