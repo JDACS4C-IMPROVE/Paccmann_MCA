@@ -246,40 +246,41 @@ def main(params):
         val_rmse_a = np.sqrt(np.mean((predictions - labels)**2))
 
         # Implement early stopping
-        if val_loss_a<best_score:
-            torch.save(model.state_dict(), params['modelpath'])
-            best_epoch = epoch + 1
-            best_score = val_loss_a
-            scores['r2'] = r2
-            scores['val_loss'] = val_loss_a
-            scores['scc'] = val_spearman_a
-            scores['pcc'] = val_pearson_a.cpu().detach().numpy().tolist()
-            scores['rmse'] = val_rmse_a
-            pred_sel = predictions
-            label_sel = labels
-            logger.info(
-                f"\t **** VALIDATION  **** "
-                f"loss: {val_loss_a:.5f}, "
-                f"Pearson: {val_pearson_a:.3f}, "
-                f"RMSE: {val_rmse_a:.3f}"
-            )
-            # Save scores and final preds
-            pred = pd.DataFrame({"True": labels, "Pred": predictions}).reset_index()
-            te_df1 = val_loader.dataset.drug_sensitivity_df[['drug','cell_line', 'IC50']].reset_index()
-            te_df = te_df1.rename(columns={'drug': 'DrugID', 'cell_line': 'CancID', 'IC50':'IC50'})
-            pred = pd.concat([te_df, pred], axis=1)
-            pred['IC50'] = ((pred['IC50']*1000).apply(np.round))/1000
-            pred['True'] = ((pred['True']*1000).apply(np.round))/1000
-            pred_fname = str(model_dir+'/results/val_pred.csv')
-            patience_monitor=0
-            params['best_epoch'] = best_epoch
-        else:
-            patience_monitor=patience_monitor+1
-        if patience_monitor == params['patience']:
-            logger.info("Model did not improve after 20 epochs. Terminate model training")
-            logger.info(f"best epoch: {best_epoch}, "
-                f"Validation loss: {val_loss_a:.3f}")
-            break
+        if epoch >= 50:
+            if val_loss_a<best_score:
+                torch.save(model.state_dict(), params['modelpath'])
+                best_epoch = epoch + 1
+                best_score = val_loss_a
+                scores['r2'] = r2
+                scores['val_loss'] = val_loss_a
+                scores['scc'] = val_spearman_a
+                scores['pcc'] = val_pearson_a.cpu().detach().numpy().tolist()
+                scores['rmse'] = val_rmse_a
+                pred_sel = predictions
+                label_sel = labels
+                logger.info(
+                    f"\t **** VALIDATION  **** "
+                    f"loss: {val_loss_a:.5f}, "
+                    f"Pearson: {val_pearson_a:.3f}, "
+                    f"RMSE: {val_rmse_a:.3f}"
+                )
+                # Save scores and final preds
+                pred = pd.DataFrame({"True": labels, "Pred": predictions}).reset_index()
+                te_df1 = val_loader.dataset.drug_sensitivity_df[['drug','cell_line', 'IC50']].reset_index()
+                te_df = te_df1.rename(columns={'drug': 'DrugID', 'cell_line': 'CancID', 'IC50':'IC50'})
+                pred = pd.concat([te_df, pred], axis=1)
+                pred['IC50'] = ((pred['IC50']*1000).apply(np.round))/1000
+                pred['True'] = ((pred['True']*1000).apply(np.round))/1000
+                pred_fname = str(model_dir+'/results/val_pred.csv')
+                patience_monitor=0
+                params['best_epoch'] = best_epoch
+            else:
+                patience_monitor=patience_monitor+1
+            if patience_monitor == params['patience']:
+                logger.info("Model did not improve after 20 epochs. Terminate model training")
+                logger.info(f"best epoch: {best_epoch}, "
+                    f"Validation loss: {val_loss_a:.3f}")
+                break
         
         ##########
 
