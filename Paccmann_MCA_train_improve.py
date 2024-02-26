@@ -7,7 +7,7 @@ from pathlib import Path
 import shutil
 # IMPROVE/CANDLE imports
 from improve import framework as frm
-from improve.metrics import compute_metrics
+from improve.metrics import compute_metrics # TODO use comput_metrics in early stopping
 from Paccmann_MCA_preprocess_improve import model_preproc_params  # ap
 
 
