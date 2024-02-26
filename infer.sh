@@ -7,7 +7,7 @@
 ## Exceute inference script for your model with the CMD arguments ##
 ####################################################################
 IMPROVE_MODEL_DIR=${IMPROVE_MODEL_DIR:-$( dirname -- "$0" )}
-CANDLE_MODEL=infer.py
+CANDLE_MODEL=Paccmann_MCA_infer_improve.py
 CANDLE_MODEL=${IMPROVE_MODEL_DIR}/${CANDLE_MODEL}
 
 

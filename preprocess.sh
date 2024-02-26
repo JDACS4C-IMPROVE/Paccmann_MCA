@@ -7,7 +7,7 @@
 ## Exceute preprocess script for your model with the CMD arguments ##
 ####################################################################
 IMPROVE_MODEL_DIR=${IMPROVE_MODEL_DIR:-$( dirname -- "$0" )}
-CANDLE_MODEL=preprocess.py
+CANDLE_MODEL=Paccmann_MCA_preprocess_improve.py
 CANDLE_MODEL=${IMPROVE_MODEL_DIR}/${CANDLE_MODEL}
 
 CUDA_VISIBLE_DEVICES=$1
