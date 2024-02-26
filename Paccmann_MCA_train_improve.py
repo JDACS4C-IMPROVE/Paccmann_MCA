@@ -1,5 +1,6 @@
 import candle
 import pickle
+import pickle
 import os
 from train_paccmann import main
 import json
@@ -7,7 +8,7 @@ from pathlib import Path
 import shutil
 # IMPROVE/CANDLE imports
 from improve import framework as frm
-from improve.metrics import compute_metrics
+from improve.metrics import compute_metrics # TODO use comput_metrics in early stopping
 from Paccmann_MCA_preprocess_improve import model_preproc_params  # ap
 
 
@@ -127,10 +128,10 @@ def run(params):
     params['smi_filepath'] =Path(params["ml_data_outdir"]) / params['smi_filepath']
     params['gene_filepath'] = Path(params["ml_data_outdir"]) / params['gene_filepath']
     params['smiles_language_filepath'] = Path(params["ml_data_outdir"]) / params['smiles_language_filepath']
+    params['modelpath'] = modelpath
 
 
-
-    val_true, val_pred, params_train = main(params)
+    val_true, val_pred, params_train, params_train = main(params)
     
     # [Req] Save raw predictions in dataframe
     frm.store_predictions_df(
@@ -147,6 +148,9 @@ def run(params):
         y_true=val_true, y_pred=val_pred, stage="val",
         outdir=params["model_outdir"], metrics=metrics_list
     )
+    # Dump train_params into model outdir
+    with open(os.path.join(params['model_outdir'], 'final_params.pickle'), 'wb') as handle:
+        pickle.dump(params_train, handle, protocol=pickle.HIGHEST_PROTOCOL)
     # Dump train_params into model outdir
     with open(os.path.join(params['model_outdir'], 'final_params.pickle'), 'wb') as handle:
         pickle.dump(params_train, handle, protocol=pickle.HIGHEST_PROTOCOL)

@@ -151,13 +151,15 @@ def main(params):
         (model.parameters(), lr=params.get('learning_rate', 0.01))
     )
     # Loading trained model
-    checkpoint=torch.load(os.path.join(model_outdir,'best','model.h5' ))
+    checkpoint=torch.load(os.path.join(params['modelpath']))
     #checkpoint=torch.load(os.path.join(output_dir,'ckpts','best','model.h5' ))
     #checkpoint = torch.load(str(file_path + '/save/ckpts/best/model.h5'))
-    model.load_state_dict(checkpoint['model_state_dict'])
-    optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-    epoch = checkpoint['epoch']
-    loss = checkpoint['loss'] 
+    #model.load_state_dict(checkpoint['model_state_dict'])
+    #optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+    model.load_state_dict(torch.load(params['modelpath']))
+    #optimizer.load_state_dict(torch.load(params['modelpath']))
+    #epoch = checkpoint['epoch']
+    #oss = checkpoint['loss'] 
 
     # Measure test performance
     model.eval()

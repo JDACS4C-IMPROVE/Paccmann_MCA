@@ -20,12 +20,14 @@ infer_params = app_infer_params + model_infer_params
 def run(params):
     frm.create_outdir(outdir=params["infer_outdir"])
     test_data_fname = frm.build_ml_data_name(params, stage="test")
+    modelpath = frm.build_model_path(params, model_dir=params["model_outdir"])
 
     params['test_data'] = Path(params["ml_data_outdir"]) / str('test_'+params['y_data_suffix']+'.csv')
     params['gep_filepath'] = Path(params["ml_data_outdir"]) / params['gep_filepath']
     params['smi_filepath'] =Path(params["ml_data_outdir"]) / params['smi_filepath']
     params['gene_filepath'] = Path(params["ml_data_outdir"]) / params['gene_filepath']
     params['smiles_language_filepath'] = Path(params["ml_data_outdir"]) / params['smiles_language_filepath']
+    params['modelpath'] = modelpath
 
     test_true, test_pred = main(params)
     frm.store_predictions_df(
