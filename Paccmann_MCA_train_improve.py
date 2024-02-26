@@ -151,9 +151,7 @@ def run(params):
     # Dump train_params into model outdir
     with open(os.path.join(params['model_outdir'], 'final_params.pickle'), 'wb') as handle:
         pickle.dump(params_train, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    # Dump train_params into model outdir
-    with open(os.path.join(params['model_outdir'], 'final_params.pickle'), 'wb') as handle:
-        pickle.dump(params_train, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
 
     return val_scores
 

@@ -178,12 +178,12 @@ def main(params):
         save_top_model.format('epoch', '0', params.get('model_fn', 'mca'))
     )
     # Candle checkpointing
-    #ckpt = candle.CandleCkptPyTorch(params)
-    #ckpt.set_model({"model": model, "optimizer": optimizer})
-    #J = ckpt.restart(model)
-    #if J is not None:
-    #    initial_epoch = J["epoch"]
-    #    print("restarting from ckpt: initial_epoch: %i" % initial_epoch)
+    ckpt = candle.CandleCkptPyTorch(params)
+    ckpt.set_model({"model": model, "optimizer": optimizer})
+    J = ckpt.restart(model)
+    if J is not None:
+        initial_epoch = J["epoch"]
+        print("restarting from ckpt: initial_epoch: %i" % initial_epoch)
     
     scores = {}
 
@@ -284,7 +284,7 @@ def main(params):
         
         ##########
 
-        #ckpt.ckpt_epoch(epoch, val_loss_a)
+        ckpt.ckpt_epoch(epoch, val_loss_a)
 
     logger.info('Done with training, models saved, shutting down.')
     return label_sel, pred_sel, params
