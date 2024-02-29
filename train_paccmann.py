@@ -284,6 +284,7 @@ def main(params):
         else:
             pred_sel = predictions
             label_sel = labels
+            torch.save(model.state_dict(), params['modelpath'])
         
         ##########
 
