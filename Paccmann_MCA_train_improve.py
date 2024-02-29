@@ -131,7 +131,7 @@ def run(params):
     params['modelpath'] = modelpath
 
 
-    val_true, val_pred, params_train, params_train = main(params)
+    val_true, val_pred, params_train = main(params)
     
     # [Req] Save raw predictions in dataframe
     frm.store_predictions_df(

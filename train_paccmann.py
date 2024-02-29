@@ -281,6 +281,9 @@ def main(params):
                 logger.info(f"best epoch: {best_epoch}, "
                     f"Validation loss: {val_loss_a:.3f}")
                 break
+        else:
+            pred_sel = predictions
+            label_sel = labels
         
         ##########
 
