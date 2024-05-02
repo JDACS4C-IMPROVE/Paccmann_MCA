@@ -79,6 +79,9 @@ def preprocess(source_datasets, split_nums, target_datasets): #
                     continue
 
             for target_data_name in target_datasets:
+                ml_data_dir = MAIN_ML_DATA_DIR/f"{source_data_name}-{target_data_name}"
+                if ml_data_dir.exists() is True:
+                    continue
                 if only_cross_study and (source_data_name == target_data_name):
                     continue # only cross-study
                 print_fn(f"\nSource data: {source_data_name}")
@@ -118,7 +121,7 @@ def preprocess(source_datasets, split_nums, target_datasets): #
                 timer_preprocess.display_timer(print_fn)
 
 @python_app
-def train(source_data_name, split, target_datasets):
+def train_infer(source_data_name, split, target_datasets):
     ## All import statements here
     # p2 (p1): Train model
     # Train a single model for a given [source, split] pair
@@ -174,7 +177,7 @@ def train(source_data_name, split, target_datasets):
         return True
     
 @python_app
-def infer_targets(source_data_name, split, target_data_name):
+def infer_targets(source_data_name, split, target_data_name): ## NOT USED
     infer_outdir = MAIN_INFER_OUTDIR/f"{source_data_name}-{target_data_name}"/f"split_{split}"
     ml_data_outdir = MAIN_ML_DATA_DIR/f"{source_data_name}-{target_data_name}"/f"split_{split}"  #### We cannot have target data name here ??????
     model_outdir = MAIN_MODEL_DIR/f"{source_data_name}"/f"split_{split}"
@@ -196,7 +199,7 @@ def infer_targets(source_data_name, split, target_data_name):
                             text=True, check=True)
 
 @join_app
-def infer(source_data_name, split): ### Nested parsl????
+def infer(source_data_name, split): ### Nested parsl????   ## NOT USED
     timer_infer = Timer()
     for target_data_name in target_datasets:
         if only_cross_study and (source_data_name == target_data_name):
@@ -266,6 +269,7 @@ local_config = Config(
     executors=[
         HighThroughputExecutor(
             label="hpo_local",
+            max_workers=4,
             worker_debug=True,
             cores_per_worker=1,
             provider=LocalProvider(
@@ -278,9 +282,9 @@ local_config = Config(
     ],
     strategy=None,
 )
-#preprocess(source_datasets, split_nums, target_datasets)
+preprocess(source_datasets, split_nums, target_datasets) #Preprocessing
 parsl.load()
-train_futures = [train(source_data_name, split, target_datasets) for source_data_name in source_datasets for split in split_nums]
+train_futures = [train_infer(source_data_name, split, target_datasets) for source_data_name in source_datasets for split in split_nums]
 #print(train_futures.done())
 print(train_futures[0].result())
 
