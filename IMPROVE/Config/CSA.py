@@ -1,14 +1,11 @@
-import candle
 import os
-from pathlib import Path
 #import model_specific_config - To import model specific parameters
 
 
 ##TODO Replace CANDLE initialize_parameter()
 
-fdir = Path(__file__).resolve().parent
 required = None
-param_csa = [
+additional_definitions = [
     {"name": "raw_data_dir",
      "type": str,
      "default": "raw_data",
@@ -83,56 +80,3 @@ param_csa = [
      "help": "If only cross study analysis is needed"
     }
     ]
-
-
-additional_definitions = param_csa
-                            #+ model_specific_config.model_params
-
-class ImproveBenchmark(candle.Benchmark):
-    """ Benchmark for Improve Models. """
-
-    def set_locals(self):
-        """ Set parameters for the benchmark.
-
-        Parameters
-        ----------
-        required: set of required parameters for the benchmark.
-        additional_definitions: list of dictionaries describing the additional parameters for the
-            benchmark.
-        """
-        if required is not None:
-            self.required.update(set(required)) # This considers global framework required arguments
-        if additional_definitions is not None:
-            self.additional_definitions.extend(additional_definitions) # This considers global framework definitions
-
-
-def initialize_parameters(filepath, default_model):
-    """ Parse execution parameters from file or command line.
-
-    Parameters
-    ----------
-    default_model : string
-        File containing the default parameter definition.
-    additional_definitions : List
-        List of additional definitions from calling script.
-    required: Set
-        Required arguments from calling script.
-
-    Returns
-    -------
-    gParameters: python dictionary
-        A dictionary of Candle keywords and parsed values.
-    """
-
-    # Build benchmark object
-    par = ImproveBenchmark(
-        filepath=filepath,
-        defmodel=default_model,
-        framework="pytorch",
-        prog="Improve csa",
-        desc="Framework functionality in IMPROVE"
-    )
-
-    gParameters = candle.finalize_parameters(par)
-
-    return gParameters
