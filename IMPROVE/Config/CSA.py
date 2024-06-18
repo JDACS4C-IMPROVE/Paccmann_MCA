@@ -9,12 +9,6 @@ fdir = Path(__file__).resolve().parent
 required = None
 additional_definitions = [
 
-    {"name": "train_split_file", # workflow
-     "default": "train_split.txt",
-     "type": str,
-     "required": True,
-     "help": "Parameter containing the train split file",
-    },
     {"name": "parsl_config_file", # workflow
      "default": "parsl_config.ini",
      "type": str,
@@ -32,6 +26,12 @@ additional_definitions = [
      "type": str,
      "required": True,
      "help": "Config file for the model",
+    },
+    {"name": "train_split_file", # workflow
+     "default": "train_split.txt",
+     "type": str,
+     "required": True,
+     "help": "Parameter containing the train split file",
     },
     {"name": "val_split_file", # workflow
      "default": "val_split.txt",
