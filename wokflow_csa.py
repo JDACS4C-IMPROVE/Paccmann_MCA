@@ -48,8 +48,6 @@ user_opts = {
 }
 
 additional_definitions = CSA.additional_definitions
-
-
 #Load CLI parameters
 cli = CLI()
 cli.set_command_line_options(options=additional_definitions)

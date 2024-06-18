@@ -24,23 +24,23 @@ class CLI:
       
 
         # Set default options
-        self.parser.add_argument('-i', '--input_dir', metavar='DIR', type=str, dest="input_dir",
+        self.parser.add_argument('-i', '--improve_input_dir', metavar='DIR', type=str, dest="input_dir",
                                   default=os.getenv("IMPROVE_INPUT_DIR" , "./"), 
                                   help='Base directory for input data. Default is IMPROVE_DATA_DIR or if not specified current working directory. All additional input pathes will be relative to the base input directory.')
-        self.parser.add_argument('-o', '--output_dir', metavar='DIR', type=str, dest="output_dir",
+        self.parser.add_argument('-o', '--improve_output_dir', metavar='DIR', type=str, dest="output_dir",
                                   default=os.getenv("IMPROVE_OUTPUT_DIR" , "./"), 
                                   help='Base directory for output data. Default is IMPROVE_OUTPUT_DIR or if not specified current working directory. All additional relative output pathes will be placed into the base output directory.')
         self.parser.add_argument('--log_level', metavar='LEVEL', type=str, dest="log_level", 
                                   choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL", "NOTSET"],
                                   default=os.getenv("IMPROVE_LOG_LEVEL", "WARNING"), help="Set log levels. Default is WARNING. Levels are:\
                                       DEBUG, INFO, WARNING, ERROR, CRITICAL, NOTSET") 
-        self.parser.add_argument('-parsl', '--parsl_config_file', metavar='INI_FILE', dest="parsl_config_file", 
+        """ self.parser.add_argument('-parsl', '--parsl_config_file', metavar='INI_FILE', dest="parsl_config_file", 
                                   type=str,
                                   default='parsl_config.ini', help="Config file for Parsl in INI format.") 
         self.parser.add_argument('-csa', '--csa_config_file', metavar='INI_FILE', dest="csa_config_file", 
                                   type=str,
                                   default='csa_config.ini', help="Config file for Parsl in INI format.") 
-                                  
+                """                   
 
 
     def set_command_line_options(self,options=[]):
