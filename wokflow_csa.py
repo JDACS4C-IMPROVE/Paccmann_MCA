@@ -75,7 +75,7 @@ print(params)
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 fdir = Path(__file__).resolve().parent
-y_col_name = "auc"
+y_col_name = params['y_col_name']
 
 # Check that environment variable "IMPROVE_DATA_DIR" has been specified
 if os.getenv("IMPROVE_DATA_DIR") is None:
@@ -83,24 +83,16 @@ if os.getenv("IMPROVE_DATA_DIR") is None:
                     You must define IMPROVE_DATA_DIR ... Exiting.\n")
 os.environ["CANDLE_DATA_DIR"] = os.environ["IMPROVE_DATA_DIR"]
 
-maindir = Path(os.environ['IMPROVE_DATA_DIR'])
-CSA_DATA_DIR = Path(f"./{maindir}/csa_data")
-INPUT_DIR = Path(f"./{maindir}/input")
-OUTPUT_DIR = Path(f"./{maindir}/output")
-
-""" params = CSA.initialize_parameters(
-    filepath=fdir, # CHANGE PATH IF NEEDED TO THE DIRECTORY CONTAINING THE CONFIG FILE
-    default_model="Paccmann_MCA_default_model_csa.txt"  ### HARD CODING CONFIG FILE ********** CHECK THIS - Add Argparse for config file
-) """
-
-
 
 logger = logging.getLogger(f"{params['model_name']}")
 
-raw_datadir = CSA_DATA_DIR/ params_cli["raw_data_dir"] #### HARD CODING. Add a candle parameter for csa_data ??
-x_datadir = raw_datadir / params_cli["x_data_dir"]
-y_datadir = raw_datadir / params_cli["y_data_dir"]
-splits_dir = raw_datadir / params_cli["splits_dir"]
+maindir = Path(os.environ['IMPROVE_DATA_DIR'])
+raw_datadir = maindir/params["csa_data_dir"]/ params["raw_data_dir"]
+x_datadir = raw_datadir / params["x_data_dir"]
+y_datadir = raw_datadir / params["y_data_dir"]
+splits_dir = raw_datadir / params["splits_dir"]
+input_dir = maindir/params['input_dir']
+output_dir = maindir/params['output_dir']
 
 
 def build_split_fname(source_data_name, split, phase):
@@ -113,13 +105,13 @@ def build_split_fname(source_data_name, split, phase):
 config = Config(
         executors=[
             HighThroughputExecutor(
-                label=parsl_config['label'],
-                worker_debug=bool(parsl_config['worker_debug']),
-                cores_per_worker=int(parsl_config['cores_per_worker']),
+                label=params['label'],
+                worker_debug=bool(params['worker_debug']),
+                cores_per_worker=int(params['cores_per_worker']),
                 provider=LocalProvider(
                     channel=LocalChannel(),
-                    init_blocks=int(parsl_config['init_blocks']),
-                    max_blocks=int(parsl_config['max_blocks'])
+                    init_blocks=int(params['init_blocks']),
+                    max_blocks=int(params['max_blocks'])
                 )
                 #,max_workers_per_node=parsl_config['max_workers_per_node'],
             )

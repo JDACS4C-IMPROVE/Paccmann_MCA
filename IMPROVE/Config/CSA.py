@@ -10,12 +10,12 @@ required = None
 additional_definitions = [
     {"name": "input_dir",
      "type": str,
-     "default": './input',
+     "default": 'input',
      "help": "Input directory"
     },
     {"name": "output_dir",
      "type": str,
-     "default": './output',
+     "default": 'output',
      "help": "Input directory"
     },
     {"name": "parsl_config_file", # workflow
