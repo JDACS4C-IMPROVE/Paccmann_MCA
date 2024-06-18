@@ -19,9 +19,8 @@ from parsl.channels import LocalChannel
 from parsl.executors import HighThroughputExecutor
 
 
-from IMPROVE.Workflows import workflow_csa
 from IMPROVE.CLI import CLI
-
+from IMPROVE.parsl_apps import preprocess
 from IMPROVE.Config.Parsl import Config as Parsl
 import IMPROVE.Config.CSA as CSA
 from IMPROVE.Config.Common import Config as Common_config
@@ -31,24 +30,6 @@ from pathlib import Path
 import logging
 import sys
 
-
-
-# Import the module from the file, e.g. import_module("path/to/file.py")
-# This function is needed to import for example a custom Parsl Config from the file
-def import_module(filepath):
-
-     # get the parent directory of the package
-     pkg_parent = os.path.dirname(filepath)
-     # get the package name removing the .py extension
-     pkg = os.path.basename(filepath).replace(".py", "")
-
-     spec = importlib.machinery.PathFinder().find_spec(pkg, [pkg_parent])
-     print(spec, pkg, pkg_parent)
-     mod = importlib.util.module_from_spec(spec)
-     sys.modules[pkg] = mod  # needed for exec_module to work
-     spec.loader.exec_module(mod)
-     sys.modules[pkg] = importlib.import_module(pkg)
-     return mod
 
 
 # Adjust your user-specific options here:
@@ -69,28 +50,13 @@ user_opts = {
 additional_definitions = CSA.additional_definitions
 
 
-""" additional_definitions = {
-    "model" : {
-        "type" : str,
-        "default" : None,
-        "help" : "Singulritiy image for the model",
-        "choices" : None,
-        "nargs" : None
-    },
-    "data_set" : {  
-        "type" : str,
-        "default" : None,
-        "help" : "Data set",
-        "choices" : None,
-        "nargs" : None
-    },
-} """
 #Load CLI parameters
 cli = CLI()
 cli.set_command_line_options(options=additional_definitions)
 cli.get_command_line_options()
 params_cli = cli.params
 print(params_cli)
+
 #Load parsl parameters
 pcfg = Parsl()
 common_cfg  = Common_config()

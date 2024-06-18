@@ -7,7 +7,6 @@ import pandas as pd
 import logging
 #from ..Config import CSA, Parsl
 import sys
-import Config.CSA as CSA
 
 # Parsl imports
 import parsl
