@@ -70,8 +70,8 @@ additional_definitions = [
      "help": "Source dataset name for preprocessing"
     },
     {"name": "split",
-     "type": str,
-     "default": '0',
+     "type": list,
+     "default": ['0'],
      "help": "Split number for preprocessing"
     },
     {"name": "only_cross_study",

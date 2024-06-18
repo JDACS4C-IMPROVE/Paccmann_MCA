@@ -20,7 +20,7 @@ from parsl.executors import HighThroughputExecutor
 
 
 from IMPROVE.CLI import CLI
-from IMPROVE.parsl_apps import preprocess
+from IMPROVE.parsl_apps import preprocess#, train, infer
 from IMPROVE.Config.Parsl import Config as Parsl
 import IMPROVE.Config.CSA as CSA
 from IMPROVE.Config.Common import Config as Common_config
@@ -37,10 +37,14 @@ def load_params(common_cfg, config_file, params):
         params.update(common_cfg.option[k])
     return params
 
+def build_split_fname(source_data_name, split, phase):
+    """ Build split file name. If file does not exist continue """
+    if split=='all':
+        return f"{source_data_name}_{split}.txt"
+    return f"{source_data_name}_split_{split}_{phase}.txt"
+
 # Adjust your user-specific options here:
 run_dir="~/tmp"
-
-
 print(parsl.__version__)
 
 user_opts = {
@@ -95,12 +99,9 @@ input_dir = maindir/params['input_dir']
 output_dir = maindir/params['output_dir']
 
 
-def build_split_fname(source_data_name, split, phase):
-    """ Build split file name. If file does not exist continue """
-    if split=='all':
-        return f"{source_data_name}_{split}.txt"
-    return f"{source_data_name}_split_{split}_{phase}.txt"
 
+#Implement Preprocess outside Parsl 
+preprocess(params['source_datasets'], params['split'], params['target_datasets'])
 
 config = Config(
         executors=[

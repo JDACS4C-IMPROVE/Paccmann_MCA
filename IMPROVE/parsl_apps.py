@@ -29,25 +29,79 @@ def build_split_fname(source_data_name, split, phase):
         return f"{source_data_name}_{split}.txt"
     return f"{source_data_name}_split_{split}_{phase}.txt"
 
-@python_app  
-def preprocess(source_data_name, split, params): 
-    logger.info( f'\tStart data preprocessing for {source_data_name}' 
-                f' split f{split}')
+#@python_app  ## May be implemented separately outside this script or does not need parallelization
+def preprocess(source_datasets, split_nums, target_datasets): # 
+    for source_data_name in source_datasets:
+        # Get the split file paths
+        # This parsing assumes splits file names are: SOURCE_split_NUM_[train/val/test].txt
+        if len(split_nums) == 0:
+            # Get all splits
+            split_files = list((splits_dir).glob(f"{source_data_name}_split_*.txt"))
+            split_nums = [str(s).split("split_")[1].split("_")[0] for s in split_files]
+            split_nums = sorted(set(split_nums))
+            # num_splits = 1
+        else:
+            # Use the specified splits
+            split_files = []
+            for s in split_nums:
+                split_files.extend(list((splits_dir).glob(f"{source_data_name}_split_{s}_*.txt")))
+        files_joined = [str(s) for s in split_files]
 
-    for phase in ["train", "val", "test"]:
-        fname = build_split_fname(source_data_name, split, phase)
-        if fname not in os.listdir(params['splits_dir']):
-            warnings.warn(f"\nThe {phase} split file {fname} is missing (continue to next split)")
-            continue
-        
-        input_dir = params['improve_input_dir'] / source_data_name / split
+        for split in split_nums:
+            print_fn(f"Split id {split} out of {len(split_nums)} splits.")
+            # Check that train, val, and test are available. Otherwise, continue to the next split.
+            # files_joined = [str(s) for s in split_files]
+            # TODO: check this!
+            for phase in ["train", "val", "test"]:
+                fname = build_split_fname(source_data_name, split, phase)
+                # print(f"{phase}: {fname}")
+                if fname not in "\t".join(files_joined):
+                    warnings.warn(f"\nThe {phase} split file {fname} is missing (continue to next split)")
+                    continue
 
-        preprocess_run = ["python",
-                "Paccmann_MCA_preprocess_improve.py",
-                "--improve_input_dir", input_dir,
-                "--source_data_name", source_data_name,
-                "--split", str(split),
-                "--splits_dir", splits_dir]
+            for target_data_name in target_datasets:
+                ml_data_dir = MAIN_ML_DATA_DIR/f"{source_data_name}-{target_data_name}"
+                if ml_data_dir.exists() is True:
+                    continue
+                if only_cross_study and (source_data_name == target_data_name):
+                    continue # only cross-study
+                print_fn(f"\nSource data: {source_data_name}")
+                print_fn(f"Target data: {target_data_name}")
+
+                ml_data_outdir = MAIN_ML_DATA_DIR/f"{source_data_name}-{target_data_name}"/f"split_{split}"
+
+                if source_data_name == target_data_name:
+                    # If source and target are the same, then infer on the test split
+                    test_split_file = f"{source_data_name}_split_{split}_test.txt"
+                else:
+                    # If source and target are different, then infer on the entire target dataset
+                    test_split_file = f"{target_data_name}_all.txt"
+                
+                timer_preprocess = Timer()
+
+                # p1 (none): Preprocess train data
+                print_fn("\nPreprocessing")
+                train_split_file = f"{source_data_name}_split_{split}_train.txt"
+                val_split_file = f"{source_data_name}_split_{split}_val.txt"
+                print_fn(f"train_split_file: {train_split_file}")
+                print_fn(f"val_split_file:   {val_split_file}")
+                print_fn(f"test_split_file:  {test_split_file}")
+                print_fn(f"ml_data_outdir:   {ml_data_outdir}")
+                preprocess_run = ["python",
+                    "Paccmann_MCA_preprocess_improve.py",
+                    "--train_split_file", str(train_split_file),
+                    "--val_split_file", str(val_split_file),
+                    "--test_split_file", str(test_split_file),
+                    "--ml_data_outdir", str(ml_data_outdir),
+                    "--y_col_name", str(y_col_name)
+                ]
+                result = subprocess.run(preprocess_run, capture_output=True,
+                                        text=True, check=True)
+                # print(result.stdout)
+                # print(result.stderr)
+                timer_preprocess.display_timer(print_fn)
+
+
         
         
         
