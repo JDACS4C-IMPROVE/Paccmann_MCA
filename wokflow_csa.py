@@ -91,17 +91,17 @@ os.environ["CANDLE_DATA_DIR"] = os.environ["IMPROVE_DATA_DIR"]
 logger = logging.getLogger(f"{params['model_name']}")
 
 maindir = Path(os.environ['IMPROVE_DATA_DIR'])
-raw_datadir = maindir/params["csa_data_dir"]/ params["raw_data_dir"]
-x_datadir = raw_datadir / params["x_data_dir"]
-y_datadir = raw_datadir / params["y_data_dir"]
-splits_dir = raw_datadir / params["splits_dir"]
-input_dir = maindir/params['input_dir']
-output_dir = maindir/params['output_dir']
+params['raw_datadir'] = maindir/params["csa_data_dir"]/ params["raw_data_dir"]
+params['x_datadir'] = params['raw_datadir'] / params["x_data_dir"]
+params['y_datadir'] = params['raw_datadir'] / params["y_data_dir"]
+params['splits_dir'] = params['raw_datadir'] / params["splits_dir"]
+params['input_dir'] = maindir/params['input_dir']
+params['output_dir'] = maindir/params['output_dir']
 
 
 
 #Implement Preprocess outside Parsl 
-preprocess(params['source_datasets'], params['split'], params['target_datasets'])
+preprocess(params)
 
 config = Config(
         executors=[
