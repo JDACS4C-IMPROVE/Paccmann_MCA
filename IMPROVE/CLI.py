@@ -41,6 +41,7 @@ class CLI:
       
 
         # Set default options
+        """
         self.parser.add_argument('-i', '--input_dir', metavar='DIR', type=str, dest="input_dir",
                                   default=os.getenv("IMPROVE_INPUT_DIR" , "./"),
                                   action=UserSpecified, 
@@ -56,7 +57,7 @@ class CLI:
                                   help="Set log levels. Default is WARNING. Levels are:\
                                       DEBUG, INFO, WARNING, ERROR, CRITICAL, NOTSET")
      
-    """         self.parser.add_argument('-parsl', '--parsl_config_file', metavar='INI_FILE', dest="parsl_config_file", 
+        self.parser.add_argument('-parsl', '--parsl_config_file', metavar='INI_FILE', dest="parsl_config_file", 
                                   type=str,
                                   default='parsl_config.ini', 
                                   action=UserSpecified,

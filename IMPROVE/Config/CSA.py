@@ -10,12 +10,12 @@ required = None
 additional_definitions = [
     {"name": "input_dir",
      "type": str,
-     "default": Path(f"./{os.environ['IMPROVE_DATA_DIR']}/input"),
+     "default": './input',
      "help": "Input directory"
     },
     {"name": "output_dir",
      "type": str,
-     "default": Path(f"./{os.environ['IMPROVE_DATA_DIR']}/output"),
+     "default": './output',
      "help": "Input directory"
     },
     {"name": "parsl_config_file", # workflow
@@ -64,7 +64,7 @@ additional_definitions = [
      "default": ["CCLE", "CTRPv2", "gCSI", "GDSCv1", "GDSCv2"],
      "help": "target_datasets for cross study analysis"
     },
-    {"name": "source_data_name",
+    {"name": "source_data_name",  ### DO WE NEED THIS??
      "type": str,
      "default": 'CCLE',
      "help": "Source dataset name for preprocessing"

@@ -31,6 +31,11 @@ import logging
 import sys
 
 
+def load_params(common_cfg, config_file, params):
+    common_cfg.load_config(cli.params[config_file]) ## USE parsl_config_file as a CLI
+    for k in common_cfg.option.keys():
+        params.update(common_cfg.option[k])
+    return params
 
 # Adjust your user-specific options here:
 run_dir="~/tmp"
@@ -55,36 +60,18 @@ cli.get_command_line_options()
 params_cli = cli.params
 user_specified_cli=cli.user_specified
 
+#Load parameters from config files
 params = {}
-#Load parsl parameters
 common_cfg  = Common_config()
-common_cfg.load_config(cli.params['parsl_config_file']) ## USE parsl_config_file as a CLI
-for k in common_cfg.option.keys():
-    params.update(common_cfg.option[k])
+for cfg in ['parsl_config_file', 'csa_config_file','model_config_file']:
+    params = load_params(common_cfg, cfg , params)
 
-#Load CSA Parameters
-common_cfg.load_config(cli.params['csa_config_file'])
-csa_config = common_cfg.option
-for k in csa_config.keys():
-    params.update(csa_config[k])
-
-# Load model parameters
-common_cfg.load_config(cli.params['model_config_file'])
-csa_config = common_cfg.option
-for k in csa_config.keys():
-    params.update(csa_config[k])
-
+# User-defined CLI options override config files
+for p in user_specified_cli:
+    params[p[0]]=params_cli[p[0]]
 
 print(params)
 
-
-
-# We want CLI options to take precendence, Followed by the CSA config file, followed by the default options ????
-
-#csa = CSA()
-#csa = csa.load_config(cli.params['csa_config_file'])
-
-###
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 fdir = Path(__file__).resolve().parent
