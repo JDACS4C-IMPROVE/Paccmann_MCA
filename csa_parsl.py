@@ -307,5 +307,3 @@ with parsl.load():
         infer_futures = [infer(source_data_name, split) for source_data_name in source_datasets for split in split_nums]
 
 '''''
-
-
