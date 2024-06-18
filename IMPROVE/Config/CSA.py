@@ -8,7 +8,16 @@ from pathlib import Path
 fdir = Path(__file__).resolve().parent
 required = None
 additional_definitions = [
-
+    {"name": "input_dir",
+     "type": str,
+     "default": Path(f"./{os.environ['IMPROVE_DATA_DIR']}/input"),
+     "help": "Input directory"
+    },
+    {"name": "output_dir",
+     "type": str,
+     "default": Path(f"./{os.environ['IMPROVE_DATA_DIR']}/output"),
+     "help": "Input directory"
+    },
     {"name": "parsl_config_file", # workflow
      "default": "parsl_config.ini",
      "type": str,
@@ -69,5 +78,26 @@ additional_definitions = [
      "type": bool,
      "default": False,
      "help": "If only cross study analysis is needed"
+    },
+    {"name": "log_level",
+     "type": str,
+     "default": os.getenv("IMPROVE_LOG_LEVEL", "WARNING"),
+     "help": "Set log levels. Default is WARNING. Levels are:\
+                                      DEBUG, INFO, WARNING, ERROR, CRITICAL, NOTSET"
+    },
+    {"name": "epochs",
+     "type": int,
+     "default": 100,
+     "help": "Number of epochs"
+    },
+    {"name": "learning_rate",
+     "type": float,
+     "default": 0.001,
+     "help": "Learning rate"
+    },
+    {"name": "batch_size",
+     "type": int,
+     "default": 32,
+     "help": "Batch size"
     }
     ]

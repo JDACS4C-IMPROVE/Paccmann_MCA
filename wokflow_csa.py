@@ -53,23 +53,30 @@ cli = CLI()
 cli.set_command_line_options(options=additional_definitions)
 cli.get_command_line_options()
 params_cli = cli.params
-print(params_cli)
+user_specified_cli=cli.user_specified
 
+params = {}
 #Load parsl parameters
-pcfg = Parsl()
 common_cfg  = Common_config()
 common_cfg.load_config(cli.params['parsl_config_file']) ## USE parsl_config_file as a CLI
-parsl_config = {}
 for k in common_cfg.option.keys():
-    parsl_config.update(common_cfg.option[k])
+    params.update(common_cfg.option[k])
 
 #Load CSA Parameters
-common_cfg  = Common_config()
 common_cfg.load_config(cli.params['csa_config_file'])
 csa_config = common_cfg.option
-params_csa = {}
 for k in csa_config.keys():
-    params_csa.update(csa_config[k])
+    params.update(csa_config[k])
+
+# Load model parameters
+common_cfg.load_config(cli.params['model_config_file'])
+csa_config = common_cfg.option
+for k in csa_config.keys():
+    params.update(csa_config[k])
+
+
+print(params)
+
 
 
 # We want CLI options to take precendence, Followed by the CSA config file, followed by the default options ????
@@ -101,7 +108,7 @@ OUTPUT_DIR = Path(f"./{maindir}/output")
 
 
 
-logger = logging.getLogger(f"{params_csa['model_name']}")
+logger = logging.getLogger(f"{params['model_name']}")
 
 raw_datadir = CSA_DATA_DIR/ params_cli["raw_data_dir"] #### HARD CODING. Add a candle parameter for csa_data ??
 x_datadir = raw_datadir / params_cli["x_data_dir"]
