@@ -85,8 +85,6 @@ params.update(params_model['Global_Params'])
 params.update(params_csa['Global_Params'])
 params.update(params_parsl['Global_Params'])
 
-
-
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 fdir = Path(__file__).resolve().parent
 y_col_name = params['y_col_name']
@@ -97,7 +95,6 @@ if os.getenv("IMPROVE_DATA_DIR") is None:
                     You must define IMPROVE_DATA_DIR ... Exiting.\n")
 os.environ["CANDLE_DATA_DIR"] = os.environ["IMPROVE_DATA_DIR"]
 
-
 logger = logging.getLogger(f"{params['model_name']}")
 
 maindir = Path(os.environ['IMPROVE_DATA_DIR'])
@@ -107,7 +104,8 @@ params['y_datadir'] = params['raw_datadir'] / params["y_data_dir"]
 params['splits_dir'] = params['raw_datadir'] / params["splits_dir"]
 params['input_dir'] = maindir/params['input_dir']
 params['output_dir'] = maindir/params['output_dir']
-
+print(params['splits_dir'])
+print(os.path.exists(params['splits_dir']))
 
 
 #Implement Preprocess outside Parsl 
