@@ -1,5 +1,5 @@
 from parsl.config import Config
-from improve.CSA.Config.Base import Config as BaseConfig
+from IMPROVE import Config as BaseConfig
 
 
 class Config(BaseConfig):

@@ -21,7 +21,7 @@ from parsl.executors import HighThroughputExecutor
 
 from IMPROVE.CLI import CLI
 from IMPROVE.parsl_apps import preprocess#, train, infer
-from IMPROVE.Config.Parsl import Config as Parsl
+#from IMPROVE.Config.Parsl import Config as Parsl
 import IMPROVE.Config.CSA as CSA
 from IMPROVE.Config.Common import Config as Common_config
 
@@ -30,12 +30,6 @@ from pathlib import Path
 import logging
 import sys
 
-
-def load_params(common_cfg, config_file, params):
-    common_cfg.load_config(cli.params[config_file]) ## USE parsl_config_file as a CLI
-    for k in common_cfg.option.keys():
-        params.update(common_cfg.option[k])
-    return params
 
 def build_split_fname(source_data_name, split, phase):
     """ Build split file name. If file does not exist continue """
@@ -64,17 +58,33 @@ cli.get_command_line_options()
 params_cli = cli.params
 user_specified_cli=cli.user_specified
 
-#Load parameters from config files
-params = {}
 common_cfg  = Common_config()
-for cfg in ['parsl_config_file', 'csa_config_file','model_config_file']:
-    params = load_params(common_cfg, cfg , params)
+params_model=common_cfg.initialize_parameters(
+                              cli=cli, # Command Line Interface of type CLI
+                              section='Global_Params',
+                              config_file=cli.params['model_config_file'],
+                              additional_definitions=None,
+                              required=None,)
+common_cfg  = Common_config()
+params_csa=common_cfg.initialize_parameters(
+                              cli=cli, # Command Line Interface of type CLI
+                              section='Global_Params',
+                              config_file=cli.params['csa_config_file'],
+                              additional_definitions=None,
+                              required=None,)
+common_cfg  = Common_config()
+params_parsl=common_cfg.initialize_parameters(
+                              cli=cli, # Command Line Interface of type CLI
+                              section='Global_Params',
+                              config_file=cli.params['parsl_config_file'],
+                              additional_definitions=None,
+                              required=None,)
 
-# User-defined CLI options override config files
-for p in user_specified_cli:
-    params[p[0]]=params_cli[p[0]]
+params = {}
+params.update(params_model['Global_Params'])
+params.update(params_csa['Global_Params'])
+params.update(params_parsl['Global_Params'])
 
-print(params)
 
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)

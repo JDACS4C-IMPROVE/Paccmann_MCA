@@ -7,14 +7,12 @@ FORMAT = '%(levelname)s %(name)s %(asctime)s:\t%(message)s'
 
 class Config():
     def __init__(self):
-        self.option = None
-        self.config = None
+        self.option={}        
         self.config_file = None
         self.input_dir = None
         self.output_dir = None
         self.log_level = None
         self.logger = None
-        self.option = None
         self.params = None
         self.args = None
         # Default format for logging
@@ -24,11 +22,11 @@ class Config():
 
     def load_config(self, file):
         if file.endswith('.ini'):
-            config = configparser.ConfigParser()
-            config.read(file)
+            self.config = configparser.ConfigParser()
+            self.config.read(file)
             #self.option = dict(config.items('DEFAULT'))
-            self.option={}
-            combined_options = {section: dict(config.items(section)) for section in config.sections()}
+            
+            combined_options = {section: dict(self.config.items(section)) for section in self.config.sections()}
             self.option.update(combined_options)
         elif file.endswith('.json'):
             with open(file, 'r') as f:
@@ -75,8 +73,8 @@ class Config():
         if self.config.has_option(section, key):
             value=self.config[section][key]
         else:
-            error="Can't find option " + str(key)
-            self.logger.error(error)
+            #error="Can't find option " + str(key)
+            #self.logger.error(error)
             value=None
 
         return value  
@@ -133,38 +131,39 @@ class Config():
 
             for k in cli.params :
                 # Test if k is a valid parameter and has a value
-                if self.get_param(section, k) is None:
-                    self.logger.error("Invalid parameter: %s", k)
+                if self.get_param(section, k) is not None:
+                    #self.logger.error("Invalid parameter: %s", k)
                 
-                self.set_param(section, k, cli.params[k])
+                #self.set_param(section, k, cli.params[k])
 
-
-                self.logger.debug("Setting %s to %s", k, cli.params[k])
-                self.set_param(section, k, cli.params[k])
+                #else:
+                    self.logger.debug("Setting %s to %s", k, cli.params[k])
+                    self.set_param(section, k, cli.params[k])
                 # self.config[section][k] = cli.params[k]
+            
+            """         # Update input and output directories    
+            self.output_dir = self.config[section]['output_dir']
+            self.input_dir = self.config[section]['input_dir']
+            self.log_level = self.config[section]['log_level']
+            self.logger.setLevel(self.log_level)
+            
+            # Set environment variables 
         
-        # Update input and output directories    
-        self.output_dir = self.config[section]['output_dir']
-        self.input_dir = self.config[section]['input_dir']
-        self.log_level = self.config[section]['log_level']
-        self.logger.setLevel(self.log_level)
+            os.environ["IMPROVE_DATA_DIR"] = self.input_dir
+            os.environ["IMPROVE_OUTPUT_DIR"] = self.output_dir
+            os.environ["IMPROVE_LOG_LEVEL"] = self.config[section]['log_level']
+
         
-        # Set environment variables 
-    
-        os.environ["IMPROVE_DATA_DIR"] = self.input_dir
-        os.environ["IMPROVE_OUTPUT_DIR"] = self.output_dir
-        os.environ["IMPROVE_LOG_LEVEL"] = self.config[section]['log_level']
-
-     
 
 
-        # Create output directory if not exists
-        if not os.path.isdir(self.output_dir):
-            self.logger.debug("Creating output directory: %s", self.output_dir)
-            os.makedirs(self.output_dir)
-    
+            # Create output directory if not exists
+            if not os.path.isdir(self.output_dir):
+                self.logger.debug("Creating output directory: %s", self.output_dir)
+                os.makedirs(self.output_dir)
+            """
         self.__class__ = current_class
-        return self.dict()
+        #return self.dict()
+        return self.option
 
 if __name__ == "__main__":
     cfg = Config()
