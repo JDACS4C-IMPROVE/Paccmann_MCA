@@ -7,6 +7,7 @@ import pandas as pd
 import logging
 #from ..Config import CSA, Parsl
 import sys
+import numpy as np
 
 # Parsl imports
 import parsl
@@ -48,6 +49,7 @@ def build_split_fname(source_data_name, split, phase):
 
 #@python_app  ## May be implemented separately outside this script or does not need parallelization
 def preprocess(params): # 
+    split_nums=params['split']
     for source_data_name in params['source_datasets']:
         # Get the split file paths
         # This parsing assumes splits file names are: SOURCE_split_NUM_[train/val/test].txt
@@ -77,7 +79,7 @@ def preprocess(params): #
                     continue
 
             for target_data_name in params['target_datasets']:
-                ml_data_dir = MAIN_ML_DATA_DIR/f"{source_data_name}-{target_data_name}"
+                ml_data_dir = params['input_dir']/f"{source_data_name}"
                 if ml_data_dir.exists() is True:
                     continue
                 if params['only_cross_study'] and (source_data_name == target_data_name):
@@ -85,7 +87,7 @@ def preprocess(params): #
                 print(f"\nSource data: {source_data_name}")
                 print(f"Target data: {target_data_name}")
 
-                ml_data_outdir = MAIN_ML_DATA_DIR/f"{source_data_name}-{target_data_name}"/f"split_{split}"
+                ml_data_outdir = ml_data_dir/f"split_{split}"
 
                 if source_data_name == target_data_name:
                     # If source and target are the same, then infer on the test split
