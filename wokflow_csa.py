@@ -58,13 +58,14 @@ cli.get_command_line_options()
 params_cli = cli.params
 user_specified_cli=cli.user_specified
 
-common_cfg  = Common_config()
+"""common_cfg  = Common_config()
 params_model=common_cfg.initialize_parameters(
                               cli=cli, # Command Line Interface of type CLI
                               section='Global_Params',
                               config_file=cli.params['model_config_file'],
                               additional_definitions=None,
-                              required=None,)
+                              required=None,) """
+## Should we combine csa config and parsl config and use just one initialize_parameter??
 common_cfg  = Common_config()
 params_csa=common_cfg.initialize_parameters(
                               cli=cli, # Command Line Interface of type CLI
@@ -81,15 +82,17 @@ params_parsl=common_cfg.initialize_parameters(
                               required=None,)
 
 params = {}
-params.update(params_model['Global_Params'])
+#params.update(params_model['Global_Params'])
 params.update(params_csa['Global_Params'])
 params.update(params_parsl['Global_Params'])
+
+print(params)
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 fdir = Path(__file__).resolve().parent
 y_col_name = params['y_col_name']
 
-# Check that environment variable "IMPROVE_DATA_DIR" has been specified
+# Check that environment variable "IMPROVE_DATA_DIR" has been specified - MOVE to initialize_parameters() ???
 if os.getenv("IMPROVE_DATA_DIR") is None:
     raise Exception("ERROR ! Required system variable not specified.  \
                     You must define IMPROVE_DATA_DIR ... Exiting.\n")
@@ -129,7 +132,7 @@ config = Config(
     )
 
 #Run preprocess first
-workflow_csa.preprocess(params)
+preprocess(params)
 
 futures = {}
 parsl.clear()

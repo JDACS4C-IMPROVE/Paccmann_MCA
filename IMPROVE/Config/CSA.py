@@ -85,6 +85,11 @@ additional_definitions = [
      "help": "Set log levels. Default is WARNING. Levels are:\
                                       DEBUG, INFO, WARNING, ERROR, CRITICAL, NOTSET"
     },
+    {"name": "model_name",
+     "type": str,
+     "default": 'Paccmann_MCA', ## Change the default to LGBM??
+     "help": "Name of the deep learning model"
+    },
     {"name": "epochs",
      "type": int,
      "default": 100,
