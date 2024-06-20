@@ -24,7 +24,7 @@ from IMPROVE.parsl_apps import preprocess#, train, infer
 #from IMPROVE.Config.Parsl import Config as Parsl
 import IMPROVE.Config.CSA as CSA
 from IMPROVE.Config.Common import Config as Common_config
-
+from IMPROVE import framework as frm
 import os
 from pathlib import Path
 import logging
@@ -86,7 +86,7 @@ params = {}
 params.update(params_csa['Global_Params'])
 params.update(params_parsl['Global_Params'])
 
-print(params)
+
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 fdir = Path(__file__).resolve().parent
@@ -100,6 +100,8 @@ os.environ["CANDLE_DATA_DIR"] = os.environ["IMPROVE_DATA_DIR"]
 
 logger = logging.getLogger(f"{params['model_name']}")
 
+#params = frm.build_paths(params) ##--> USE THIS FOR BUIDING PATHS
+
 maindir = Path(os.environ['IMPROVE_DATA_DIR'])
 params['raw_datadir'] = maindir/params["csa_data_dir"]/ params["raw_data_dir"]
 params['x_datadir'] = params['raw_datadir'] / params["x_data_dir"]
@@ -107,10 +109,8 @@ params['y_datadir'] = params['raw_datadir'] / params["y_data_dir"]
 params['splits_dir'] = params['raw_datadir'] / params["splits_dir"]
 params['input_dir'] = maindir/params['input_dir']
 params['output_dir'] = maindir/params['output_dir']
-print(params['splits_dir'])
-print(os.path.exists(params['splits_dir']))
 
-
+print(params)
 #Implement Preprocess outside Parsl 
 preprocess(params)
 
