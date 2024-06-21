@@ -17,10 +17,12 @@ from parsl.utils import get_all_checkpoints
 from parsl.providers import LocalProvider
 from parsl.channels import LocalChannel
 from parsl.executors import HighThroughputExecutor
+from parsl.config import Config
+
 
 
 from IMPROVE.CLI import CLI
-from parsl_apps import preprocess#, train, infer
+from parsl_apps import preprocess_source, preprocess_target#, train, infer
 #from IMPROVE.Config.Parsl import Config as Parsl
 import IMPROVE.Config.CSA as CSA
 from IMPROVE.Config.Common import Config as Common_config
@@ -95,9 +97,9 @@ params['input_dir'] = maindir/params['input_dir']  ### May be add to frm.build_p
 params['output_dir'] = maindir/params['output_dir']
 
 #Implement Preprocess outside Parsl  - We can make it a Parsl app if we want to in the future
-preprocess(params)
+#preprocess(params)
 
-config = Config(
+""" config = Config(
         executors=[
             HighThroughputExecutor(
                 label=params['label'],
@@ -112,24 +114,13 @@ config = Config(
             )
         ],
         strategy=None,
-    )
+    ) """
 
 
-futures = {}
-# checkpoints = get_all_checkpoints(run_dir)
-# print("Found the following checkpoints: ", checkpoints)
-parsl.load(config)
+parsl.load()
 
-
-
-preprocess_futures = [workflow_csa.preprocess(splits_dir/build_split_fname(source_data_name, split), output_data_dir, params_csa) 
-                      for source_data_name in params_csa['source_data_name'] for split in params_csa['split']]
-
-results=workflow_csa.preprocess(params_csa)
-#results = Demo.run(config={},debug=True)
-
-for key in results.keys():
-    print(f"{key} : {results[key]}")
+preprocess_source_futures =[preprocess_source(params, source_data_name) for source_data_name in params['source_datasets']]
+preprocess_target_futures =[preprocess_target(params, target_data_name) for target_data_name in params['target_datasets']]
 
 
 parsl.clear()
