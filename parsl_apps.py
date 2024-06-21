@@ -79,7 +79,6 @@ def preprocess(params): #
             params['ml_data_outdir'] = params['input_dir']/f"{source_data_name}"/f"split_{split}"
             #if params['ml_data_outdir'].exists() is True:
             #    continue
-            params = frm.build_paths(params)  # paths to raw data
             frm.create_outdir(outdir=params["ml_data_outdir"])
             train_split_file = f"{source_data_name}_split_{split}_train.txt"
             val_split_file = f"{source_data_name}_split_{split}_val.txt"
@@ -107,7 +106,6 @@ def preprocess(params): #
         test_split_file = f"{target_data_name}_all.txt"
         params['ml_data_outdir'] = params['input_dir']/f"{target_data_name}"/f"split_all"
         timer_preprocess = Timer()
-        params = frm.build_paths(params)  # paths to raw data
         frm.create_outdir(outdir=params["ml_data_outdir"])
         print(f"test_split_file:  {test_split_file}")
         print(f"ml_data_outdir:   {params['ml_data_outdir']}")
