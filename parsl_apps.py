@@ -78,9 +78,9 @@ def preprocess(params): #
                 if fname not in "\t".join(files_joined):
                     warnings.warn(f"\nThe {phase} split file {fname} is missing (continue to next split)")
                     continue
-            ml_data_outdir = params['input_dir']/f"{source_data_name}"/f"split_{split}"
-            if ml_data_outdir.exists() is True:
-                continue
+            params['ml_data_outdir'] = params['input_dir']/f"{source_data_name}"/f"split_{split}"
+            #if params['ml_data_outdir'].exists() is True:
+            #    continue
             params = frm.build_paths(params)  # paths to raw data
             frm.create_outdir(outdir=params["ml_data_outdir"])
             train_split_file = f"{source_data_name}_split_{split}_train.txt"
@@ -89,13 +89,16 @@ def preprocess(params): #
             print(f"train_split_file: {train_split_file}")
             print(f"val_split_file:   {val_split_file}")
             print(f"test_split_file:  {test_split_file}")
-            print(f"ml_data_outdir:   {ml_data_outdir}")
+            print(f"ml_data_outdir:   {params['ml_data_outdir']}")
             preprocess_run = ["python",
                 "Paccmann_MCA_preprocess_improve.py",
+                 "--x_data_path", str(params['x_data_path']),
+                 "--y_data_path", str(params['y_data_path']),
+                 "--splits_path", str(params['splits_path']),
                 "--train_split_file", str(train_split_file),
                 "--val_split_file", str(val_split_file),
                 "--test_split_file", str(test_split_file),
-                "--ml_data_outdir", str(ml_data_outdir),
+                "--ml_data_outdir", str(params['ml_data_outdir']),
                 "--y_col_name", str(y_col_name)
             ]
             result = subprocess.run(preprocess_run, capture_output=True,

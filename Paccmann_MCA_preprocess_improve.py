@@ -8,8 +8,8 @@ from math import sqrt
 from scipy import stats
 from typing import List, Union, Optional
 import shutil
-from improve import framework as frm
-from improve import drug_resp_pred as drp
+from IMPROVE import framework as frm
+from IMPROVE import drug_resp_pred as drp
 from sklearn.preprocessing import StandardScaler, MaxAbsScaler, MinMaxScaler, RobustScaler
 import joblib
 from pathlib import Path
@@ -118,6 +118,24 @@ drp_preproc_params = [
      "type": str,
      "help": "List of feature files.",
     },
+    {"name": "x_data_path",  # app;
+     # "nargs": "+",
+     "default":"x_data",
+     "type": str,
+     "help": "Path to x data",
+    },
+    {"name": "y_data_path",  # app;
+     # "nargs": "+",
+     "default":"y_data",
+     "type": str,
+     "help": "Path to y data",
+    },
+    {"name": "splits_path",  # app;
+     # "nargs": "+",
+     "default":"splits",
+     "type": str,
+     "help": "Path to splits",
+    },
     {"name": "x_data_drug_files",  # app;
      # "nargs": "+",
      "type": str,
@@ -145,9 +163,12 @@ req_preprocess_args.extend(["y_col_name", "model_outdir"])
 
 
 def run(params):
-    params = frm.build_paths(params)  # paths to raw data
-    frm.create_outdir(outdir=params["ml_data_outdir"])
-
+    #params = frm.build_paths(params)  # paths to raw data
+    #frm.create_outdir(outdir=params["ml_data_outdir"])
+    params['x_data_path'] = Path(params['x_data_path'])
+    params['y_data_path'] = Path(params['y_data_path'])
+    params['splits_path'] = Path(params['splits_path'])
+    
     print("\nLoading omics data...")
     oo = drp.OmicsLoader(params)
     print(oo)
@@ -217,8 +238,8 @@ def run(params):
 def main():
     params = frm.initialize_parameters(
         file_path,
-        default_model="Paccmann_MCA_default_model_csa.ini",
-        #additional_definitions=preprocess_params,
+        default_model="Paccmann_MCA_default_model.txt",
+        additional_definitions=preprocess_params,
         required=req_preprocess_args,
     )
     run(params)

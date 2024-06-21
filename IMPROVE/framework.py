@@ -604,20 +604,22 @@ def initialize_parameters(filepath, default_model="frm_default_model.txt", addit
     gParameters: python dictionary
         A dictionary of Candle keywords and parsed values.
     """
-
+    if additional_definitions is not None:
+        frm_additional_definitions.extend(additional_definitions)
+    if required is not None:
+        set(frm_required).update(set(required)) 
     # Build benchmark object
     frm = ImproveBenchmark(
         filepath=filepath,
         defmodel=default_model,
         framework="pytorch",
         prog="frm",
-        desc="Framework functionality in IMPROVE",
-        additional_definitions=additional_definitions,
-        required=required,
+        desc="Framework functionality in IMPROVE"
+        #additional_definitions=additional_definitions,
+        #required=required,
     )
 
     gParameters = candle.finalize_parameters(frm)
-
     return gParameters
 
 
