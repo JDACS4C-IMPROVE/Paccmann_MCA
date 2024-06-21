@@ -20,7 +20,7 @@ from parsl.executors import HighThroughputExecutor
 
 
 from IMPROVE.CLI import CLI
-from IMPROVE.parsl_apps import preprocess#, train, infer
+from parsl_apps import preprocess#, train, infer
 #from IMPROVE.Config.Parsl import Config as Parsl
 import IMPROVE.Config.CSA as CSA
 from IMPROVE.Config.Common import Config as Common_config
@@ -103,7 +103,8 @@ logger = logging.getLogger(f"{params['model_name']}")
 #params = frm.build_paths(params) ##--> USE THIS FOR BUIDING PATHS
 
 maindir = Path(os.environ['IMPROVE_DATA_DIR'])
-params['raw_datadir'] = maindir/params["csa_data_dir"]/ params["raw_data_dir"]
+#params['raw_datadir'] = maindir/params["csa_data_dir"]/ params["raw_data_dir"]
+params['raw_datadir'] = maindir/ params["raw_data_dir"]
 params['x_datadir'] = params['raw_datadir'] / params["x_data_dir"]
 params['y_datadir'] = params['raw_datadir'] / params["y_data_dir"]
 params['splits_dir'] = params['raw_datadir'] / params["splits_dir"]
