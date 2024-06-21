@@ -5,7 +5,6 @@ from time import time
 from pathlib import Path
 import pandas as pd
 import logging
-#from ..Config import CSA, Parsl
 import sys
 import numpy as np
 
@@ -24,8 +23,6 @@ fdir = Path(__file__).resolve().parent
 y_col_name = "auc"
 
 logger = logging.getLogger(f'Start workflow')
-
-
 
 class Timer:
   """ Measure time. """
@@ -52,6 +49,7 @@ def build_split_fname(source_data_name, split, phase):
 #@python_app  ## May be implemented separately outside this script or does not need parallelization
 def preprocess(params): # 
     split_nums=params['split']
+    ### SOURCE DATASETS ####
     for source_data_name in params['source_datasets']:
         # Get the split file paths
         # This parsing assumes splits file names are: SOURCE_split_NUM_[train/val/test].txt
@@ -104,49 +102,30 @@ def preprocess(params): #
             result = subprocess.run(preprocess_run, capture_output=True,
                                     text=True, check=True)
 
+    ### TARGET DATASETS ####
+    for target_data_name in params['target_datasets']:
+        test_split_file = f"{target_data_name}_all.txt"
+        params['ml_data_outdir'] = params['input_dir']/f"{target_data_name}"/f"split_all"
+        timer_preprocess = Timer()
+        params = frm.build_paths(params)  # paths to raw data
+        frm.create_outdir(outdir=params["ml_data_outdir"])
+        print(f"test_split_file:  {test_split_file}")
+        print(f"ml_data_outdir:   {params['ml_data_outdir']}")
+        preprocess_run = ["python",
+                "Paccmann_MCA_preprocess_improve.py",
+                 "--x_data_path", str(params['x_data_path']),
+                 "--y_data_path", str(params['y_data_path']),
+                 "--splits_path", str(params['splits_path']),
+                "--train_split_file", '',   ## Alternative - Change the default value to ''
+                "--val_split_file", '',
+                "--test_split_file", str(test_split_file),
+                "--ml_data_outdir", str(params['ml_data_outdir']),
+                "--y_col_name", str(y_col_name)
+            ]
+        result = subprocess.run(preprocess_run, capture_output=True,
+                                    text=True, check=True)
 
-"""             for target_data_name in params['target_datasets']:
-                ml_data_dir = params['input_dir']/f"{source_data_name}"/f"{split}"
-                if ml_data_dir.exists() is True:
-                    continue
-                if params['only_cross_study'] and (source_data_name == target_data_name):
-                    continue # only cross-study
-                print(f"\nSource data: {source_data_name}")
-                print(f"Target data: {target_data_name}")
 
-                ml_data_outdir = ml_data_dir/f"split_{split}"
-                
-
-                if source_data_name == target_data_name:
-                    # If source and target are the same, then infer on the test split
-                    test_split_file = f"{source_data_name}_split_{split}_test.txt"
-                else:
-                    # If source and target are different, then infer on the entire target dataset
-                    test_split_file = f"{target_data_name}_all.txt"
-                
-                timer_preprocess = Timer()
-
-                # p1 (none): Preprocess train data
-                print("\nPreprocessing")
-                train_split_file = f"{source_data_name}_split_{split}_train.txt"
-                val_split_file = f"{source_data_name}_split_{split}_val.txt"
-                print(f"train_split_file: {train_split_file}")
-                print(f"val_split_file:   {val_split_file}")
-                print(f"test_split_file:  {test_split_file}")
-                print(f"ml_data_outdir:   {ml_data_outdir}")
-                preprocess_run = ["python",
-                    "Paccmann_MCA_preprocess_improve.py",
-                    "--train_split_file", str(train_split_file),
-                    "--val_split_file", str(val_split_file),
-                    "--test_split_file", str(test_split_file),
-                    "--ml_data_outdir", str(ml_data_outdir),
-                    "--y_col_name", str(y_col_name)
-                ]
-                result = subprocess.run(preprocess_run, capture_output=True,
-                                        text=True, check=True)
-                # print(result.stdout)
-                # print(result.stderr)
-                timer_preprocess.display_timer(print) """
 
 
         

@@ -55,16 +55,8 @@ additional_definitions = CSA.additional_definitions
 cli = CLI()
 cli.set_command_line_options(options=additional_definitions)
 cli.get_command_line_options()
-params_cli = cli.params
-user_specified_cli=cli.user_specified
 
-"""common_cfg  = Common_config()
-params_model=common_cfg.initialize_parameters(
-                              cli=cli, # Command Line Interface of type CLI
-                              section='Global_Params',
-                              config_file=cli.params['model_config_file'],
-                              additional_definitions=None,
-                              required=None,) """
+
 ## Should we combine csa config and parsl config and use just one initialize_parameter??
 common_cfg  = Common_config()
 params_csa=common_cfg.initialize_parameters(
@@ -82,11 +74,8 @@ params_parsl=common_cfg.initialize_parameters(
                               required=None,)
 
 params = {}
-#params.update(params_model['Global_Params'])
 params.update(params_csa['Global_Params'])
 params.update(params_parsl['Global_Params'])
-
-
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 fdir = Path(__file__).resolve().parent
@@ -100,20 +89,12 @@ os.environ["CANDLE_DATA_DIR"] = os.environ["IMPROVE_DATA_DIR"]
 
 logger = logging.getLogger(f"{params['model_name']}")
 
-#params = frm.build_paths(params) ##--> USE THIS FOR BUIDING PATHS
-
 params = frm.build_paths(params)  # paths to raw data
-
 maindir = Path(os.environ['IMPROVE_DATA_DIR'])
-#params['raw_datadir'] = maindir/params["csa_data_dir"]/ params["raw_data_dir"]
-# params['raw_datadir'] = maindir/ params["raw_data_dir"]
-# params['x_datadir'] = params['raw_datadir'] / params["x_data_dir"]
-# params['y_datadir'] = params['raw_datadir'] / params["y_data_dir"]
-# params['splits_dir'] = params['raw_datadir'] / params["splits_dir"]
-params['input_dir'] = maindir/params['input_dir']
+params['input_dir'] = maindir/params['input_dir']  ### May be add to frm.build_paths()??
 params['output_dir'] = maindir/params['output_dir']
 
-#Implement Preprocess outside Parsl 
+#Implement Preprocess outside Parsl  - We can make it a Parsl app if we want to in the future
 preprocess(params)
 
 config = Config(
@@ -133,11 +114,8 @@ config = Config(
         strategy=None,
     )
 
-#Run preprocess first
-preprocess(params)
 
 futures = {}
-parsl.clear()
 # checkpoints = get_all_checkpoints(run_dir)
 # print("Found the following checkpoints: ", checkpoints)
 parsl.load(config)

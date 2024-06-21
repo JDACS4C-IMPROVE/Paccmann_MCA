@@ -168,7 +168,7 @@ def run(params):
     params['x_data_path'] = Path(params['x_data_path'])
     params['y_data_path'] = Path(params['y_data_path'])
     params['splits_path'] = Path(params['splits_path'])
-    
+
     print("\nLoading omics data...")
     oo = drp.OmicsLoader(params)
     print(oo)
@@ -188,7 +188,8 @@ def run(params):
               "test": params["test_split_file"]}
 
     for stage, split_file in stages.items():
-
+        if split_file=='':
+            continue
         # ---------------------------------
         # [Req] Load response data
         # ------------------------
