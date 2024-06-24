@@ -116,7 +116,6 @@ params['output_dir'] = maindir/params['output_dir']
         strategy=None,
     ) """
 
-
 parsl.load()
 
 preprocess_source_futures =[preprocess_source(params, source_data_name) for source_data_name in params['source_datasets']]
