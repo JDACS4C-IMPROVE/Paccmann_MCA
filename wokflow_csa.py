@@ -121,9 +121,9 @@ train_futures = {key: None for key in params['source_datasets']}
 for source in params['source_datasets']:
     train_futures[source] = {key: None for key in params['split']}
 
-####### START PARSL PARALLEL EXECUTION ######
-parsl.load()
+##################### START PARSL PARALLEL EXECUTION #####################
 
+parsl.load()
 for source_data_name in params['source_datasets']:
     preprocess_futures[source_data_name] = preprocess(params, source_data_name)  ## MODIFY TO INCLUDE SPLITS IN PARALLEL?
 
@@ -137,5 +137,4 @@ for source_data_name in params['source_datasets']:
         if train_futures[source_data_name][split].done():
             for target_data_name in params['target_datasets']:
                 infer_futures = infer(params, source_data_name, target_data_name, split)
-
 parsl.clear()
