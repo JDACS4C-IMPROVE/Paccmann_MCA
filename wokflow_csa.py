@@ -94,7 +94,9 @@ logger = logging.getLogger(f"{params['model_name']}")
 params = frm.build_paths(params)  # paths to raw data
 maindir = Path(os.environ['IMPROVE_DATA_DIR'])
 params['input_dir'] = maindir/params['input_dir']  ### May be add to frm.build_paths()??
-params['output_dir'] = maindir/params['output_dir']
+params['model_outdir'] = maindir/params['model_outdir']
+params['infer_outdir'] = maindir/params['infer_outdir']
+
 #Implement Preprocess outside Parsl  - We can make it a Parsl app if we want to in the future
 #preprocess(params)
 
@@ -117,8 +119,9 @@ params['output_dir'] = maindir/params['output_dir']
 
 parsl.load()
 
-
-#preprocess_futures = [preprocess(params, source_data_name) for source_data_name in params['source_datasets']] ## MODIFY TO INCLUDE SPLITS IN PARALLEL?
+preprocess_futures = [preprocess(params, source_data_name) for source_data_name in params['source_datasets']] ## MODIFY TO INCLUDE SPLITS IN PARALLEL?
+#if preprocess_futures.done():
 train_futures = [train(params, source_data_name, split) for source_data_name in params['source_datasets']for split in params['split']] ## MODIFY TO INCLUDE SPLITS IN PARALLEL?
+infer_futures = [infer(params, source_data_name, target_data_name) for source_data_name in params['source_datasets']for target_data_name in params['target_datasets']] ## MODIFY TO INCLUDE SPLITS IN PARALLEL?
 
 parsl.clear()

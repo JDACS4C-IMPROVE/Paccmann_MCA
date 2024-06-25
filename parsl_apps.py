@@ -3,18 +3,9 @@ import subprocess
 import warnings
 from time import time
 from pathlib import Path
-import pandas as pd
 import logging
 import sys
-import numpy as np
-
-# Parsl imports
-import parsl
 from parsl import python_app, bash_app, join_app
-from parsl.providers import LocalProvider
-from parsl.channels import LocalChannel
-from parsl.config import Config
-from parsl.executors import HighThroughputExecutor
 from IMPROVE import framework as frm
 
 
@@ -67,11 +58,9 @@ def preprocess(params, source_data_name): #
     for split in split_nums:
         print(f"Split id {split} out of {len(split_nums)} splits.")
         # Check that train, val, and test are available. Otherwise, continue to the next split.
-        # files_joined = [str(s) for s in split_files]
         # TODO: check this!
         for phase in ["train", "val", "test"]:
             fname = build_split_fname(source_data_name, split, phase)
-            # print(f"{phase}: {fname}")
             if fname not in "\t".join(files_joined):
                 warnings.warn(f"\nThe {phase} split file {fname} is missing (continue to next split)")
                 continue
@@ -117,14 +106,12 @@ def preprocess(params, source_data_name): #
             ]
             result = subprocess.run(preprocess_run, capture_output=True,
                                     text=True, check=True)
-            # print(result.stdout)
-            # print(result.stderr)
             timer_preprocess.display_timer(print)
 
 
 @python_app  ## May be implemented separately outside this script or does not need parallelization
 def train(params, source_data_name, split): # 
-    model_outdir = params['output_dir']/f"{source_data_name}"/f"split_{split}"
+    model_outdir = params['model_outdir']/f"{source_data_name}"/f"split_{split}"
     #frm.create_outdir(outdir=model_outdir)
     for target_data_name in params['target_datasets']:
         ml_data_outdir = params['input_dir']/f"{source_data_name}-{target_data_name}"/f"split_{split}"  #### We cannot have target data name here ??????
@@ -151,63 +138,29 @@ def train(params, source_data_name, split): #
                                     text=True, check=True)
 
 
-def infer(params, target_data_name): # 
-    pass
+def infer(params, source_data_name, target_data_name): # 
+    for split in params['split']:
+        ml_data_outdir = params['input_dir']/f"{source_data_name}-{target_data_name}"/f"split_{split}"
+        model_outdir = params['model_outdir']/f"{source_data_name}"/f"split_{split}"
+        test_ml_data_dir = ml_data_outdir
+        model_dir = model_outdir
+        infer_outdir = params['infer_outdir']/f"{source_data_name}-{target_data_name}"/f"split_{split}"
+        timer_infer = Timer()
 
-        
-@python_app
-def train_infer(source_data_name, split, target_datasets):
-    ## All import statements here
-    # p2 (p1): Train model
-    # Train a single model for a given [source, split] pair
-    # Train using train samples and early stop using val samples
-    model_outdir = MAIN_MODEL_DIR/f"{source_data_name}"/f"split_{split}"
-    for target_data_name in target_datasets:
-        ml_data_outdir = MAIN_ML_DATA_DIR/f"{source_data_name}-{target_data_name}"/f"split_{split}"  #### We cannot have target data name here ??????
-        if model_outdir.exists() is False:
-            os.makedirs(os.path.join(model_outdir, 'ckpts'), exist_ok=True) # For storing checkpoints
-            train_ml_data_dir = ml_data_outdir
-            val_ml_data_dir = ml_data_outdir
-            timer_train = Timer()
-            print_fn("\nTrain")
-            print_fn(f"train_ml_data_dir: {train_ml_data_dir}")
-            print_fn(f"val_ml_data_dir:   {val_ml_data_dir}")
-            print_fn(f"model_outdir:      {model_outdir}")
-            train_run = ["python",
-                    "Paccmann_MCA_train_improve.py",
-                    "--train_ml_data_dir", str(train_ml_data_dir),
-                    "--val_ml_data_dir", str(val_ml_data_dir),
-                    "--ml_data_outdir", str(ml_data_outdir),
-                    "--model_outdir", str(model_outdir),
-                    "--epochs", str(epochs),
-                    "--y_col_name", y_col_name,
-                    "--ckpt_directory", os.path.join(model_outdir, 'ckpts')
-            ]
-            result = subprocess.run(train_run, capture_output=True,
-                                    text=True, check=True)
+        print("\nInfer")
+        print(f"test_ml_data_dir: {test_ml_data_dir}")
+        print(f"infer_outdir:     {infer_outdir}")
+        infer_run = ["python",
+                "Paccmann_MCA_infer_improve.py",
+                "--test_ml_data_dir", str(test_ml_data_dir),
+                "--model_dir", str(model_dir),
+                "--infer_outdir", str(infer_outdir),
+                "--y_col_name", y_col_name,
+                "--model_outdir", str(model_outdir),
+                "--ml_data_outdir", str(ml_data_outdir)
+        ]
+        result = subprocess.run(infer_run, capture_output=True,
+                                text=True, check=True)
+        timer_infer.display_timer(print)
 
-            timer_train.display_timer(print_fn)
-
-            #Inference
-            test_ml_data_dir = ml_data_outdir
-            model_dir = model_outdir
-            infer_outdir = MAIN_INFER_OUTDIR/f"{source_data_name}-{target_data_name}"/f"split_{split}"
-            timer_infer = Timer()
-
-            print_fn("\nInfer")
-            print_fn(f"test_ml_data_dir: {test_ml_data_dir}")
-            print_fn(f"infer_outdir:     {infer_outdir}")
-            infer_run = ["python",
-                  "Paccmann_MCA_infer_improve.py",
-                  "--test_ml_data_dir", str(test_ml_data_dir),
-                  "--model_dir", str(model_dir),
-                  "--infer_outdir", str(infer_outdir),
-                  "--y_col_name", y_col_name,
-                  "--model_outdir", str(model_outdir),
-                  "--ml_data_outdir", str(ml_data_outdir)
-            ]
-            result = subprocess.run(infer_run, capture_output=True,
-                                    text=True, check=True)
-            timer_infer.display_timer(print_fn)
-        return True
         

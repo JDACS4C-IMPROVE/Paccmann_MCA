@@ -13,10 +13,15 @@ additional_definitions = [
      "default": 'input',
      "help": "Input directory"
     },
-    {"name": "output_dir",
+    {"name": "model_outdir",
      "type": str,
-     "default": 'output',
-     "help": "Input directory"
+     "default": 'model',
+     "help": "Output directory for trained model and checkpoints"
+    },
+    {"name": "infer_outdir",
+     "type": str,
+     "default": 'infer',
+     "help": "Output directory for inference results"
     },
     {"name": "parsl_config_file", # workflow
      "default": "parsl_config.ini",
