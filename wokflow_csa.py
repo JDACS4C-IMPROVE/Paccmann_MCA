@@ -127,6 +127,6 @@ train_futures = [train(params, source_data_name, split)
 infer_futures = [infer(params, source_data_name, target_data_name, split) 
                  for source_data_name in params['source_datasets']
                  for target_data_name in params['target_datasets'] 
-                 for split in params['split']] 
+                 for split in params['split']]
 
 parsl.clear()

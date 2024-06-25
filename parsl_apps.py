@@ -94,7 +94,7 @@ def preprocess(params, source_data_name): #
             print(f"test_split_file:  {test_split_file}")
             print(f"ml_data_outdir:   {params['ml_data_outdir']}")
             preprocess_run = ["python",
-                "Paccmann_MCA_preprocess_improve.py",
+                "preprocess.py",
                 "--x_data_path", str(params['x_data_path']),
                 "--y_data_path", str(params['y_data_path']),
                 "--splits_path", str(params['splits_path']),
@@ -125,7 +125,7 @@ def train(params, source_data_name, split):
         print(f"val_ml_data_dir:   {val_ml_data_dir}")
         print(f"model_outdir:      {model_outdir}")
         train_run = ["python",
-                " .py",
+                "train.py",
                 "--train_ml_data_dir", str(train_ml_data_dir),
                 "--val_ml_data_dir", str(val_ml_data_dir),
                 "--ml_data_outdir", str(ml_data_outdir),
@@ -150,7 +150,7 @@ def infer(params, source_data_name, target_data_name, split): #
     print(f"test_ml_data_dir: {test_ml_data_dir}")
     print(f"infer_outdir:     {infer_outdir}")
     infer_run = ["python",
-            "Paccmann_MCA_infer_improve.py",
+            "infer.py",
             "--test_ml_data_dir", str(test_ml_data_dir),
             "--model_dir", str(model_outdir),
             "--infer_outdir", str(infer_outdir),

@@ -9,7 +9,7 @@ import shutil
 # IMPROVE/CANDLE imports
 from improve import framework as frm
 from improve.metrics import compute_metrics # TODO use comput_metrics in early stopping
-from Paccmann_MCA_preprocess_improve import model_preproc_params  # ap
+from preprocess import model_preproc_params  # ap
 
 
 # This should be set outside as a user environment variable
@@ -161,7 +161,7 @@ def candle_main():
                              app_train_params
     params = frm.initialize_parameters(
         file_path,
-        default_model="Paccmann_MCA_default_model.txt",
+        default_model="Paccmann_MCA_default_model.ini",
         additional_definitions=additional_definitions,
         required=None,
     )

@@ -239,7 +239,7 @@ def run(params):
 def main():
     params = frm.initialize_parameters(
         file_path,
-        default_model="Paccmann_MCA_default_model.txt",
+        default_model="Paccmann_MCA_default_model.ini",
         additional_definitions=preprocess_params,
         required=req_preprocess_args,
     )

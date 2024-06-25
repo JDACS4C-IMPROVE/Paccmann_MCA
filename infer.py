@@ -6,8 +6,8 @@ from test_paccmann import main
 # [Req] IMPROVE/CANDLE imports
 from improve import framework as frm
 from improve.metrics import compute_metrics
-from Paccmann_MCA_preprocess_improve import preprocess_params  # ap
-from Paccmann_MCA_train_improve import metrics_list, model_train_params
+from preprocess import preprocess_params  # ap
+from train import metrics_list, model_train_params
 
 
 file_path = os.path.dirname(os.path.realpath(__file__))
@@ -47,7 +47,7 @@ def candle_main():
     additional_definitions = preprocess_params + model_train_params + infer_params
     params = frm.initialize_parameters(
         file_path,
-        default_model="Paccmann_MCA_default_model.txt",
+        default_model="Paccmann_MCA_default_model.ini",
         additional_definitions=additional_definitions,
         required=None,
     )

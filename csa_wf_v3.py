@@ -14,9 +14,9 @@ import pandas as pd
 from improve import framework as frm
 
 # Paccmann_MCA imports
-import Paccmann_MCA_preprocess_improve
-import Paccmann_MCA_train_improve
-import Paccmann_MCA_infer_improve
+import preprocess
+import train
+import infer
 
 class Timer:
   """ Measure time. """
