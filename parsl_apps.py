@@ -143,7 +143,6 @@ def infer(params, source_data_name, target_data_name): #
         ml_data_outdir = params['input_dir']/f"{source_data_name}-{target_data_name}"/f"split_{split}"
         model_outdir = params['model_outdir']/f"{source_data_name}"/f"split_{split}"
         test_ml_data_dir = ml_data_outdir
-        model_dir = model_outdir
         infer_outdir = params['infer_outdir']/f"{source_data_name}-{target_data_name}"/f"split_{split}"
         timer_infer = Timer()
 
@@ -153,7 +152,7 @@ def infer(params, source_data_name, target_data_name): #
         infer_run = ["python",
                 "Paccmann_MCA_infer_improve.py",
                 "--test_ml_data_dir", str(test_ml_data_dir),
-                "--model_dir", str(model_dir),
+                "--model_dir", str(model_outdir),
                 "--infer_outdir", str(infer_outdir),
                 "--y_col_name", y_col_name,
                 "--model_outdir", str(model_outdir),
