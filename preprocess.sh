@@ -13,7 +13,7 @@
 
 # e.g. CANDLE_MODEL_SCRIPT=graphdrp_preprocess.py
 
-CANDLE_MODEL_SCRIPT=Paccmann_MCA_preprocess_improve.py
+CANDLE_MODEL_SCRIPT=preprocess.py
 
 
 # Set env if CANDLE_MODEL is not in same directory as this script
