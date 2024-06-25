@@ -107,6 +107,7 @@ def preprocess(params, source_data_name): #
             result = subprocess.run(preprocess_run, capture_output=True,
                                     text=True, check=True)
             timer_preprocess.display_timer(print)
+    return True
 
 
 @python_app 
@@ -136,6 +137,7 @@ def train(params, source_data_name, split):
         ]
         result = subprocess.run(train_run, capture_output=True,
                                 text=True, check=True)
+    return True
 
 @python_app  
 def infer(params, source_data_name, target_data_name, split): # 
@@ -161,3 +163,4 @@ def infer(params, source_data_name, target_data_name, split): #
     result = subprocess.run(infer_run, capture_output=True,
                             text=True, check=True)
     timer_infer.display_timer(print)
+    return True
