@@ -114,19 +114,28 @@ params['infer_outdir'] = maindir/params['infer_outdir']
         strategy=None,
     ) """
 
+#Initialize preprocess futures
+preprocess_futures = {key: None for key in params['source_datasets']}
+#Initialize train futures
+train_futures = {key: None for key in params['source_datasets']}
+for source in params['source_datasets']:
+    train_futures[source] = {key: None for key in params['split']}
+
+####### START PARSL PARALLEL EXECUTION ######
 parsl.load()
 
-preprocess_futures = [preprocess(params, source_data_name) 
-                      for source_data_name in params['source_datasets']] ## MODIFY TO INCLUDE SPLITS IN PARALLEL?
+for source_data_name in params['source_datasets']:
+    preprocess_futures[source_data_name] = preprocess(params, source_data_name)  ## MODIFY TO INCLUDE SPLITS IN PARALLEL?
 
-#if preprocess_futures.done():
-train_futures = [train(params, source_data_name, split) 
-                 for source_data_name in params['source_datasets']
-                 for split in params['split']]
+for source_data_name in params['source_datasets']:
+    if preprocess_futures[source_data_name].done():
+        for split in params['split']:
+            train_futures[source_data_name][split] = train(params, source_data_name, split) 
 
-infer_futures = [infer(params, source_data_name, target_data_name, split) 
-                 for source_data_name in params['source_datasets']
-                 for target_data_name in params['target_datasets'] 
-                 for split in params['split']]
+for source_data_name in params['source_datasets']:
+    for split in params['split']:
+        if train_futures[source_data_name][split].done():
+            for target_data_name in params['target_datasets']:
+                infer_futures = infer(params, source_data_name, target_data_name, split)
 
 parsl.clear()
