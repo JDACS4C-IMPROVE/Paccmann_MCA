@@ -61,7 +61,7 @@ additional_definitions = [
     },
     {"name": "target_datasets",
      "type": list,
-     "default": ["CCLE", "CTRPv2", "gCSI", "GDSCv1", "GDSCv2"],
+     "default": ["CCLE", "gCSI"],
      "help": "target_datasets for cross study analysis"
     },
     {"name": "source_data_name",  ### DO WE NEED THIS??
@@ -92,7 +92,7 @@ additional_definitions = [
     },
     {"name": "epochs",
      "type": int,
-     "default": 100,
+     "default": 1,
      "help": "Number of epochs"
     },
     {"name": "learning_rate",

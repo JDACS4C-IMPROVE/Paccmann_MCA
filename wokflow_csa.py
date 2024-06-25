@@ -22,7 +22,7 @@ from parsl.config import Config
 
 
 from IMPROVE.CLI import CLI
-from parsl_apps import preprocess#, train, infer
+from parsl_apps import preprocess, train, infer
 #from IMPROVE.Config.Parsl import Config as Parsl
 import IMPROVE.Config.CSA as CSA
 from IMPROVE.Config.Common import Config as Common_config
@@ -95,7 +95,6 @@ params = frm.build_paths(params)  # paths to raw data
 maindir = Path(os.environ['IMPROVE_DATA_DIR'])
 params['input_dir'] = maindir/params['input_dir']  ### May be add to frm.build_paths()??
 params['output_dir'] = maindir/params['output_dir']
-
 #Implement Preprocess outside Parsl  - We can make it a Parsl app if we want to in the future
 #preprocess(params)
 
@@ -119,6 +118,7 @@ params['output_dir'] = maindir/params['output_dir']
 parsl.load()
 
 
-preprocess_futures = [preprocess(params, source_data_name) for source_data_name in params['source_datasets']]
+#preprocess_futures = [preprocess(params, source_data_name) for source_data_name in params['source_datasets']] ## MODIFY TO INCLUDE SPLITS IN PARALLEL?
+train_futures = [train(params, source_data_name, split) for source_data_name in params['source_datasets']for split in params['split']] ## MODIFY TO INCLUDE SPLITS IN PARALLEL?
 
 parsl.clear()
