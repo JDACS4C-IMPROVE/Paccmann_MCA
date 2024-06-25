@@ -22,7 +22,7 @@ from parsl.config import Config
 
 
 from IMPROVE.CLI import CLI
-from parsl_apps import preprocess_source, preprocess_target#, train, infer
+from parsl_apps import preprocess#, train, infer
 #from IMPROVE.Config.Parsl import Config as Parsl
 import IMPROVE.Config.CSA as CSA
 from IMPROVE.Config.Common import Config as Common_config
@@ -118,8 +118,7 @@ params['output_dir'] = maindir/params['output_dir']
 
 parsl.load()
 
-preprocess_source_futures =[preprocess_source(params, source_data_name) for source_data_name in params['source_datasets']]
-preprocess_target_futures =[preprocess_target(params, target_data_name) for target_data_name in params['target_datasets']]
 
+preprocess_futures = [preprocess(params, source_data_name) for source_data_name in params['source_datasets']]
 
 parsl.clear()

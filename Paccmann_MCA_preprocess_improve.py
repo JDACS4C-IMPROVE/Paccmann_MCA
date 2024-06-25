@@ -188,8 +188,8 @@ def run(params):
               "test": params["test_split_file"]}
 
     for stage, split_file in stages.items():
-        if split_file=='':
-            continue
+        #if split_file=='':
+            #continue
         # ---------------------------------
         # [Req] Load response data
         # ------------------------
