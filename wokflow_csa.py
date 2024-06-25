@@ -116,9 +116,17 @@ params['infer_outdir'] = maindir/params['infer_outdir']
 
 parsl.load()
 
-preprocess_futures = [preprocess(params, source_data_name) for source_data_name in params['source_datasets']] ## MODIFY TO INCLUDE SPLITS IN PARALLEL?
+preprocess_futures = [preprocess(params, source_data_name) 
+                      for source_data_name in params['source_datasets']] ## MODIFY TO INCLUDE SPLITS IN PARALLEL?
+
 #if preprocess_futures.done():
-train_futures = [train(params, source_data_name, split) for source_data_name in params['source_datasets']for split in params['split']] ## MODIFY TO INCLUDE SPLITS IN PARALLEL?
-infer_futures = [infer(params, source_data_name, target_data_name) for source_data_name in params['source_datasets']for target_data_name in params['target_datasets']] ## MODIFY TO INCLUDE SPLITS IN PARALLEL?
+train_futures = [train(params, source_data_name, split) 
+                 for source_data_name in params['source_datasets']
+                 for split in params['split']]
+
+infer_futures = [infer(params, source_data_name, target_data_name, split) 
+                 for source_data_name in params['source_datasets']
+                 for target_data_name in params['target_datasets'] 
+                 for split in params['split']] 
 
 parsl.clear()
