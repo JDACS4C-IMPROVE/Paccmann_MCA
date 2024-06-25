@@ -97,9 +97,6 @@ params['input_dir'] = maindir/params['input_dir']  ### May be add to frm.build_p
 params['model_outdir'] = maindir/params['model_outdir']
 params['infer_outdir'] = maindir/params['infer_outdir']
 
-#Implement Preprocess outside Parsl  - We can make it a Parsl app if we want to in the future
-#preprocess(params)
-
 """ config = Config(
         executors=[
             HighThroughputExecutor(
