@@ -118,8 +118,8 @@ params['infer_outdir'] = maindir/params['infer_outdir']
 preprocess_futures = {key: None for key in params['source_datasets']}
 #Initialize train futures
 train_futures = {key: None for key in params['source_datasets']}
-for source in params['source_datasets']:
-    train_futures[source] = {key: None for key in params['split']}
+#for source in params['source_datasets']:
+#    train_futures[source] = {key: None for key in params['split']}
 
 ##################### START PARSL PARALLEL EXECUTION #####################
 
