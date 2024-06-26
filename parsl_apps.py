@@ -107,7 +107,7 @@ def preprocess(params, source_data_name): #
             result = subprocess.run(preprocess_run, capture_output=True,
                                     text=True, check=True)
             timer_preprocess.display_timer(print)
-    return True
+    return source_data_name
 
 
 @python_app 
