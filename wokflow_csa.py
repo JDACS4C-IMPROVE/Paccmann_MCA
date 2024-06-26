@@ -133,7 +133,7 @@ for source_data_name in params['source_datasets']:
             train_futures.append(train(params, source_data_name, split))
 
 for target_data_name in params['target_datasets']:
-    infer_futures = infer(params, train_futures[-1].result()['source_data_name'], target_data_name, train_futures[-1].result()['split'])
+    infer_futures = [infer(params, tf.result()['source_data_name'], target_data_name, tf.result()['split']) for tf in train_futures]
 
 
 """ for source_data_name in params['source_datasets']:
