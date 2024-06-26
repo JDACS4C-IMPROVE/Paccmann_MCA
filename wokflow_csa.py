@@ -134,7 +134,7 @@ for source_data_name in params['source_datasets']:
 
 for source_data_name in params['source_datasets']:
     for split in params['split']:
-        if train_futures[source_data_name][split].done():
-            for target_data_name in params['target_datasets']:
-                infer_futures = infer(params, source_data_name, target_data_name, split)
+        #if train_futures[source_data_name][split].done():
+        for target_data_name in params['target_datasets']:
+            infer_futures = infer(params, source_data_name, target_data_name, split, train_futures[source_data_name][split].result())
 parsl.clear()
