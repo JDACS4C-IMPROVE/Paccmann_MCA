@@ -114,14 +114,8 @@ params['infer_outdir'] = maindir/params['infer_outdir']
         strategy=None,
     ) """
 
-#Initialize preprocess futures
-preprocess_futures = {key: None for key in params['source_datasets']}
-#Initialize train futures
-#train_futures = {key: {} for key in params['source_datasets']}
-#for source in params['source_datasets']:
-#    train_futures[source] = {key: None for key in params['split']}
-train_futures=[]
 ##################### START PARSL PARALLEL EXECUTION #####################
+train_futures=[]
 
 parsl.load()
 for source_data_name in params['source_datasets']:
@@ -132,11 +126,4 @@ for source_data_name in params['source_datasets']:
 for target_data_name in params['target_datasets']:
     infer_futures = [infer(params, tf.result()['source_data_name'], target_data_name, tf.result()['split']) for tf in train_futures]
 
-
-""" for source_data_name in params['source_datasets']:
-    for split in params['split']:
-        #if train_futures[source_data_name][split].done():
-        for target_data_name in params['target_datasets']:
-            infer_futures = infer(params, source_data_name, target_data_name, split, train_futures[source_data_name][split].result())
- """
 parsl.clear()
