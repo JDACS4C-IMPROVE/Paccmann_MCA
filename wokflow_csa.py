@@ -125,14 +125,9 @@ train_futures=[]
 
 parsl.load()
 for source_data_name in params['source_datasets']:
-    preprocess_futures = preprocess(params, source_data_name)  ## MODIFY TO INCLUDE SPLITS IN PARALLEL?
     for split in params['split']:
-        train_futures.append(train(params, preprocess_futures.result(), split))
-
-""" for source_data_name in params['source_datasets']:
-    if preprocess_futures[source_data_name].done():
-        for split in params['split']:
-            train_futures.append(train(params, preprocess_futures[source_data_name], split)) """
+        preprocess_futures = preprocess(params, source_data_name, split)  ## MODIFY TO INCLUDE SPLITS IN PARALLEL?
+        train_futures.append(train(params, preprocess_futures.result()['source_data_name'], preprocess_futures.result()['split']))
 
 for target_data_name in params['target_datasets']:
     infer_futures = [infer(params, tf.result()['source_data_name'], target_data_name, tf.result()['split']) for tf in train_futures]
