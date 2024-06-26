@@ -153,7 +153,7 @@ def run(params):
         pickle.dump(params_train, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
-    return params["model_outdir"]
+    return val_scores
 
 def candle_main():
     additional_definitions = model_preproc_params + \

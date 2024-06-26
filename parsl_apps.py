@@ -137,13 +137,13 @@ def train(params, source_data_name, split):
         ]
         result = subprocess.run(train_run, capture_output=True,
                                 text=True, check=True)
-    return result
+    return {'source_data_name':source_data_name, 'split':split}
 
 @python_app  
-def infer(params, source_data_name, target_data_name, split, model_outdir): # 
+def infer(params, source_data_name, target_data_name, split): # 
     #for split in params['split']:
     ml_data_outdir = params['input_dir']/f"{source_data_name}-{target_data_name}"/f"split_{split}"
-    #model_outdir = params['model_outdir']/f"{source_data_name}"/f"split_{split}"
+    model_outdir = params['model_outdir']/f"{source_data_name}"/f"split_{split}"
     test_ml_data_dir = ml_data_outdir
     infer_outdir = params['infer_outdir']/f"{source_data_name}-{target_data_name}"/f"split_{split}"
     timer_infer = Timer()
