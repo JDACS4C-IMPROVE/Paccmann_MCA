@@ -4,8 +4,8 @@ import os
 from pathlib import Path
 from test_paccmann import main
 # [Req] IMPROVE/CANDLE imports
-from improve import framework as frm
-from improve.metrics import compute_metrics
+from IMPROVE import framework as frm
+from IMPROVE.metrics import compute_metrics
 from preprocess import preprocess_params  # ap
 from train import metrics_list, model_train_params
 

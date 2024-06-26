@@ -7,8 +7,8 @@ import json
 from pathlib import Path
 import shutil
 # IMPROVE/CANDLE imports
-from improve import framework as frm
-from improve.metrics import compute_metrics # TODO use comput_metrics in early stopping
+from IMPROVE import framework as frm
+from IMPROVE.metrics import compute_metrics # TODO use comput_metrics in early stopping
 from preprocess import model_preproc_params  # ap
 
 
