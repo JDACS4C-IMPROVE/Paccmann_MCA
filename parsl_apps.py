@@ -130,7 +130,7 @@ def train(params, source_data_name, split):
                 "--train_ml_data_dir", str(train_ml_data_dir),
                 "--val_ml_data_dir", str(val_ml_data_dir),
                 "--ml_data_outdir", str(ml_data_outdir),
-                "--model_specific_outdir", str(params['model_specific_outdir'])
+                "--model_specific_outdir", str(params['model_specific_outdir']),
                 "--model_outdir", str(model_outdir),
                 "--epochs", str(params['epochs']),
                 "--y_col_name", y_col_name,
