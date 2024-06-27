@@ -42,13 +42,14 @@ additional_definitions = [
      "help": "Config file for the model",
     },
     {"name": "model_specific_data", # workflow
-     "default": False,
+     "default": True,
      "type": bool,
      "required": True,
      "help": "Does the model require model specific files?",
     },
     {"name": "model_specific_data_url", # workflow
-     "default": "",
+     "default":'https://ftp.mcs.anl.gov/pub/candle/public/improve/model_curation_data/Paccmann_MCA/Data_MCA.zip',
+     #"default": "",
      "type": str,
      "required": True,
      "help": "url for downloading author data",
