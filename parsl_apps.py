@@ -98,6 +98,7 @@ def preprocess(params, source_data_name, split): #
             "--x_data_path", str(params['x_data_path']),
             "--y_data_path", str(params['y_data_path']),
             "--splits_path", str(params['splits_path']),
+            "--model_specific_outdir", str(params['model_specific_outdir']),
             "--train_split_file", str(train_split_file),
             "--val_split_file", str(val_split_file),
             "--test_split_file", str(test_split_file),

@@ -108,7 +108,12 @@ model_preproc_params = [
     {'name': 'gene_expression_processing_parameters',
      'type': dict,
      'help': 'Parameters for processing gene expression data'
-     }
+     },
+    {"name": "model_specific_outdir", # MOVE TO FRAMEWORK framework.py????
+     "type": str,
+     "default": "",
+     "help": "Datadir where model specific data is stored."
+    }
 ]
 
 # App-specific params (App: drug response prediction)
