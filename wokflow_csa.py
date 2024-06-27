@@ -1,5 +1,6 @@
 import parsl
 from parsl import python_app , bash_app
+import subprocess
 
 from parsl.config import Config
 
@@ -96,6 +97,17 @@ maindir = Path(os.environ['IMPROVE_DATA_DIR'])
 params['input_dir'] = maindir/params['input_dir']  ### May be add to frm.build_paths()??
 params['model_outdir'] = maindir/params['model_outdir']
 params['infer_outdir'] = maindir/params['infer_outdir']
+params['model_specific_outdir'] = maindir/params['model_specific_outdir']
+
+## Download Author specific data
+if params['model_specific_data']:
+    auth_data_download = ["bash",
+        "model_specific_data_download.sh",
+        str(params['model_specific_data_url']),
+        str(params['model_specific_outdir'])
+    ]
+    result = subprocess.run(auth_data_download, capture_output=True,
+                            text=True, check=True)
 
 """ config = Config(
         executors=[

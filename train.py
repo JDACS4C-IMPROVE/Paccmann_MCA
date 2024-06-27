@@ -112,7 +112,12 @@ model_train_params = [
     {'name': 'gene_expression_processing_parameters',
      'type': dict,
      'help': 'Parameters for processing gene expression data'
-     }
+     },
+    {"name": "model_specific_outdir", # MOVE TO FRAMEWORK framework.py????
+     "type": str,
+     "default": "",
+     "help": "Datadir where model specific data is stored."
+    }
 ]
 
 
@@ -126,8 +131,8 @@ def run(params):
     params['val_data'] = Path(params["ml_data_outdir"]) / str('val_'+params['y_data_suffix']+'.csv')
     params['gep_filepath'] = Path(params["ml_data_outdir"]) / params['gep_filepath']
     params['smi_filepath'] =Path(params["ml_data_outdir"]) / params['smi_filepath']
-    params['gene_filepath'] = Path(params["ml_data_outdir"]) / params['gene_filepath']
-    params['smiles_language_filepath'] = Path(params["ml_data_outdir"]) / params['smiles_language_filepath']
+    params['gene_filepath'] = Path(params["model_specific_outdir"]) / 'Data' / params['gene_filepath']
+    params['smiles_language_filepath'] = Path(params["model_specific_outdir"]) / 'Data' / params['smiles_language_filepath']
     params['modelpath'] = modelpath
 
 

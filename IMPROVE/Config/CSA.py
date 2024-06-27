@@ -41,6 +41,18 @@ additional_definitions = [
      "required": True,
      "help": "Config file for the model",
     },
+    {"name": "model_specific_data", # workflow
+     "default": False,
+     "type": bool,
+     "required": True,
+     "help": "Does the model require model specific files?",
+    },
+    {"name": "model_specific_data_url", # workflow
+     "default": "",
+     "type": str,
+     "required": True,
+     "help": "url for downloading author data",
+    },
     {"name": "train_split_file", # workflow
      "default": "train_split.txt",
      "type": str,

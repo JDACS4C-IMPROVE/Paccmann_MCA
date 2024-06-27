@@ -227,13 +227,13 @@ def run(params):
     ge=ge.set_index('CancID')
     ge.to_csv(os.path.join(Path(params["ml_data_outdir"]),'gene_expression.csv'))
 
-    ## Download model specific files
-    fname='Data_MCA.zip'
-    origin=params['data_url']
-    candle.file_utils.get_file(fname, origin)
-    # Move model-specific files to ml_data_outdir
-    shutil.copy(os.path.join(os.environ['CANDLE_DATA_DIR'],'common','Data','2128_genes.pkl'),os.path.join(Path(params["ml_data_outdir"]),'2128_genes.pkl') )
-    shutil.copy(os.path.join(os.environ['CANDLE_DATA_DIR'],'common','Data','smiles_language_chembl_gdsc_ccle.pkl'),os.path.join(Path(params["ml_data_outdir"]),'smiles_language_chembl_gdsc_ccle.pkl') )
+    # ## Download model specific files
+    # fname='Data_MCA.zip'
+    # origin=params['data_url']
+    # candle.file_utils.get_file(fname, origin)
+    # # Move model-specific files to ml_data_outdir
+    # shutil.copy(os.path.join(os.environ['CANDLE_DATA_DIR'],'common','Data','2128_genes.pkl'),os.path.join(Path(params["ml_data_outdir"]),'2128_genes.pkl') )
+    # shutil.copy(os.path.join(os.environ['CANDLE_DATA_DIR'],'common','Data','smiles_language_chembl_gdsc_ccle.pkl'),os.path.join(Path(params["ml_data_outdir"]),'smiles_language_chembl_gdsc_ccle.pkl') )
 
 
 def main():
