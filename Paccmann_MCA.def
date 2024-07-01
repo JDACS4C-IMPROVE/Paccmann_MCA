@@ -8,8 +8,8 @@ From: pytorch/pytorch:1.10.0-cuda11.3-cudnn8-devel
 	cp ./src/Singularity_gpu_fix.sh $SINGULARITY_ROOTFS
 
 %environment
-    	export IMPROVE_MODEL_DIR=/usr/local/Paccmann_MCA
-	export PYTHONPATH=$PYTHONPATH:/usr/local/IMPROVE/
+    export IMPROVE_MODEL_DIR=/usr/local/Paccmann_MCA
+	#export PYTHONPATH=$PYTHONPATH:/usr/local/IMPROVE/
 
 %post
 	#apt-key adv --keyserver keyserver.ubuntu.com --keyserver-options http-proxy=http://proxy.alcf.anl.gov:3128 --recv-keys F60F4B3D7FA2AF80
@@ -31,8 +31,8 @@ From: pytorch/pytorch:1.10.0-cuda11.3-cudnn8-devel
 	git clone https://github.com/JDACS4C-IMPROVE/IMPROVE.git
 	git clone https://github.com/JDACS4C-IMPROVE/Paccmann_MCA
 	cd Paccmann_MCA
-	# git checkout v0.6.0
-	mkdir /candle_data_dir
+	git checkout Parsl
+	#mkdir /candle_data_dir
 
 	# /opt/conda/bin/conda create -y --prefix /usr/local/conda_envs/Paccmann_MCA python=3.7
 	# /opt/conda/bin/conda install -y -c rdkit -p /usr/local/conda_envs/Paccmann_MCA rdkit=2019.03.1
