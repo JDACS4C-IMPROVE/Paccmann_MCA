@@ -13,17 +13,64 @@ anticancer drug sensitivity prediction and drug target affinity prediction. Plea
 
 *NOTE*: PaccMann acronyms "Prediction of AntiCancer Compound sensitivity with Multi-modal Attention-based Neural Networks".
 
+This model is curated as a part of the [_IMPROVE Project_](https://github.com/JDACS4C-IMPROVE)
+The original code is [_here_](https://github.com/PaccMann/paccmann_predictor)
 
 ## Requirements
 
 - `conda>=3.7`
 
-## Installation
+# Cross study analysis workflow using Parsl
 
-This model is curated as a part of the [_IMPROVE Project_](https://github.com/JDACS4C-IMPROVE)
-The original code is [_here_](https://github.com/PaccMann/paccmann_predictor)
+## Execution using Singularity container for the model
+Model definition file 'Paccmann_MCA_CSA.def' is located [_here_](https://github.com/JDACS4C-IMPROVE/Singularity/tree/develop/definitions) 
 
+Build Singularity image
+```sh
+singularity build --fakeroot Paccmann_MCA_CSA.sif Paccmann_MCA.def 
+```
 
+Create a conda environment for the workflow:
+
+```sh
+conda env create -f environment_parsl.yml
+```
+
+Activate the environment:
+
+```sh
+conda activate parsl
+```
+Set IMPROVE_DATA_DIR environment variable:
+```sh
+export IMPROVE_DATA_DIR='./improve_dir'
+```
+
+Change the workflow parameters in the file: csa_config.ini
+Additionally config options that are available as command line arguments are: 
+  use_singularity - Set True to use singularity image for the model
+  singularity_image - .sif file for the image
+  input_dir - Directory to store pre-processed data
+  model_outdir - Directory to store trained model
+  infer_outdir - Directory to store inference results
+  csa_config_file - Config file for CSA workflow
+  parsl_config_file - Config file for Parsl
+  source_datasets - List of source data sets
+  target_datasets - List of target data sets
+  split - Splits for model training on source data
+  only_cross_study - CSA for only cross strudy?
+  model_name - Name of model
+  epochs - epochs for training
+
+To run with singularity container, make sure to set use_singularity = True and singularity_image=your_model_image.sif
+The your_model_image.sif file should reside in the same directory as wokflow_csa.py
+
+Run the workflow script: 
+```sh
+python wokflow_csa.py --csa_config_file csa_config.ini
+```
+
+## Execution without Singularity container
 Create a conda environment:
 
 ```sh
@@ -45,96 +92,22 @@ Install CANDLE package
 ```sh
 pip install git+https://github.com/ECP-CANDLE/candle_lib@develop
 ```
-# Using Default Data
-
-## Example usage with conda environment
-Set environment variables:
+Install Parsl
 ```sh
-export CANDLE_DATA_DIR=candle_data_dir
-export CUDA_VISIBLE_DEVICES=0
+pip3 install parsl
 ```
-**Preprocess (optional)**
+Set IMPROVE_DATA_DIR environment variable:
 ```sh
-bash preprocess.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR
-```
-**Training**
-```sh
-bash train.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR
-```
-**Testing**
-```sh
-bash infer.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR
+export IMPROVE_DATA_DIR='./improve_dir'
 ```
 
-## Example usage with singularity container
-Model definition file 'Paccmann_MCA.def' is located [_here_](https://github.com/JDACS4C-IMPROVE/Singularity/tree/develop/definitions) 
+To run without singularity container, make sure to set use_singularity = False
 
-Build Singularity 
-```sh
-singularity build --fakeroot Paccmann_MCA.sif Paccmann_MCA.def 
-```
+The scripts preprocess.py, train.py and infer.py should reside in the same directory as wokflow_csa.py
 
-Execute within container
+Run the workflow script: 
 ```sh
-singularity exec --nv Paccmann_MCA.sif train.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR
-```
-# Using Benchmark Data for Cross-Study Analysis
-Clone the develop branch of this repository.
-Directory structure to use the IMPROVE benchmark data 
-```
-mkdir csa_data
-mkdir csa_data/raw_data
-mkdir csa_data/raw_data/y_data
-mkdir csa_data/raw_data/x_data
-mkdir csa_data/raw_data/splits
-mkdir candle_data_dir
-mkdir candle_data_dir/CSA_data
-```
-Activate conda environment
-```
-conda activate paccmann_predictor
-```
-Follow these steps to download data from the IMPROVE FTP:
-```
-wget -P csa_data/raw_data/y_data https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/benchmark-data-pilot1/csa_data/raw_data/y_data/response.tsv
-
-wget -P csa_data/raw_data/x_data https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/benchmark-data-pilot1/csa_data/raw_data/x_data/cancer_gene_expression.tsv
-
-wget -P csa_data/raw_data/x_data https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/benchmark-data-pilot1/csa_data/raw_data/x_data/drug_SMILES.tsv
-```
-
-To train and test on CCLE split 0, download these files from the IMPROVE FTP:
-```
-wget -P csa_data/raw_data/splits https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/benchmark-data-pilot1/csa_data/raw_data/splits/CCLE_split_0_train.txt
-
-wget -P csa_data/raw_data/splits https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/benchmark-data-pilot1/csa_data/raw_data/splits/CCLE_split_0_val.txt
-
-wget -P csa_data/raw_data/splits https://ftp.mcs.anl.gov/pub/candle/public/improve/benchmarks/single_drug_drp/benchmark-data-pilot1/csa_data/raw_data/splits/CCLE_split_0_test.txt
-```
-## To run the models:
-**Preprocess**
-```sh
-bash preprocess_csa.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR $SPLIT $TRAIN_SOURCE $TEST_SOURCE
-```
-for example (split=0, train source=CCLE, test source=CCLE):
-```sh
-bash preprocess_csa.sh 1 candle_data_dir 0 CCLE CCLE
-```
-**Training**
-```sh
-bash train_csa.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR
-```
-for example:
-```sh
-bash train_csa.sh 1 candle_data_dir
-```
-**Testing**
-```sh
-bash infer_csa.sh $CUDA_VISIBLE_DEVICES $CANDLE_DATA_DIR
-```
-for example:
-```sh
-bash infer_csa.sh 1 candle_data_dir
+python wokflow_csa.py --csa_config_file csa_config.ini
 ```
 
 
