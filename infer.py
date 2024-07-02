@@ -25,8 +25,8 @@ def run(params):
     params['test_data'] = Path(params["ml_data_outdir"]) / str('test_'+params['y_data_suffix']+'.csv')
     params['gep_filepath'] = Path(params["ml_data_outdir"]) / params['gep_filepath']
     params['smi_filepath'] =Path(params["ml_data_outdir"]) / params['smi_filepath']
-    params['gene_filepath'] = Path(params["model_specific_outdir"]) / params['gene_filepath']
-    params['smiles_language_filepath'] = Path(params["model_specific_outdir"]) / params['smiles_language_filepath']
+    params['gene_filepath'] = Path(params["model_specific_outdir"]) / 'Data' / params['gene_filepath']
+    params['smiles_language_filepath'] = Path(params["model_specific_outdir"]) / 'Data' / params['smiles_language_filepath']
     params['modelpath'] = modelpath
 
     test_true, test_pred = main(params)
