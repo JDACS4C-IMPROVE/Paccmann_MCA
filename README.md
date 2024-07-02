@@ -67,7 +67,7 @@ The your_model_image.sif file should reside in the same directory as wokflow_csa
 
 Run the workflow script: 
 ```sh
-python wokflow_csa.py --csa_config_file csa_config.ini
+python workflow_csa.py --csa_config_file csa_config.ini
 ```
 
 ## Execution without Singularity container
@@ -107,7 +107,7 @@ The scripts preprocess.py, train.py and infer.py should reside in the same direc
 
 Run the workflow script: 
 ```sh
-python wokflow_csa.py --csa_config_file csa_config.ini
+python workflow_csa.py --csa_config_file csa_config.ini
 ```
 
 
