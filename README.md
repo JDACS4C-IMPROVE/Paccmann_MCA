@@ -50,17 +50,17 @@ Change the workflow parameters in the file: csa_config.ini\
 Additionally config options that are available as command line arguments are: \
   use_singularity - Set True to use singularity image for the model\
   singularity_image - .sif file for the image\
-  input_dir - Directory to store pre-processed data
-  model_outdir - Directory to store trained model
-  infer_outdir - Directory to store inference results
-  csa_config_file - Config file for CSA workflow
-  parsl_config_file - Config file for Parsl
-  source_datasets - List of source data sets
-  target_datasets - List of target data sets
-  split - Splits for model training on source data
-  only_cross_study - CSA for only cross strudy?
-  model_name - Name of model
-  epochs - epochs for training
+  input_dir - Directory to store pre-processed data\
+  model_outdir - Directory to store trained model\
+  infer_outdir - Directory to store inference results\
+  csa_config_file - Config file for CSA workflow\
+  parsl_config_file - Config file for Parsl\
+  source_datasets - List of source data sets\
+  target_datasets - List of target data sets\
+  split - Splits for model training on source data\
+  only_cross_study - CSA for only cross strudy?\
+  model_name - Name of model\
+  epochs - epochs for training\
 
 To run with singularity container, make sure to set use_singularity = True and singularity_image=your_model_image.sif
 The your_model_image.sif file should reside in the same directory as wokflow_csa.py
