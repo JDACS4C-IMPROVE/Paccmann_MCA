@@ -2,12 +2,7 @@
 
 # Launches model for preprocessing from within the container
 
-#########################################################################
-### THIS IS A TEMPLATE FILE. SUBSTITUTE #PATH# WITH THE MODEL EXECUTABLE.
-#########################################################################
-
 # arg 1 CANDLE_DATA_DIR
-# arg 2 CANDLE_CONFIG
 
 ### Path and Name to your CANDLEized model's main Python script###
 
