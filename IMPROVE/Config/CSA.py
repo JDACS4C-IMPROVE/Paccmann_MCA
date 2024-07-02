@@ -35,30 +35,6 @@ additional_definitions = [
      "required": True,
      "help": "Config file for CSA workflow",
     },
-    {"name": "model_config_file", # workflow
-     "default": "model_config.ini",
-     "type": str,
-     "required": True,
-     "help": "Config file for the model",
-    },
-    {"name": "train_split_file", # workflow
-     "default": "train_split.txt",
-     "type": str,
-     "required": True,
-     "help": "Parameter containing the train split file",
-    },
-    {"name": "val_split_file", # workflow
-     "default": "val_split.txt",
-     "type": str,
-     "required": True,
-     "help": "Parameter containing the validation split file",
-    },
-    {"name": "test_split_file", # workflow
-     "default": "test_split.txt",
-     "type": str,
-     "required": True,
-     "help": "Parameter containing the test split file",
-    },
     {"name": "source_datasets",
      "type": list,
      "default": ['CCLE'],
@@ -68,11 +44,6 @@ additional_definitions = [
      "type": list,
      "default": ["CCLE", "gCSI"],
      "help": "target_datasets for cross study analysis"
-    },
-    {"name": "source_data_name",  ### DO WE NEED THIS??
-     "type": str,
-     "default": 'CCLE',
-     "help": "Source dataset name for preprocessing"
     },
     {"name": "split",
      "type": list,
@@ -110,7 +81,7 @@ additional_definitions = [
      "default": 32,
      "help": "Batch size"
     },
-    {"name": "singularity",
+    {"name": "use_singularity",
      "type": bool,
      "default": True,
      "help": "Use singularity image for model?"

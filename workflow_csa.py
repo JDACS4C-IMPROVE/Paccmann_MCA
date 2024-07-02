@@ -99,6 +99,8 @@ params['model_outdir'] = maindir/params['model_outdir']
 params['infer_outdir'] = maindir/params['infer_outdir']
 params['model_specific_outdir'] = maindir/params['model_specific_outdir']
 
+##TODO: Also download benchmark data here
+
 ## Download Author specific data
 if params['model_specific_data']:
     auth_data_download = ["bash",

@@ -93,7 +93,7 @@ def preprocess(params, source_data_name, split): #
         print(f"val_split_file:   {val_split_file}")
         print(f"test_split_file:  {test_split_file}")
         print(f"ml_data_outdir:   {params['ml_data_outdir']}")
-        if params['singularity']:
+        if params['use_singularity']:
             preprocess_run = ["singularity", "exec", "--nv",
                 params['singularity_image'], "preprocess.sh",
                 os.getenv("IMPROVE_DATA_DIR"),
@@ -143,7 +143,7 @@ def train(params, source_data_name, split):
         print(f"train_ml_data_dir: {train_ml_data_dir}")
         print(f"val_ml_data_dir:   {val_ml_data_dir}")
         print(f"model_outdir:      {model_outdir}")
-        if params['singularity']:
+        if params['use_singularity']:
             train_run = ["singularity", "exec", "--nv",
                     params['singularity_image'], "train.sh",
                     os.getenv("IMPROVE_DATA_DIR"),
@@ -186,7 +186,7 @@ def infer(params, source_data_name, target_data_name, split): #
     print("\nInfer")
     print(f"test_ml_data_dir: {test_ml_data_dir}")
     print(f"infer_outdir:     {infer_outdir}")
-    if params['singularity']:
+    if params['use_singularity']:
         infer_run = ["singularity", "exec", "--nv",
                 params['singularity_image'], "infer.sh",
                 os.getenv("IMPROVE_DATA_DIR"),
