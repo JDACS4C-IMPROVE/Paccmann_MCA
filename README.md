@@ -27,7 +27,7 @@ Model definition file 'Paccmann_MCA_CSA.def' is located [_here_](https://github.
 
 Build Singularity image
 ```sh
-singularity build --fakeroot Paccmann_MCA.sif Paccmann_MCA_MCA.def 
+singularity build --fakeroot Paccmann_MCA.sif Paccmann_MCA_CSA.def 
 ```
 
 Create a conda environment for the workflow:
