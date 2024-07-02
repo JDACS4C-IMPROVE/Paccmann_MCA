@@ -109,5 +109,15 @@ additional_definitions = [
      "type": int,
      "default": 32,
      "help": "Batch size"
+    },
+    {"name": "singularity",
+     "type": bool,
+     "default": True,
+     "help": "Use singularity image for model?"
+    },
+    {"name": "singularity_image",
+     "type": str,
+     "default": 'Paccmann_MCA.sif',
+     "help": "Singularity image file of the model"
     }
     ]

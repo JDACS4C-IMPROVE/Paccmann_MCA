@@ -13,14 +13,14 @@
 
 # e.g. CANDLE_MODEL_SCRIPT=graphdrp_preprocess.py
 
-CANDLE_MODEL_SCRIPT=preprocess.py
+IMPROVE_MODEL_SCRIPT=preprocess.py
 
 
 # Set env if CANDLE_MODEL is not in same directory as this script
 IMPROVE_MODEL_DIR=${IMPROVE_MODEL_DIR:-$( dirname -- "$0" )}
 
 # Combine path and name and check if executable exists
-CANDLE_MODEL=${IMPROVE_MODEL_DIR}/${CANDLE_MODEL_SCRIPT}
+CANDLE_MODEL=${IMPROVE_MODEL_DIR}/${IMPROVE_MODEL_SCRIPT}
 if [ ! -f ${CANDLE_MODEL} ] ; then
 	echo No such file ${CANDLE_MODEL}
 	exit 404

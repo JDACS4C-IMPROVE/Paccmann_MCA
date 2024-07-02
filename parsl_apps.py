@@ -93,20 +93,37 @@ def preprocess(params, source_data_name, split): #
         print(f"val_split_file:   {val_split_file}")
         print(f"test_split_file:  {test_split_file}")
         print(f"ml_data_outdir:   {params['ml_data_outdir']}")
-        preprocess_run = ["python",
-            "preprocess.py",
-            "--x_data_path", str(params['x_data_path']),
-            "--y_data_path", str(params['y_data_path']),
-            "--splits_path", str(params['splits_path']),
-            "--model_specific_outdir", str(params['model_specific_outdir']),
-            "--train_split_file", str(train_split_file),
-            "--val_split_file", str(val_split_file),
-            "--test_split_file", str(test_split_file),
-            "--ml_data_outdir", str(params['ml_data_outdir']),
-            "--y_col_name", str(y_col_name)
-        ]
-        result = subprocess.run(preprocess_run, capture_output=True,
-                                text=True, check=True)
+        if params['singularity']:
+            preprocess_run = ["singularity", "exec", "--nv",
+                params['singularity_image'], preprocess.sh,
+                os.getenv("IMPROVE_DATA_DIR"),
+                str("--x_data_path " + str(params['x_data_path'])),
+                str("--y_data_path " + str(params['y_data_path'])),
+                str("--splits_path " + str(params['splits_path'])),
+                str("--model_specific_outdir " + str(params['model_specific_outdir'])),
+                str("--train_split_file " + str(train_split_file)),
+                str("--val_split_file " + str(val_split_file)),
+                str("--test_split_file " + str(test_split_file)),
+                str("--ml_data_outdir " + str(params['ml_data_outdir'])),
+                str("--y_col_name " + str(y_col_name))
+            ]
+            result = subprocess.run(preprocess_run, capture_output=True,
+                                    text=True, check=True)
+        else:
+            preprocess_run = ["python",
+                "preprocess.py",
+                "--x_data_path", str(params['x_data_path']),
+                "--y_data_path", str(params['y_data_path']),
+                "--splits_path", str(params['splits_path']),
+                "--model_specific_outdir", str(params['model_specific_outdir']),
+                "--train_split_file", str(train_split_file),
+                "--val_split_file", str(val_split_file),
+                "--test_split_file", str(test_split_file),
+                "--ml_data_outdir", str(params['ml_data_outdir']),
+                "--y_col_name", str(y_col_name)
+            ]
+            result = subprocess.run(preprocess_run, capture_output=True,
+                                    text=True, check=True)
         timer_preprocess.display_timer(print)
     return {'source_data_name':source_data_name, 'split':split}
 
