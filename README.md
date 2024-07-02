@@ -46,10 +46,10 @@ Set IMPROVE_DATA_DIR environment variable:
 export IMPROVE_DATA_DIR='./improve_dir'
 ```
 
-Change the workflow parameters in the file: csa_config.ini
-Additionally config options that are available as command line arguments are: 
-  use_singularity - Set True to use singularity image for the model
-  singularity_image - .sif file for the image
+Change the workflow parameters in the file: csa_config.ini\
+Additionally config options that are available as command line arguments are: \
+  use_singularity - Set True to use singularity image for the model\
+  singularity_image - .sif file for the image\
   input_dir - Directory to store pre-processed data
   model_outdir - Directory to store trained model
   infer_outdir - Directory to store inference results
