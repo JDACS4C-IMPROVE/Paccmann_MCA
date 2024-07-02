@@ -193,6 +193,7 @@ def infer(params, source_data_name, target_data_name, split): #
                 str("--test_ml_data_dir "+ str(test_ml_data_dir)),
                 str("--model_dir " + str(model_outdir)),
                 str("--infer_outdir " + str(infer_outdir)),
+                str("--model_specific_outdir " + str(params['model_specific_outdir'])),
                 str("--y_col_name " + y_col_name),
                 str("--model_outdir " + str(model_outdir)),
                 str("--ml_data_outdir " + str(ml_data_outdir))
@@ -207,6 +208,7 @@ def infer(params, source_data_name, target_data_name, split): #
                 "--infer_outdir", str(infer_outdir),
                 "--y_col_name", y_col_name,
                 "--model_outdir", str(model_outdir),
+                "--model_specific_outdir", str(params['model_specific_outdir']),
                 "--ml_data_outdir", str(ml_data_outdir)
         ]
         result = subprocess.run(infer_run, capture_output=True,
