@@ -72,7 +72,7 @@ def preprocess(params, source_data_name, split): #
     import warnings
     import os
     import subprocess
-    from IMPROVE import framework as frm
+    import IMPROVE.framework as frm
     def build_split_fname(source_data_name, split, phase):
         """ Build split file name. If file does not exist continue """
         if split=='all':
@@ -173,7 +173,6 @@ def train(params, source_data_name, split):
     import os
     import warnings
     import subprocess
-    from IMPROVE import framework as frm
     def build_split_fname(source_data_name, split, phase):
         """ Build split file name. If file does not exist continue """
         if split=='all':
@@ -228,7 +227,6 @@ def infer(params, source_data_name, target_data_name, split): #
     import os
     import warnings
     import subprocess
-    from IMPROVE import framework as frm
     def build_split_fname(source_data_name, split, phase):
         """ Build split file name. If file does not exist continue """
         if split=='all':
