@@ -128,10 +128,26 @@ if params['model_specific_data']:
         strategy=None,
     ) """
 
+local_config = Config(
+    executors=[
+        HighThroughputExecutor(
+            label="htex_Local",
+            worker_debug=True,
+            available_accelerators=2,
+            provider=LocalProvider(
+                channel=LocalChannel(),
+                init_blocks=1,
+                max_blocks=1,
+            ),
+        )
+    ],
+    strategy='none',
+)
+
 ##################### START PARSL PARALLEL EXECUTION #####################
 train_futures=[]
 
-parsl.load()
+parsl.load(local_config)
 for source_data_name in params['source_datasets']:
     for split in params['split']:
         preprocess_futures = preprocess(params, source_data_name, split)  ## MODIFY TO INCLUDE SPLITS IN PARALLEL?
