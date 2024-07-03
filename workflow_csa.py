@@ -19,6 +19,8 @@ from parsl.providers import LocalProvider
 from parsl.channels import LocalChannel
 from parsl.executors import HighThroughputExecutor
 from parsl.config import Config
+from time import time
+
 
 
 
@@ -67,6 +69,16 @@ def build_split_fname(source_data_name, split, phase):
 
 @python_app  ## May be implemented separately outside this script or does not need parallelization
 def preprocess(params, source_data_name, split): # 
+    import warnings
+    import os
+    import subprocess
+    from IMPROVE import framework as frm
+    def build_split_fname(source_data_name, split, phase):
+        """ Build split file name. If file does not exist continue """
+        if split=='all':
+            return f"{source_data_name}_{split}.txt"
+        return f"{source_data_name}_split_{split}_{phase}.txt"
+
     split_nums=params['split']
     # Get the split file paths
     # This parsing assumes splits file names are: SOURCE_split_NUM_[train/val/test].txt
@@ -111,7 +123,7 @@ def preprocess(params, source_data_name, split): #
             # If source and target are different, then infer on the entire target dataset
             test_split_file = f"{target_data_name}_all.txt"
         
-        timer_preprocess = Timer()
+        #timer_preprocess = Timer()
 
         # p1 (none): Preprocess train data
         print("\nPreprocessing")
@@ -152,12 +164,21 @@ def preprocess(params, source_data_name, split): #
             ]
             result = subprocess.run(preprocess_run, capture_output=True,
                                     text=True, check=True)
-        timer_preprocess.display_timer(print)
+        #timer_preprocess.display_timer(print)
     return {'source_data_name':source_data_name, 'split':split}
 
 
 @python_app 
 def train(params, source_data_name, split): 
+    import os
+    import warnings
+    import subprocess
+    from IMPROVE import framework as frm
+    def build_split_fname(source_data_name, split, phase):
+        """ Build split file name. If file does not exist continue """
+        if split=='all':
+            return f"{source_data_name}_{split}.txt"
+        return f"{source_data_name}_split_{split}_{phase}.txt"
     model_outdir = params['model_outdir']/f"{source_data_name}"/f"split_{split}"
     #frm.create_outdir(outdir=model_outdir)
     #for target_data_name in params['target_datasets']:
@@ -166,7 +187,7 @@ def train(params, source_data_name, split):
         os.makedirs(os.path.join(model_outdir, 'ckpts'), exist_ok=True) # For storing checkpoints
         train_ml_data_dir = ml_data_outdir
         val_ml_data_dir = ml_data_outdir
-        timer_train = Timer()
+        #timer_train = Timer()
         print("\nTrain")
         print(f"train_ml_data_dir: {train_ml_data_dir}")
         print(f"val_ml_data_dir:   {val_ml_data_dir}")
@@ -204,12 +225,21 @@ def train(params, source_data_name, split):
 
 @python_app  
 def infer(params, source_data_name, target_data_name, split): # 
+    import os
+    import warnings
+    import subprocess
+    from IMPROVE import framework as frm
+    def build_split_fname(source_data_name, split, phase):
+        """ Build split file name. If file does not exist continue """
+        if split=='all':
+            return f"{source_data_name}_{split}.txt"
+        return f"{source_data_name}_split_{split}_{phase}.txt"
     #for split in params['split']:
     ml_data_outdir = params['input_dir']/f"{source_data_name}-{target_data_name}"/f"split_{split}"
     model_outdir = params['model_outdir']/f"{source_data_name}"/f"split_{split}"
     test_ml_data_dir = ml_data_outdir
     infer_outdir = params['infer_outdir']/f"{source_data_name}-{target_data_name}"/f"split_{split}"
-    timer_infer = Timer()
+    #timer_infer = Timer()
 
     print("\nInfer")
     print(f"test_ml_data_dir: {test_ml_data_dir}")
@@ -241,7 +271,7 @@ def infer(params, source_data_name, target_data_name, split): #
         ]
         result = subprocess.run(infer_run, capture_output=True,
                                 text=True, check=True)
-    timer_infer.display_timer(print)
+    #timer_infer.display_timer(print)
     return True
 
 ############
