@@ -145,7 +145,7 @@ def preprocess(params, source_data_name, split): #
                 str("--val_split_file " + str(val_split_file)),
                 str("--test_split_file " + str(test_split_file)),
                 str("--ml_data_outdir " + str(params['ml_data_outdir'])),
-                str("--y_col_name " + str(y_col_name))
+                str("--y_col_name " + str(params['y_col_name']))
             ]
             result = subprocess.run(preprocess_run, capture_output=True,
                                     text=True, check=True)
@@ -160,7 +160,7 @@ def preprocess(params, source_data_name, split): #
                 "--val_split_file", str(val_split_file),
                 "--test_split_file", str(test_split_file),
                 "--ml_data_outdir", str(params['ml_data_outdir']),
-                "--y_col_name", str(y_col_name)
+                "--y_col_name", str(params['y_col_name'])
             ]
             result = subprocess.run(preprocess_run, capture_output=True,
                                     text=True, check=True)
@@ -201,7 +201,7 @@ def train(params, source_data_name, split):
                     str("--model_specific_outdir " + str(params['model_specific_outdir'])),
                     str("--model_outdir " + str(model_outdir)),
                     str("--epochs " + str(params['epochs'])),
-                    str("--y_col_name " + y_col_name),
+                    str("--y_col_name " + params['y_col_name']),
                     str("--ckpt_directory " + os.path.join(model_outdir, 'ckpts'))
             ]
             result = subprocess.run(train_run, capture_output=True,
@@ -215,7 +215,7 @@ def train(params, source_data_name, split):
                 "--model_specific_outdir", str(params['model_specific_outdir']),
                 "--model_outdir", str(model_outdir),
                 "--epochs", str(params['epochs']),
-                "--y_col_name", y_col_name,
+                "--y_col_name", params['y_col_name'],
                 "--ckpt_directory", os.path.join(model_outdir, 'ckpts')
             ]
             result = subprocess.run(train_run, capture_output=True,
@@ -250,7 +250,7 @@ def infer(params, source_data_name, target_data_name, split): #
                 str("--model_dir " + str(model_outdir)),
                 str("--infer_outdir " + str(infer_outdir)),
                 str("--model_specific_outdir " + str(params['model_specific_outdir'])),
-                str("--y_col_name " + y_col_name),
+                str("--y_col_name " + params['y_col_name']),
                 str("--model_outdir " + str(model_outdir)),
                 str("--ml_data_outdir " + str(ml_data_outdir))
         ]
@@ -262,7 +262,7 @@ def infer(params, source_data_name, target_data_name, split): #
                 "--test_ml_data_dir", str(test_ml_data_dir),
                 "--model_dir", str(model_outdir),
                 "--infer_outdir", str(infer_outdir),
-                "--y_col_name", y_col_name,
+                "--y_col_name", params['y_col_name'],
                 "--model_outdir", str(model_outdir),
                 "--model_specific_outdir", str(params['model_specific_outdir']),
                 "--ml_data_outdir", str(ml_data_outdir)
