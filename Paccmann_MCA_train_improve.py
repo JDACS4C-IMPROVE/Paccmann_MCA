@@ -161,7 +161,7 @@ def candle_main():
                              app_train_params
     params = frm.initialize_parameters(
         file_path,
-        default_model="Paccmann_MCA_default_model_csa.txt",
+        default_model="Paccmann_MCA_default_model_csa_ovarian.txt",
         additional_definitions=additional_definitions,
         required=None,
     )

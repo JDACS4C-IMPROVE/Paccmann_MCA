@@ -151,12 +151,12 @@ def run(params):
     print("\nLoading omics data...")
     oo = drp.OmicsLoader(params)
     print(oo)
-    ge = oo.dfs['cancer_gene_expression.tsv']  # get the needed canc x data
+    ge = oo.dfs['cancer_gene_expression_combined.tsv']  # get the needed canc x data
     
     print("\nLoading drugs data...")
     dd = drp.DrugsLoader(params)
     print(dd)
-    sm = dd.dfs['drug_SMILES.tsv']  # get the needed drug x data
+    sm = dd.dfs['drug_SMILES_combined.tsv']  # get the needed drug x data
     # Modify files to be compatible with Paccmann_MCA (Model specific modification)
     sm_new = pd.DataFrame(columns = ['SMILES', 'DrugID'])
     sm_new['SMILES'] = sm['canSMILES'].values
@@ -172,7 +172,7 @@ def run(params):
         # [Req] Load response data
         # ------------------------
         rr = drp.DrugResponseLoader(params, split_file=split_file, verbose=True)
-        df_response = rr.dfs["response.tsv"]
+        df_response = rr.dfs["response_pdmr_combined.tsv"]
         # ------------------------
         # Retain (canc, drug) response samples for which omic data is available
         df_y, df_canc = drp.get_common_samples(df1=df_response, df2=ge,
@@ -217,7 +217,7 @@ def run(params):
 def main():
     params = frm.initialize_parameters(
         file_path,
-        default_model="Paccmann_MCA_default_model_csa.txt",
+        default_model="Paccmann_MCA_default_model_csa_ovarian.txt",
         additional_definitions=preprocess_params,
         required=req_preprocess_args,
     )
