@@ -175,9 +175,9 @@ for source_data_name in source_datasets:
             # p2 (p1): Train model
             # Train a single model for a given [source, split] pair
             # Train using train samples and early stop using val samples
-            os.makedirs(os.path.join(model_outdir, 'ckpts'), exist_ok=True) # For storing checkpoints
             model_outdir = MAIN_MODEL_DIR/f"{source_data_name}"/f"split_{split}"
             if model_outdir.exists() is False:
+                os.makedirs(os.path.join(model_outdir, 'ckpts'), exist_ok=True) # For storing checkpoints
                 train_ml_data_dir = ml_data_outdir
                 val_ml_data_dir = ml_data_outdir
                 timer_train = Timer()
@@ -193,7 +193,7 @@ for source_data_name in source_datasets:
                       "--model_outdir", str(model_outdir),
                       "--epochs", str(epochs),
                       "--y_col_name", y_col_name,
-                      "--ckpt_directory", str(model_outdir + '/ckpts/')
+                      "--ckpt_directory", str(str(model_outdir) + '/ckpts/')
                 ]
                 result = subprocess.run(train_run, capture_output=True,
                                         text=True, check=True)
