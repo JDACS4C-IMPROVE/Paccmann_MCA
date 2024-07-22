@@ -2,7 +2,8 @@ import candle
 import pickle
 import os
 from pathlib import Path
-from test_paccmann import main
+#from test_paccmann import main
+from test_paccmann_ovarian import main
 # [Req] IMPROVE/CANDLE imports
 from improve import framework as frm
 from improve.metrics import compute_metrics
@@ -35,12 +36,13 @@ def run(params):
         y_true=test_true, y_pred=test_pred, stage="test",
         outdir=params["infer_outdir"]
     )
-    test_scores = frm.compute_performace_scores(
+    """     
+        test_scores = frm.compute_performace_scores(
         params,
         y_true=test_true, y_pred=test_pred, stage="test",
         outdir=params["infer_outdir"], metrics=metrics_list
-    )
-    return test_scores
+    ) """
+    return True
 
 
 def candle_main():
