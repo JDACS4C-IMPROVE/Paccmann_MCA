@@ -389,7 +389,7 @@ local_config = Config(
 train_futures=[]
 
 #parsl.load(local_config)
-parsl.load
+parsl.load()
 for source_data_name in params['source_datasets']:
     for split in params['split']:
         for target_data_name in params['target_datasets']:
