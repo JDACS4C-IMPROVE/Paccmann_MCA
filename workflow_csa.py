@@ -388,7 +388,8 @@ local_config = Config(
 ##################### START PARSL PARALLEL EXECUTION #####################
 train_futures=[]
 
-parsl.load(local_config)
+#parsl.load(local_config)
+parsl.load
 for source_data_name in params['source_datasets']:
     for split in params['split']:
         for target_data_name in params['target_datasets']:
