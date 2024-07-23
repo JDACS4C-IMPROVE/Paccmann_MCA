@@ -72,7 +72,7 @@ def preprocess(params, source_data_name, split): #
     import warnings
     import os
     import subprocess
-    import IMPROVE.framework as frm
+    import .IMPROVE.framework as frm
     def build_split_fname(source_data_name, split, phase):
         """ Build split file name. If file does not exist continue """
         if split=='all':
