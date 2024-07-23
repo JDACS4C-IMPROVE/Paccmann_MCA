@@ -20,6 +20,7 @@ from parsl.channels import LocalChannel
 from parsl.executors import HighThroughputExecutor
 from parsl.config import Config
 from time import time
+from typing import Sequence, Tuple, Union
 
 
 
@@ -369,20 +370,26 @@ if params['model_specific_data']:
         strategy=None,
     ) """
 
+available_accelerators: Union[int, Sequence[str]] = 8
+worker_port_range: Tuple[int, int] = (10000, 20000)
+retries: int = 1
+
 local_config = Config(
+    retries=retries,
     executors=[
         HighThroughputExecutor(
+            address="127.0.0.1",
             label="htex_Local",
+            cpu_affinity="block",
             worker_debug=True,
-            available_accelerators=2,
+            available_accelerators=available_accelerators,
+            worker_port_range=worker_port_range,
             provider=LocalProvider(
-                channel=LocalChannel(),
                 init_blocks=1,
                 max_blocks=1,
             ),
         )
     ],
-    strategy='none',
 )
 
 ##################### START PARSL PARALLEL EXECUTION #####################
