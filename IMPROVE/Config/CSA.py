@@ -68,7 +68,7 @@ additional_definitions = [
     },
     {"name": "epochs",
      "type": int,
-     "default": 1,
+     "default": 100,
      "help": "Number of epochs"
     },
     {"name": "learning_rate",
