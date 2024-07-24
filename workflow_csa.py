@@ -353,34 +353,20 @@ if params['model_specific_data']:
     result = subprocess.run(auth_data_download, capture_output=True,
                             text=True, check=True)
 
-""" config = Config(
-        executors=[
-            HighThroughputExecutor(
-                label=params['label'],
-                worker_debug=bool(params['worker_debug']),
-                cores_per_worker=int(params['cores_per_worker']),
-                provider=LocalProvider(
-                    channel=LocalChannel(),
-                    init_blocks=int(params['init_blocks']),
-                    max_blocks=int(params['max_blocks'])
-                )
-                #,max_workers_per_node=parsl_config['max_workers_per_node'],
-            )
-        ],
-        strategy=None,
-    ) """
 
+##### CONFIG FOR LAMBDA ######
 available_accelerators: Union[int, Sequence[str]] = 8
 worker_port_range: Tuple[int, int] = (10000, 20000)
 retries: int = 1
 
-local_config = Config(
+config_lambda = Config(
     retries=retries,
     executors=[
         HighThroughputExecutor(
             address="127.0.0.1",
             label="htex_Local",
             cpu_affinity="block",
+            max_workers_per_node=4,
             #worker_debug=True,
             available_accelerators=available_accelerators,
             worker_port_range=worker_port_range,
@@ -391,6 +377,45 @@ local_config = Config(
         )
     ],
 )
+
+
+####### CONFIG FOR POLARIS ######
+config_polaris = Config(
+            retries=1,  # Allows restarts if jobs are killed by the end of a job
+            executors=[
+                HighThroughputExecutor(
+                    label="htex",
+                    heartbeat_period=15,
+                    heartbeat_threshold=120,
+                    worker_debug=True,
+                    max_workers=64,
+                    available_accelerators=4,  # Ensures one worker per accelerator
+                    address=address_by_interface("bond0"),
+                    cpu_affinity="block-reverse",
+                    prefetch_capacity=0,  # Increase if you have many more tasks than workers
+                    start_method="spawn",
+                    provider=PBSProProvider(  # type: ignore[no-untyped-call]
+                        launcher=MpiExecLauncher(  # Updates to the mpiexec command
+                            bind_cmd="--cpu-bind", overrides="--depth=64 --ppn 1"
+                        ),
+                        account="IMPROVE",
+                        queue="R1819593",
+                        # PBS directives (header lines): for array jobs pass '-J' option
+                        scheduler_options=user_opts['scheduler_options'],
+                        worker_init=user_opts['worker_init'],
+                        nodes_per_block=10,
+                        init_blocks=1,
+                        min_blocks=0,
+                        max_blocks=1,  # Can increase more to have more parallel jobs
+                        cpus_per_node=64,
+                        walltime="1:00:00",
+                    ),
+                ),
+            ],
+            run_dir=str(run_dir),
+            strategy='simple',
+            app_cache=True,
+        )
 
 ##################### START PARSL PARALLEL EXECUTION #####################
 train_futures=[]
