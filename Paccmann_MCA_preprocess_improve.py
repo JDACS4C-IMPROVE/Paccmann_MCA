@@ -158,6 +158,7 @@ def run(params):
     print(dd)
     sm = dd.dfs['drug_SMILES.tsv']  # get the needed drug x data
     # Modify files to be compatible with Paccmann_MCA (Model specific modification)
+    sm.columns = ['canSMILES']
     sm_new = pd.DataFrame(columns = ['SMILES', 'DrugID'])
     sm_new['SMILES'] = sm['canSMILES'].values
     sm_new['DrugID'] = sm.index.values
