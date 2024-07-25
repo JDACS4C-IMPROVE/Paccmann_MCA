@@ -286,13 +286,22 @@ def build_split_fname(source_data_name, split, phase):
 run_dir="~/tmp"
 print(parsl.__version__)
 
-user_opts = {
+""" user_opts = {
     "worker_init":      f"source ~/.venv/parsl/bin/activate; cd {run_dir}", # load the environment where parsl is installed
     "scheduler_options":"#PBS -l filesystems=home:eagle:grand -l singularity_fakeroot=true" , # specify any PBS options here, like filesystems
     "account":          "IMPROVE",
     "queue":            "R1819593",
     "walltime":         "1:00:00",
     "nodes_per_block":  10, # think of a block as one job on polaris, so to run on the main queues, set this >= 10
+} """
+
+user_opts = {
+    "worker_init":      f". ~/.bashrc ; conda activate parsl; cd {run_dir}", # load the environment where parsl is installed
+    "scheduler_options":"#PBS -l filesystems=home:eagle:grand -l singularity_fakeroot=true" , # specify any PBS options here, like filesystems
+    "account":          "IMPROVE",
+    "queue":            "debug-scaling",
+    "walltime":         "1:00:00",
+    "nodes_per_block":  3,# think of a block as one job on polaris, so to run on the main queues, set this >= 10
 }
 
 additional_definitions = CSA.additional_definitions
@@ -399,7 +408,7 @@ config_polaris = Config(
                             bind_cmd="--cpu-bind", overrides="--depth=64 --ppn 1"
                         ),
                         account="IMPROVE_Aim1",
-                        queue="R1819593",
+                        queue="debug-scaling",
                         # PBS directives (header lines): for array jobs pass '-J' option
                         scheduler_options=user_opts['scheduler_options'],
                         worker_init=user_opts['worker_init'],
