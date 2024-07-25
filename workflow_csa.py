@@ -389,7 +389,7 @@ retries: int = 1
 
 
 ####### CONFIG FOR POLARIS ######
-config_polaris = Config(
+""" config_polaris = Config(
             retries=1,  # Allows restarts if jobs are killed by the end of a job
             executors=[
                 HighThroughputExecutor(
@@ -424,7 +424,41 @@ config_polaris = Config(
             run_dir=str(run_dir),
             strategy='simple',
             app_cache=True,
-        )
+        ) """
+
+config_polaris = Config(
+        executors=[
+            HighThroughputExecutor(
+                label="htex",
+                available_accelerators=4, # if this is set, it will override other settings for max_workers if set
+                max_workers_per_node=4, # Set as many workers as there are GPUs because we want one worker to use 1 GPU
+                address=address_by_interface("bond0"),
+                cpu_affinity="block-reverse",
+                prefetch_capacity=0,
+                worker_debug=True,
+                # start_method="spawn",  # Needed to avoid interactions between MPI and os.fork
+                provider=PBSProProvider(
+                    launcher=MpiExecLauncher(bind_cmd="--cpu-bind", overrides="--depth=64 --ppn 1"),
+                    account=user_opts["account"],
+                    queue=user_opts["queue"],
+                    select_options="ngpus=4",
+                    # PBS directives (header lines): for array jobs pass '-J' option
+                    scheduler_options=user_opts["scheduler_options"],
+                    # Command to be run before starting a worker, such as:
+                    worker_init=user_opts["worker_init"],
+                    # number of compute nodes allocated for each block
+                    nodes_per_block=user_opts["nodes_per_block"],
+                    init_blocks=1,
+                    min_blocks=0,
+                    max_blocks=1, # Can increase more to have more parallel jobs
+                    # cpus_per_node=user_opts["cpus_per_node"],
+                    walltime=user_opts["walltime"]
+                ),
+            ),
+        ],
+        retries=2,
+        app_cache=True,
+)
 
 ##################### START PARSL PARALLEL EXECUTION #####################
 train_futures=[]
