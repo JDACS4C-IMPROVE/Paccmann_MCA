@@ -389,7 +389,7 @@ retries: int = 1
 
 
 ####### CONFIG FOR POLARIS ######
-""" config_polaris = Config(
+config_polaris = Config(
             retries=1,  # Allows restarts if jobs are killed by the end of a job
             executors=[
                 HighThroughputExecutor(
@@ -424,9 +424,9 @@ retries: int = 1
             run_dir=str(run_dir),
             strategy='simple',
             app_cache=True,
-        ) """
+        ) 
 
-config_polaris = Config(
+""" config_polaris = Config(
         executors=[
             HighThroughputExecutor(
                 label="htex",
@@ -458,7 +458,7 @@ config_polaris = Config(
         ],
         retries=2,
         app_cache=True,
-)
+) """
 
 ##################### START PARSL PARALLEL EXECUTION #####################
 train_futures=[]
