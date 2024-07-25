@@ -359,7 +359,7 @@ available_accelerators: Union[int, Sequence[str]] = 8
 worker_port_range: Tuple[int, int] = (10000, 20000)
 retries: int = 1
 
-config_lambda = Config(
+""" config_lambda = Config(
     retries=retries,
     executors=[
         HighThroughputExecutor(
@@ -376,7 +376,7 @@ config_lambda = Config(
             ),
         )
     ],
-)
+) """
 
 
 ####### CONFIG FOR POLARIS ######
