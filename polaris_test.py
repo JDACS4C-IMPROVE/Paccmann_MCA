@@ -43,7 +43,7 @@ config_polaris = Config(
             retries=1,  # Allows restarts if jobs are killed by the end of a job
             executors=[
                 HighThroughputExecutor(
-                    label="htex",
+                    label="htex_test",
                     heartbeat_period=15,
                     heartbeat_threshold=120,
                     worker_debug=True,
