@@ -296,7 +296,8 @@ print(parsl.__version__)
 } """
 
 user_opts = {
-    "worker_init":      f". ~/.bashrc ; conda activate parsl; cd {run_dir}", # load the environment where parsl is installed
+    "worker_init":      f". ~/.bashrc ; conda activate parsl; export PYTHONPATH=$PYTHONPATH:/IMPROVE; export IMPROVE_DATA_DIR=./improve_dir; 
+                        module use /soft/spack/gcc/0.6.1/install/modulefiles/Core; module load apptainer; cd {run_dir}", # load the environment where parsl is installed
     "scheduler_options":"#PBS -l filesystems=home:eagle:grand -l singularity_fakeroot=true" , # specify any PBS options here, like filesystems
     "account":          "IMPROVE_Aim1",
     "queue":            "debug-scaling",
@@ -478,3 +479,5 @@ for source_data_name in params['source_datasets']:
 #    infer_futures = [infer(params, tf.result()['source_data_name'], target_data_name, tf.result()['split']) for tf in train_futures]
 
 parsl.clear()
+
+### module load apptainer
