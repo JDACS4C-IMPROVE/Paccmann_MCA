@@ -398,7 +398,7 @@ config_polaris = Config(
                         launcher=MpiExecLauncher(  # Updates to the mpiexec command
                             bind_cmd="--cpu-bind", overrides="--depth=64 --ppn 1"
                         ),
-                        account="IMPROVE",
+                        account="IMPROVE_Aim1",
                         queue="R1819593",
                         # PBS directives (header lines): for array jobs pass '-J' option
                         scheduler_options=user_opts['scheduler_options'],
