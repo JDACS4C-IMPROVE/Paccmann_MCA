@@ -28,6 +28,11 @@ print(parsl.__version__)
 def hello_python (message):
     return 'Hello %s' % message
 
+@bash_app
+def test_singularity():
+    return 'echo CUDA: $CUDA_VISIBLE_DEVICES ; singularity run -B %s:/candle_data_dir %s train.sh ${CUDA_VISIBLE_DEVICES} /candle_data_dir --help '
+
+
 user_opts = {
     "worker_init":      f". ~/.bashrc ; conda activate parsl; export PYTHONPATH=$PYTHONPATH:/IMPROVE; export IMPROVE_DATA_DIR=./improve_dir; module use /soft/spack/gcc/0.6.1/install/modulefiles/Core; module load apptainer; cd {run_dir}", # load the environment where parsl is installed
     "scheduler_options":"#PBS -l filesystems=home:eagle:grand -l singularity_fakeroot=true" , # specify any PBS options here, like filesystems
