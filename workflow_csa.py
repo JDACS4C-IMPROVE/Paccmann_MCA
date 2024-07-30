@@ -194,7 +194,7 @@ def train(params, source_data_name, split):
         print(f"model_outdir:      {model_outdir}")
         if params['use_singularity']:
             train_run = ["singularity", "exec", "--nv",
-                    params['singularity_image'], "train.sh",
+                    params['singularity_image'], "train.sh", '$CUDA_VISIBLE_DEVICES',
                     os.getenv("IMPROVE_DATA_DIR"),
                     str("--train_ml_data_dir " + str(train_ml_data_dir)),
                     str("--val_ml_data_dir " + str(val_ml_data_dir)),
