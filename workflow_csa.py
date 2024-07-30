@@ -208,7 +208,7 @@ def train(params, source_data_name, split):
             result = subprocess.run(train_run, capture_output=True,
                                     text=True, check=True)
         else:
-            train_run = ["python",
+            train_run = ["CUDA_VISIBLE_DEVICES=", "$CUDA_VISIBLE_DEVICES", "python",
                 "train.py",
                 "--train_ml_data_dir", str(train_ml_data_dir),
                 "--val_ml_data_dir", str(val_ml_data_dir),
