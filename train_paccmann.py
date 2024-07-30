@@ -246,7 +246,7 @@ def main(params):
         val_rmse_a = np.sqrt(np.mean((predictions - labels)**2))
 
         # Implement early stopping
-        if epoch >= 50:
+        if epoch >= 150:
             if val_loss_a<best_score:
                 torch.save(model.state_dict(), params['modelpath'])
                 best_epoch = epoch + 1
