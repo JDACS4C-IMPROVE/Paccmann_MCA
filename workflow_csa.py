@@ -368,7 +368,7 @@ available_accelerators: Union[int, Sequence[str]] = 8
 worker_port_range: Tuple[int, int] = (10000, 20000)
 retries: int = 1
 
-""" config_lambda = Config(
+config_lambda = Config(
     retries=retries,
     executors=[
         HighThroughputExecutor(
@@ -385,9 +385,9 @@ retries: int = 1
             ),
         )
     ],
-) """
+)
 
-
+""" 
 ####### CONFIG FOR POLARIS ######
 config_polaris = Config(
             retries=1,  # Allows restarts if jobs are killed by the end of a job
@@ -424,7 +424,7 @@ config_polaris = Config(
             run_dir=str(run_dir),
             strategy='simple',
             app_cache=True,
-        ) 
+        )  """
 
 """ config_polaris = Config(
         executors=[
@@ -464,7 +464,7 @@ config_polaris = Config(
 train_futures=[]
 
 #parsl.load(local_config)
-parsl.load(config_polaris)
+parsl.load(config_lambda)
 for source_data_name in params['source_datasets']:
     for split in params['split']:
         for target_data_name in params['target_datasets']:
