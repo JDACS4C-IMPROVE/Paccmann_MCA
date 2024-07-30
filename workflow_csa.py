@@ -214,6 +214,7 @@ def train(params, source_data_name, split):
                 "--val_ml_data_dir", str(val_ml_data_dir),
                 "--ml_data_outdir", str(ml_data_outdir),
                 "--model_specific_outdir", str(params['model_specific_outdir']),
+ 
                 "--model_outdir", str(model_outdir),
                 "--epochs", str(params['epochs']),
                 "--y_col_name", params['y_col_name'],
@@ -376,7 +377,7 @@ config_lambda = Config(
             label="htex_Local",
             cpu_affinity="block",
             #max_workers_per_node=2,
-            #worker_debug=True,
+            worker_debug=True,
             available_accelerators=available_accelerators,
             worker_port_range=worker_port_range,
             provider=LocalProvider(
