@@ -83,7 +83,7 @@ additional_definitions = [
     },
     {"name": "use_singularity",
      "type": bool,
-     "default": False,
+     "default": True,
      "help": "Use singularity image for model?"
     },
     {"name": "singularity_image",
