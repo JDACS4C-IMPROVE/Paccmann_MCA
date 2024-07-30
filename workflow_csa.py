@@ -364,7 +364,7 @@ if params['model_specific_data']:
 
 
 ##### CONFIG FOR LAMBDA ######
-available_accelerators: Union[int, Sequence[str]] = 8
+available_accelerators: Union[int, Sequence[str]] = 2
 worker_port_range: Tuple[int, int] = (10000, 20000)
 retries: int = 1
 
@@ -375,7 +375,7 @@ config_lambda = Config(
             address="127.0.0.1",
             label="htex_Local",
             cpu_affinity="block",
-            max_workers_per_node=4,
+            #max_workers_per_node=4,
             #worker_debug=True,
             available_accelerators=available_accelerators,
             worker_port_range=worker_port_range,
