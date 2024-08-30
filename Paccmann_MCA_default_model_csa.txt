@@ -56,7 +56,6 @@ batch_normalization = True
 batch_size = 32
 ckpt_save_interval = 25
 ckpt_restart_mode = "off"
-cuda_name = "cuda:7"
 
 [Infer]
 test_ml_data_dir = "./ml_data/CCLE-CCLE/split_0"
