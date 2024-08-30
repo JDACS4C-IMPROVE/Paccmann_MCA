@@ -246,7 +246,7 @@ def infer(params, source_data_name, target_data_name, split): #
     print(f"infer_outdir:     {infer_outdir}")
     if params['use_singularity']:
         infer_run = ["singularity", "exec", "--nv",
-                params['singularity_image'], "infer.sh",
+                params['singularity_image'], "infer.sh",'$CUDA_VISIBLE_DEVICES',
                 os.getenv("IMPROVE_DATA_DIR"),
                 str("--test_ml_data_dir "+ str(test_ml_data_dir)),
                 str("--model_dir " + str(model_outdir)),
