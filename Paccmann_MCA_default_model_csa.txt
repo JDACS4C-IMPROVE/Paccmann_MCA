@@ -1,25 +1,31 @@
 [Global_Params]
 [Preprocess]
-ml_data_outdir = "./ml_data"
+train_split_file = "CCLE_split_0_train.txt"
+val_split_file = "CCLE_split_0_val.txt"
+test_split_file = "CCLE_split_0_test.txt"
+ml_data_outdir = "./ml_data/CCLE-CCLE/split_0"
 x_data_canc_files = [["cancer_gene_expression.tsv", ["Gene_Symbol"]]]
 x_data_drug_files = [["drug_SMILES.tsv"]]
 y_data_files = [["response.tsv"]]
-train_split_file = "gCSI_split_0_train.txt"
-val_split_file = "gCSI_split_0_val.txt"
-test_split_file = "gCSI_split_0_test.txt"
+data_format = ".pt"
 use_lincs = False
 scaling = None
-infer_outdir = "./out_infer"
-cuda_name = "cuda:7"
 y_col_name = 'auc'
-model_file_name = "model"
-model_file_format = ".pt"
-patience = 20
-
 gep_filepath = 'gene_expression.csv'
 smi_filepath = 'smiles.smi'
 gene_filepath = '2128_genes.pkl'
 smiles_language_filepath = 'smiles_language_chembl_gdsc_ccle.pkl'
+data_url = 'https://ftp.mcs.anl.gov/pub/candle/public/improve/model_curation_data/Paccmann_MCA/Data_MCA.zip'
+
+[Train]
+train_ml_data_dir = "./ml_data/CCLE-CCLE/split_0"
+val_ml_data_dir = "./ml_data/CCLE-CCLE/split_0"
+model_outdir = "./out_models/CCLE/split_0"
+model_file_name = "model"
+model_file_format = ".pt"
+y_col_name = 'auc'
+cuda_name = "cuda:7"
+patience = 20
 drug_sensitivity_min_max = False
 gene_expression_standardize = False
 augment_smiles = True
@@ -38,12 +44,6 @@ smiles_vocabulary_size = 575
 drug_sensitivity_processing_parameters = {}
 gene_expression_processing_parameters = {}
 number_of_parameters = 48252129
-
-train_data = 'train.csv'
-test_data = 'test.csv'
-val_data = 'val.csv'
-data_url = 'https://ftp.mcs.anl.gov/pub/candle/public/improve/model_curation_data/Paccmann_MCA/Data_MCA.zip'
-output_dir = 'Output'
 model_name = 'Paccmann_MCA'
 epochs = 1
 learning_rate = 0.0001
@@ -56,3 +56,14 @@ batch_normalization = True
 batch_size = 32
 ckpt_save_interval = 25
 ckpt_restart_mode = "off"
+cuda_name = "cuda:7"
+
+[Infer]
+test_ml_data_dir = "./ml_data/CCLE-CCLE/split_0"
+model_dir = "./out_models/CCLE/split_0"
+infer_outdir = "./out_infer/CCLE-CCLE/split_0"
+train_data = 'train.csv'
+test_data = 'test.csv'
+val_data = 'val.csv'
+output_dir = 'Output'
+
