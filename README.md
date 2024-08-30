@@ -82,7 +82,7 @@ csa_data/raw_data/
     └── response.tsv
 ```
 ## Model scripts and parameter file
-+ `Paccmann_MCA_preprocess_improve.py` - takes benchmark data files and transforms into files for trianing and inference
++ `Paccmann_MCA_preprocess_improve.py` - takes benchmark data files and transforms into files for training and inference
 + `Paccmann_MCA_train_improve.py` - trains the Paccmann_MCA model
 + `Paccmann_MCA_infer_improve.py` - runs inference with the trained model
 + `Paccmann_MCA_default_model_csa.txt` - default parameter file
@@ -118,7 +118,7 @@ Preprocesses the CSA data and creates train, validation (val), and test datasets
 
 Generates:
 * three model input data files, each containing the drug response values (i.e. AUC) and corresponding metadata: `train_y_data.csv`, `val_y_data.csv`, `test_y_data.csv`
-* gene_expression data and drug SMILES data
+* gene_expression and drug SMILES data
 * downloads and preprocesses model specifile files required for Paccmann_MCA.
 
 ```
@@ -173,8 +173,6 @@ out_infer
 
 
 ## References
-
-If you use `paccmann_predictor` in your projects, please cite the following:
 
 ```bib
 @article{manica2019paccmann,
