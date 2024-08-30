@@ -17,7 +17,7 @@ anticancer drug sensitivity prediction and drug target affinity prediction. Plea
 
 *NOTE*: PaccMann acronyms "Prediction of AntiCancer Compound sensitivity with Multi-modal Attention-based Neural Networks".
 This model is curated as a part of the [_IMPROVE Project_](https://github.com/JDACS4C-IMPROVE)
-The original code is [_here_](https://github.com/PaccMann/paccmann_predictor)
+The original model code is [_here_](https://github.com/PaccMann/paccmann_predictor)
 
 ## Dependencies
 Requirements
