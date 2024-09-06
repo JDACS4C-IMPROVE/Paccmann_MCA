@@ -68,7 +68,7 @@ def run(params):
         # are available.
         rsp = rsp.merge( ge[params["canc_col_name"]], on=params["canc_col_name"], how="inner")
         print(rsp)
-        print(sm)
+        print(sm['improve_chem_id'])
         rsp = rsp.merge(sm_new['DrugID'], on=params["drug_col_name"], how="inner")
 
         ge_sub = ge[ge[params["canc_col_name"]].isin(rsp[params["canc_col_name"]])].reset_index(drop=True)
