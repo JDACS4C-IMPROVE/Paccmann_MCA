@@ -111,15 +111,8 @@ train_params = [
     {'name': 'number_of_parameters',
      'type': int,
      'help': 'Number of parameters'
-     },
-    {'name': 'drug_sensitivity_processing_parameters',
-     'type': dict,
-     'help': 'Parameters for drug sensitivity processing'
-     },
-    {'name': 'gene_expression_processing_parameters',
-     'type': dict,
-     'help': 'Parameters for processing gene expression data'
      }
+
 ]
 infer_params = [
     {'name': 'gep_filepath',
@@ -205,13 +198,5 @@ infer_params = [
     {'name': 'number_of_parameters',
      'type': int,
      'help': 'Number of parameters'
-     },
-    {'name': 'drug_sensitivity_processing_parameters',
-     'type': dict,
-     'help': 'Parameters for drug sensitivity processing'
-     },
-    {'name': 'gene_expression_processing_parameters',
-     'type': dict,
-     'help': 'Parameters for processing gene expression data'
      }
 ]
