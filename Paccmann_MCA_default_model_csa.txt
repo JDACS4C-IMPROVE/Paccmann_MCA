@@ -15,7 +15,7 @@ smi_filepath = smiles.smi
 gene_filepath = 2128_genes.pkl
 smiles_language_filepath = smiles_language_chembl_gdsc_ccle.pkl
 data_url = https://ftp.mcs.anl.gov/pub/candle/public/improve/model_curation_data/Paccmann_MCA/Data_MCA.zip
-input_supp_data_dir = /improve_output/supplemental_data
+input_supp_data_dir = ./improve_output/supplemental_data
 
 [Train]
 model_file_name = model
