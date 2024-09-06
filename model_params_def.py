@@ -199,6 +199,10 @@ infer_params = [
      'type': int,
      'help': 'Size of smiles vocabulary'
      },
+    {'name': 'optimizer',
+     'type': str,
+     'help': 'Optimizer for the model'
+     },
     {'name': 'number_of_parameters',
      'type': int,
      'help': 'Number of parameters'
