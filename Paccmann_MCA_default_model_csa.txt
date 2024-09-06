@@ -18,6 +18,7 @@ data_url = https://ftp.mcs.anl.gov/pub/candle/public/improve/model_curation_data
 input_supp_data_dir = ./improve_output/supplemental_data
 
 [Train]
+input_supp_data_dir = ./improve_output/supplemental_data
 gep_filepath = gene_expression.csv
 smi_filepath = smiles.smi
 gene_filepath = 2128_genes.pkl
