@@ -68,7 +68,9 @@ def run(params):
         # are available.
         rsp = rsp.merge( ge[params["canc_col_name"]], on=params["canc_col_name"], how="inner")
         print(rsp)
+        print(sm_new['DrugID'])
         rsp = rsp.merge(sm_new['DrugID'], on=params["drug_col_name"], how="inner")
+
         ge_sub = ge[ge[params["canc_col_name"]].isin(rsp[params["canc_col_name"]])].reset_index(drop=True)
         smi_sub = sm_new[sm_new['DrugID'].isin(rsp[params["drug_col_name"]])].reset_index(drop=True)
 
@@ -102,9 +104,9 @@ def run(params):
                 txt_writer = csv.writer(new_txt, delimiter = '\t') #writefile
                 txt_writer.writerow(line)   #write the lines to file`
     # Save Gene expression
-    ge=ge.rename(columns={'improve_sample_id':'CancID'})
-    ge=ge.set_index('CancID')
-    ge.to_csv(os.path.join(Path(params["ml_data_outdir"]),'gene_expression.csv'))
+    ge_sub=ge_sub.rename(columns={'improve_sample_id':'CancID'})
+    ge_sub=ge_sub.set_index('CancID')
+    ge_sub.to_csv(os.path.join(Path(params["ml_data_outdir"]),'gene_expression.csv'))
 
     ## Download model specific files
     fname='Data_MCA.zip'
