@@ -8,12 +8,23 @@ from math import sqrt
 from scipy import stats
 from typing import List, Union, Optional
 import shutil
-from improve import framework as frm
-from improve import drug_resp_pred as drp
 from sklearn.preprocessing import StandardScaler, MaxAbsScaler, MinMaxScaler, RobustScaler
 import joblib
 from pathlib import Path
-import candle
+from urllib.request import urlretrieve
+
+
+# [Req] IMPROVE imports
+# Core improvelib imports
+from improvelib.applications.drug_response_prediction.config import DRPPreprocessConfig
+from improvelib.utils import str2bool
+import improvelib.utils as frm
+# Application-specific (DRP) imports
+import improvelib.applications.drug_response_prediction.drug_utils as drugs_utils
+import improvelib.applications.drug_response_prediction.omics_utils as omics_utils
+import improvelib.applications.drug_response_prediction.drp_utils as drp
+
+from model_params_def import preprocess_params # [Req]
 
 
 file_path = os.path.dirname(os.path.realpath(__file__))
@@ -143,20 +154,21 @@ preprocess_params = model_preproc_params + drp_preproc_params
 req_preprocess_args = [ll["name"] for ll in preprocess_params]
 req_preprocess_args.extend(["y_col_name", "model_outdir"])
 
+def get_file(fname, origin, data_dir):
+    fpath = os.path.join(data_dir, fname)
+    urlretrieve(origin, fpath)
+    shutil.unpack_archive(fpath, data_dir)
+
 
 def run(params):
-    params = frm.build_paths(params)  # paths to raw data
-    frm.create_outdir(outdir=params["ml_data_outdir"])
+    print("\nLoads omics data.")
+    omics_obj = omics_utils.OmicsLoader(params)
+    ge = omics_obj.dfs['cancer_gene_expression.tsv'] # return gene expression
 
-    print("\nLoading omics data...")
-    oo = drp.OmicsLoader(params)
-    print(oo)
-    ge = oo.dfs['cancer_gene_expression.tsv']  # get the needed canc x data
-    
-    print("\nLoading drugs data...")
-    dd = drp.DrugsLoader(params)
-    print(dd)
-    sm = dd.dfs['drug_SMILES.tsv']  # get the needed drug x data
+    print("\nLoad drugs data.")
+    drugs_obj = drugs_utils.DrugsLoader(params)
+    sm = drugs_obj.dfs['drug_SMILES.tsv']  # return SMILES data
+
     # Modify files to be compatible with Paccmann_MCA (Model specific modification)
     sm_new = pd.DataFrame(columns = ['SMILES', 'DrugID'])
     sm_new['SMILES'] = sm['canSMILES'].values
@@ -171,21 +183,30 @@ def run(params):
         # ---------------------------------
         # [Req] Load response data
         # ------------------------
-        rr = drp.DrugResponseLoader(params, split_file=split_file, verbose=True)
-        df_response = rr.dfs["response.tsv"]
-        # ------------------------
-        # Retain (canc, drug) response samples for which omic data is available
-        df_y, df_canc = drp.get_common_samples(df1=df_response, df2=ge,
-                                               ref_col=params["canc_col_name"])
-        print(df_y[[params["canc_col_name"], params["drug_col_name"]]].nunique())
+        rsp = drp.DrugResponseLoader(params,
+                                     split_file=split_file,
+                                     verbose=False).dfs["response.tsv"]
+        
+        # Retain (canc, drug) responses for which both omics and drug features
+        # are available.
+        rsp = rsp.merge( ge[params["canc_col_name"]], on=params["canc_col_name"], how="inner")
+        rsp = rsp.merge(sm[params["drug_col_name"]], on=params["drug_col_name"], how="inner")
+        ge_sub = ge[ge[params["canc_col_name"]].isin(rsp[params["canc_col_name"]])].reset_index(drop=True)
+        smi_sub = sm[sm[params["drug_col_name"]].isin(rsp[params["drug_col_name"]])].reset_index(drop=True)
 
-        df_y = df_y[[params["drug_col_name"], params["canc_col_name"], params["y_col_name"]]]
-        df_y = df_y.rename(columns = {'improve_chem_id':'drug', 'improve_sample_id':'cell_line'}) # Model specfic change in column names
-        df_y['IC50'] = df_y['auc']
-        df_y.reset_index(inplace=True)
-        frm.save_stage_ydf(df_y, params, stage)
+
+
+        print(rsp[[params["canc_col_name"], params["drug_col_name"]]].nunique())
+
+        rsp = rsp[[params["drug_col_name"], params["canc_col_name"], params["y_col_name"]]]
+        rsp = rsp.rename(columns = {'improve_chem_id':'drug', 'improve_sample_id':'cell_line'}) # Model specfic change in column names
+        rsp['IC50'] = rsp['auc']
+        rsp.reset_index(inplace=True)
+
         # [Req] Create data name
-        #data_fname = frm.build_ml_data_name(params, stage)
+        data_fname = frm.build_ml_data_file_name(data_format=params["data_format"], stage=stage)
+
+        frm.save_stage_ydf(ydf=rsp, stage=stage, output_dir=params["output_dir"])
 
     # Save SMILES as .smi format as required by the model (Model specific)
     if os.path.exists(os.path.join(Path(params["ml_data_outdir"]),'smiles.smi')): # Remove smiles.smi to prevent duplicates
@@ -208,11 +229,10 @@ def run(params):
     ## Download model specific files
     fname='Data_MCA.zip'
     origin=params['data_url']
-    candle.file_utils.get_file(fname, origin)
+    get_file(fname, origin, params["ml_data_outdir"])
     # Move model-specific files to ml_data_outdir
     shutil.copy(os.path.join(os.environ['CANDLE_DATA_DIR'],'common','Data','2128_genes.pkl'),os.path.join(Path(params["ml_data_outdir"]),'2128_genes.pkl') )
     shutil.copy(os.path.join(os.environ['CANDLE_DATA_DIR'],'common','Data','smiles_language_chembl_gdsc_ccle.pkl'),os.path.join(Path(params["ml_data_outdir"]),'smiles_language_chembl_gdsc_ccle.pkl') )
-
 
 def main():
     params = frm.initialize_parameters(
