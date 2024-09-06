@@ -62,6 +62,7 @@ def run(params):
         rsp = drp.DrugResponseLoader(params,
                                      split_file=split_file,
                                      verbose=False).dfs["response.tsv"]
+        print(rsp)
         
         # Retain (canc, drug) responses for which both omics and drug features
         # are available.
