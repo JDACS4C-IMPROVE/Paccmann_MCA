@@ -134,13 +134,8 @@ def main(params):
     model = MODEL_FACTORY[params.get('model_fn', 'mca')](params).to(device)
     model._associate_language(smiles_language)
 
-    # Define optimizer
-    optimizer = (
-        OPTIMIZER_FACTORY[params.get('optimizer', 'Adam')]
-        (model.parameters(), lr=params.get('learning_rate', 0.01))
-    )
     # Loading trained model
-    checkpoint=torch.load(os.path.join(params['modelpath']))
+    #checkpoint=torch.load(os.path.join(params['modelpath']))
     #checkpoint=torch.load(os.path.join(output_dir,'ckpts','best','model.h5' ))
     #checkpoint = torch.load(str(file_path + '/save/ckpts/best/model.h5'))
     #model.load_state_dict(checkpoint['model_state_dict'])
