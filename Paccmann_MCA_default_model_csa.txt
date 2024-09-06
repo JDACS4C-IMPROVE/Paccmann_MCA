@@ -65,5 +65,22 @@ smi_filepath = smiles.smi
 gene_filepath = 2128_genes.pkl
 smiles_language_filepath = smiles_language_chembl_gdsc_ccle.pkl
 infer_batch = 32
+drug_sensitivity_min_max = False
+gene_expression_standardize = False
+augment_smiles = True
+smiles_start_stop_token = True
+number_of_genes = 2128
+smiles_padding_length = 560
+filters = [64,64,64]
+multiheads = [4,4,4,4]
+smiles_embedding_size = 16
+kernel_sizes = [[3,16],[5,16],[11,16]]
+smiles_attention_size = 64
+embed_scale_grad = False
+final_activation = True
+gene_to_dense = False
+smiles_vocabulary_size = 575
+dense = [1024, 512]
+
 
 
