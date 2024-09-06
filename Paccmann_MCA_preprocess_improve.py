@@ -116,10 +116,10 @@ def run(params):
     if not os.path.exists(params["input_supp_data_dir"]):
         os.makedirs(params["input_supp_data_dir"], exist_ok=True)
         get_file(fname, origin, params["input_supp_data_dir"])
-        
+
     # Move model-specific files to output_dir
-    shutil.copy(os.path.join(os.environ['CANDLE_DATA_DIR'],'common','Data','2128_genes.pkl'),os.path.join(Path(params["output_dir"]),'2128_genes.pkl') )
-    shutil.copy(os.path.join(os.environ['CANDLE_DATA_DIR'],'common','Data','smiles_language_chembl_gdsc_ccle.pkl'),os.path.join(Path(params["output_dir"]),'smiles_language_chembl_gdsc_ccle.pkl') )
+    #shutil.copy(os.path.join(params["input_supp_data_dir"],'Data','2128_genes.pkl'),os.path.join(Path(params["output_dir"]),'2128_genes.pkl') )
+    #shutil.copy(os.path.join(os.environ['CANDLE_DATA_DIR'],'common','Data','smiles_language_chembl_gdsc_ccle.pkl'),os.path.join(Path(params["output_dir"]),'smiles_language_chembl_gdsc_ccle.pkl') )
 
 def main():
     additional_definitions = preprocess_params
