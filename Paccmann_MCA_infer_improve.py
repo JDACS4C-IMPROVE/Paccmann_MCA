@@ -51,7 +51,7 @@ def run(params):
             metric_type=params["metric_type"],
             output_dir=params["output_dir"]
         )
-    return test_scores
+    return True
 
 
 def candle_main():
@@ -67,7 +67,7 @@ def candle_main():
         b = pickle.load(handle)
     params['smiles_vocabulary_size'] = int(b['smiles_vocabulary_size'])
 
-    test_scores = run(params)
+    status = run(params)
     print("\nFinished model inference.")
     
 if __name__ == "__main__":
