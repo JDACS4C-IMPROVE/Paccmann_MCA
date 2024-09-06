@@ -59,9 +59,9 @@ def run(params):
     )
 
     # Dump train_params into model outdir
-    #Save as json
-    with open(os.path.join(params['output_dir'], 'final_params.json') , "w") as file:
-        json.dump(params_train, file, sort_keys=True, indent=4)
+    with open(os.path.join(params['output_dir'], 'final_params.pickle'), 'wb') as handle:
+        pickle.dump(params_train, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
 
     return val_scores
 
