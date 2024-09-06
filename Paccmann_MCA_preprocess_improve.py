@@ -75,8 +75,8 @@ def run(params):
         print(rsp[[params["canc_col_name"], params["drug_col_name"]]].nunique())
 
         rsp = rsp[[params["drug_col_name"], params["canc_col_name"], params["y_col_name"]]]
-        rsp = rsp.rename(columns = {'improve_chem_id':'drug', 'improve_sample_id':'cell_line'}) # Model specfic change in column names
-        rsp['IC50'] = rsp['auc']
+        rsp = rsp.rename(columns = {params["drug_col_name"]:'drug', params["canc_col_name"]:'cell_line'}) # Model specfic change in column names
+        rsp[params["y_col_name"]] = rsp['auc']
         rsp.reset_index(inplace=True)
 
         # [Req] Create data name
