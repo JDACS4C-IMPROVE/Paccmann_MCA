@@ -71,18 +71,8 @@ def main(params):
     gene_filepath = params['gene_filepath']
     smiles_language_filepath = params['smiles_language_filepath']
     output_dir = params['output_dir']
-    model_name = params['model_name']
-    model_outdir = params['model_outdir']
-    logger = logging.getLogger(f'{model_name}')
-    if os.path.exists(model_outdir):
-        model_dir = model_outdir
-    else:
-        model_dir = output_dir
-
-
-    # Create model directory 
-    model_dir = os.path.join(output_dir, model_name)
-    os.makedirs(os.path.join(model_dir, 'results'), exist_ok=True)
+    model_dir = params['input_model_dir']
+    logger = logging.getLogger('Start inference')
 
 
     # Prepare the dataset
@@ -201,7 +191,6 @@ def main(params):
         f"RMSE: {test_rmse_a:.3f}"
     )
     # Save scores and final preds
-    save_dir = str(model_dir+'/results/results.json')
     #with open(save_dir, 'w') as fp:
         #json.dump(scores, fp)
     pred = pd.DataFrame({"True": labels, "Pred": predictions}).reset_index()
@@ -210,7 +199,6 @@ def main(params):
     pred = pd.concat([te_df, pred], axis=1)
     pred['IC50'] = ((pred['IC50']*1000).apply(np.round))/1000
     pred['True'] = ((pred['True']*1000).apply(np.round))/1000
-    pred_fname = str(model_dir+'/results/pred.csv')
     #pred.to_csv(pred_fname, index=False)
     #return scores
     return labels, predictions
