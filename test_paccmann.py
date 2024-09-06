@@ -15,7 +15,6 @@ from paccmann_predictor.models import MODEL_FACTORY
 from paccmann_predictor.utils.hyperparams import OPTIMIZER_FACTORY
 from paccmann_predictor.utils.loss_functions import pearsonr
 from paccmann_predictor.utils.utils import get_device
-import candle
 from scipy.stats import spearmanr
 import sklearn
 import pandas as pd

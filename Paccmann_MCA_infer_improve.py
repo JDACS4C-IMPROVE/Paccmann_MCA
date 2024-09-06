@@ -1,57 +1,70 @@
-import candle
 import pickle
 import os
 from pathlib import Path
 from test_paccmann import main
 # [Req] IMPROVE/CANDLE imports
-from improve import framework as frm
-from improve.metrics import compute_metrics
-from Paccmann_MCA_preprocess_improve import preprocess_params  # ap
-from Paccmann_MCA_train_improve import metrics_list, model_train_params
+# [Req] IMPROVE imports
+from improvelib.applications.drug_response_prediction.config import DRPInferConfig
+from improvelib.utils import str2bool
+import improvelib.utils as frm
+
+from model_params_def import infer_params # [Req]
 
 
-file_path = os.path.dirname(os.path.realpath(__file__))
-
-app_infer_params = []
-model_infer_params = []
-infer_params = app_infer_params + model_infer_params
-
+filepath = Path(__file__).resolve().parent # [Req]
 
 def run(params):
-    frm.create_outdir(outdir=params["infer_outdir"])
-    test_data_fname = frm.build_ml_data_name(params, stage="test")
-    modelpath = frm.build_model_path(params, model_dir=params["model_outdir"])
+    # ------------------------------------------------------
+    # [Req] Create data names for test set
+    # ------------------------------------------------------
+    test_data_fname = frm.build_ml_data_file_name(data_format=params["data_format"], stage="test")
+    modelpath = frm.build_model_path(model_file_name=params["model_file_name"], model_file_format=params["model_file_format"], model_dir=params["input_model_dir"]) # [Req]
 
-    params['test_data'] = Path(params["ml_data_outdir"]) / str('test_'+params['y_data_suffix']+'.csv')
-    params['gep_filepath'] = Path(params["ml_data_outdir"]) / params['gep_filepath']
-    params['smi_filepath'] =Path(params["ml_data_outdir"]) / params['smi_filepath']
-    params['gene_filepath'] = Path(params["ml_data_outdir"]) / params['gene_filepath']
-    params['smiles_language_filepath'] = Path(params["ml_data_outdir"]) / params['smiles_language_filepath']
+    params['train_data'] = Path(params["input_data_dir"]) / str('train_y_data'+'.csv')
+    params['val_data'] = Path(params["input_data_dir"]) / str('val_y_data'+'.csv')
+    params['gep_filepath'] = Path(params["input_data_dir"]) / params['gep_filepath']
+    params['smi_filepath'] =Path(params["input_data_dir"]) / params['smi_filepath']
+    params['gene_filepath'] = Path(params["input_supp_data_dir"]) / 'Data' / params['gene_filepath']
+    params['smiles_language_filepath'] = Path(params["input_supp_data_dir"]) / 'Data' / params['smiles_language_filepath']
     params['modelpath'] = modelpath
 
     test_true, test_pred = main(params)
+
+    # ------------------------------------------------------
+    # [Req] Save raw predictions in dataframe
+    # ------------------------------------------------------
     frm.store_predictions_df(
-        params,
-        y_true=test_true, y_pred=test_pred, stage="test",
-        outdir=params["infer_outdir"]
+        y_true=test_true, 
+        y_pred=test_pred, 
+        stage="test",
+        y_col_name=params["y_col_name"],
+        output_dir=params["output_dir"]
     )
-    test_scores = frm.compute_performace_scores(
-        params,
-        y_true=test_true, y_pred=test_pred, stage="test",
-        outdir=params["infer_outdir"], metrics=metrics_list
-    )
+
+    # ------------------------------------------------------
+    # [Req] Compute performance scores
+    # ------------------------------------------------------
+    if params["calc_infer_scores"]:
+        test_scores = frm.compute_performance_scores(
+            y_true=test_true, 
+            y_pred=test_pred, 
+            stage="test",
+            metric_type=params["metric_type"],
+            output_dir=params["output_dir"]
+        )
     return test_scores
 
 
 def candle_main():
-    additional_definitions = preprocess_params + model_train_params + infer_params
-    params = frm.initialize_parameters(
-        file_path,
-        default_model="Paccmann_MCA_default_model_csa.txt",
-        additional_definitions=additional_definitions,
-        required=None,
+    additional_definitions = infer_params
+    cfg = DRPInferConfig()
+    params = cfg.initialize_parameters(
+        pathToModelDir=filepath,
+        default_config="Paccmann_MCA_default_model_csa.txt",
+        additional_definitions=additional_definitions
     )
-    with open(os.path.join(params['model_outdir'], 'final_params.pickle'), 'rb') as handle:
+
+    with open(os.path.join(params['input_model_dir'], 'final_params.pickle'), 'rb') as handle:
         b = pickle.load(handle)
     params['smiles_vocabulary_size'] = int(b['smiles_vocabulary_size'])
 
