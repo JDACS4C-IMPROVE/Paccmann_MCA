@@ -31,12 +31,11 @@ def main(params):
     gene_filepath = params['gene_filepath']
     smiles_language_filepath = params['smiles_language_filepath']
     output_dir = params['output_dir']
-    model_name = params['model_name']
-    model_outdir = params['model_outdir']
+    model_outdir = params['output_dir']
 
-    logger = logging.getLogger(f'{model_name}')
+    logger = logging.getLogger('Start Training')
     # Create model directory and dump files
-    #model_dir = os.path.join(output_dir, model_name)
+    #model_dir = os.path.join(output_dir, )
     #model_dir = output_dir
     if os.path.exists(model_outdir):
         model_dir = model_outdir

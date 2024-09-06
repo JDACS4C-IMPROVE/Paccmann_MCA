@@ -46,7 +46,6 @@ smiles_vocabulary_size = 575
 drug_sensitivity_processing_parameters = {}
 gene_expression_processing_parameters = {}
 number_of_parameters = 48252129
-model_name = Paccmann_MCA
 epochs = 1
 learning_rate = 0.0001
 dropout = 0.1
