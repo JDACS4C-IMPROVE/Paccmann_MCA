@@ -95,11 +95,11 @@ def run(params):
         frm.save_stage_ydf(ydf=rsp, stage=stage, output_dir=params["output_dir"])
 
     # Save SMILES as .smi format as required by the model (Model specific)
-    if os.path.exists(os.path.join(Path(params["ml_data_outdir"]),'smiles.smi')): # Remove smiles.smi to prevent duplicates
-        os.remove(os.path.join(Path(params["ml_data_outdir"]),'smiles.smi'))
-    smi_sub.to_csv(Path(params["ml_data_outdir"]) / "smiles.csv", index=False)
-    newfile = os.path.join(Path(params["ml_data_outdir"]),'smiles.smi')
-    file = os.path.join(Path(params["ml_data_outdir"]),'smiles.csv')
+    if os.path.exists(os.path.join(Path(params["output_dir"]),'smiles.smi')): # Remove smiles.smi to prevent duplicates
+        os.remove(os.path.join(Path(params["output_dir"]),'smiles.smi'))
+    smi_sub.to_csv(Path(params["output_dir"]) / "smiles.csv", index=False)
+    newfile = os.path.join(Path(params["output_dir"]),'smiles.smi')
+    file = os.path.join(Path(params["output_dir"]),'smiles.csv')
     with open(file,'r') as csv_file:
         csv_reader = csv.reader(csv_file)
         next(csv_reader)  ## skip one line (the first one)
@@ -110,15 +110,15 @@ def run(params):
     # Save Gene expression
     ge_sub=ge_sub.rename(columns={'improve_sample_id':'CancID'})
     ge_sub=ge_sub.set_index('CancID')
-    ge_sub.to_csv(os.path.join(Path(params["ml_data_outdir"]),'gene_expression.csv'))
+    ge_sub.to_csv(os.path.join(Path(params["output_dir"]),'gene_expression.csv'))
 
     ## Download model specific files
     fname='Data_MCA.zip'
     origin=params['data_url']
-    get_file(fname, origin, params["ml_data_outdir"])
-    # Move model-specific files to ml_data_outdir
-    shutil.copy(os.path.join(os.environ['CANDLE_DATA_DIR'],'common','Data','2128_genes.pkl'),os.path.join(Path(params["ml_data_outdir"]),'2128_genes.pkl') )
-    shutil.copy(os.path.join(os.environ['CANDLE_DATA_DIR'],'common','Data','smiles_language_chembl_gdsc_ccle.pkl'),os.path.join(Path(params["ml_data_outdir"]),'smiles_language_chembl_gdsc_ccle.pkl') )
+    get_file(fname, origin, params["output_dir"])
+    # Move model-specific files to output_dir
+    shutil.copy(os.path.join(os.environ['CANDLE_DATA_DIR'],'common','Data','2128_genes.pkl'),os.path.join(Path(params["output_dir"]),'2128_genes.pkl') )
+    shutil.copy(os.path.join(os.environ['CANDLE_DATA_DIR'],'common','Data','smiles_language_chembl_gdsc_ccle.pkl'),os.path.join(Path(params["output_dir"]),'smiles_language_chembl_gdsc_ccle.pkl') )
 
 def main():
     additional_definitions = preprocess_params
