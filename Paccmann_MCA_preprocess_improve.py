@@ -26,8 +26,7 @@ import improvelib.applications.drug_response_prediction.drp_utils as drp
 
 from model_params_def import preprocess_params # [Req]
 
-
-file_path = os.path.dirname(os.path.realpath(__file__))
+filepath = Path(__file__).resolve().parent # [Req]
 
 # Model-specific params (Model: Paccmann_MCA)
 model_preproc_params = [
@@ -235,11 +234,12 @@ def run(params):
     shutil.copy(os.path.join(os.environ['CANDLE_DATA_DIR'],'common','Data','smiles_language_chembl_gdsc_ccle.pkl'),os.path.join(Path(params["ml_data_outdir"]),'smiles_language_chembl_gdsc_ccle.pkl') )
 
 def main():
-    params = frm.initialize_parameters(
-        file_path,
-        default_model="Paccmann_MCA_default_model_csa.txt",
-        additional_definitions=preprocess_params,
-        required=req_preprocess_args,
+    additional_definitions = preprocess_params
+    cfg = DRPPreprocessConfig()
+    params = cfg.initialize_parameters(
+        pathToModelDir=filepath,
+        default_config="Paccmann_MCA_default_model_csa.txt",
+        additional_definitions=additional_definitions
     )
     run(params)
     print("\nFinished Paccmann MCA pre-processing (transformed raw DRP data to model input ML data).")
