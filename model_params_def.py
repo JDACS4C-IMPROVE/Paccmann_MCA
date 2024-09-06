@@ -66,11 +66,13 @@ train_params = [
      'help': 'Padding length for smiles strings'
      },
     {'name': 'filters',
-     'type': list,
+     "nargs" : "+",
+     "type": int,
      'help': 'Size of filters'
      },
     {'name': 'multiheads',
-     'type': list,
+     "nargs" : "+",
+     "type": int,
      'help': 'Size of multiheads for attention layer'
      },
     {'name': 'smiles_embedding_size',
@@ -78,7 +80,8 @@ train_params = [
      'help': 'Size of smiles embedding'
      },
     {'name': 'kernel_sizes',
-     'type': list,
+     "nargs" : "+",
+     "type": int,
      'help': 'Size of the kernels'
      },
     {'name': 'smiles_attention_size',
@@ -114,7 +117,6 @@ train_params = [
      'help': 'Parameters for processing gene expression data'
      }
 ]
-
 infer_params = [
     {'name': 'gep_filepath',
      'type': str,
@@ -158,11 +160,13 @@ infer_params = [
      'help': 'Padding length for smiles strings'
      },
     {'name': 'filters',
-     'type': list,
+     "nargs" : "+",
+     "type": int,
      'help': 'Size of filters'
      },
     {'name': 'multiheads',
-     'type': list,
+     "nargs" : "+",
+     "type": int,
      'help': 'Size of multiheads for attention layer'
      },
     {'name': 'smiles_embedding_size',
@@ -170,7 +174,8 @@ infer_params = [
      'help': 'Size of smiles embedding'
      },
     {'name': 'kernel_sizes',
-     'type': list,
+     "nargs" : "+",
+     "type": int,
      'help': 'Size of the kernels'
      },
     {'name': 'smiles_attention_size',
