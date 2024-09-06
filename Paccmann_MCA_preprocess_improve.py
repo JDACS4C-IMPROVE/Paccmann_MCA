@@ -71,8 +71,6 @@ def run(params):
         # Retain (canc, drug) responses for which both omics and drug features
         # are available.
         rsp = rsp.merge( ge[params["canc_col_name"]], on=params["canc_col_name"], how="inner")
-        print(rsp)
-        print(sm['improve_chem_id'])
         rsp = rsp.merge(sm[params["drug_col_name"]], on=params["drug_col_name"], how="inner")
 
         ge_sub = ge[ge[params["canc_col_name"]].isin(rsp[params["canc_col_name"]])].reset_index(drop=True)
@@ -115,7 +113,7 @@ def run(params):
     ## Download model specific files
     fname='Data_MCA.zip'
     origin=params['data_url']
-    get_file(fname, origin, params["output_dir"])
+    get_file(fname, origin, params["input_supp_data_dir"])
     # Move model-specific files to output_dir
     shutil.copy(os.path.join(os.environ['CANDLE_DATA_DIR'],'common','Data','2128_genes.pkl'),os.path.join(Path(params["output_dir"]),'2128_genes.pkl') )
     shutil.copy(os.path.join(os.environ['CANDLE_DATA_DIR'],'common','Data','smiles_language_chembl_gdsc_ccle.pkl'),os.path.join(Path(params["output_dir"]),'smiles_language_chembl_gdsc_ccle.pkl') )

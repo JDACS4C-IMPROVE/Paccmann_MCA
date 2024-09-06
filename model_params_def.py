@@ -20,6 +20,10 @@ preprocess_params = [
     {'name': 'drug_sensitivity_min_max',
      'type': bool,
      'help': '.....'
+     },
+    {'name': 'data_url',
+     'type': str,
+     'help': 'FTP location of model specific data'
      }
 ]
 
