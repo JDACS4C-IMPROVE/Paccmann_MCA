@@ -1,4 +1,3 @@
-import candle
 import pickle
 import pickle
 import os
@@ -6,165 +5,74 @@ from train_paccmann import main
 import json
 from pathlib import Path
 import shutil
-# IMPROVE/CANDLE imports
-from improve import framework as frm
-from improve.metrics import compute_metrics # TODO use comput_metrics in early stopping
-from Paccmann_MCA_preprocess_improve import model_preproc_params  # ap
 
+# [Req] IMPROVE imports
+from improvelib.applications.drug_response_prediction.config import DRPTrainConfig
+from improvelib.utils import str2bool
+import improvelib.utils as frm
+from improvelib.metrics import compute_metrics
 
-# This should be set outside as a user environment variable
-#os.environ['CANDLE_DATA_DIR'] = '/homes/brettin/Singularity/workspace/data_dir/'
-file_path = os.path.dirname(os.path.realpath(__file__))
+from model_params_def import train_params # [Req]
 
-# [Req] List of metrics names to be compute performance scores
-metrics_list = ["mse", "rmse", "pcc", "scc", "r2"]  
-
-# [Req] App-specific params (App: monotherapy drug response prediction)
-# Currently, there are no app-specific args for the train script.
-app_train_params = []
-
-model_train_params = [
-    {'name': 'gep_filepath',
-     'type': str,
-     'help': 'Path to the gene expression profile data.'
-     },
-    {'name': 'smi_filepath',
-     'type': str,
-     'help': 'Path to the SMILES data.'
-     },
-    {'name': 'gene_filepath',
-     'type': str,
-     'help': 'Path to a pickle object containing list of genes.'
-     },
-    {'name': 'smiles_language_filepath',
-     'type': str,
-     'help': 'Path to a pickle object a SMILES language object.'
-     },
-
-    {'name': 'drug_sensitivity_min_max',
-     'type': bool,
-     'help': '.....'
-     },
-    {'name': 'gene_expression_standardize',
-     'type': bool,
-     'help': 'Do you want to standardize gene expression data?'
-     },
-    {'name': 'augment_smiles',
-     'type': bool,
-     'help': 'Do you want to augment smiles data?'
-     },
-    {'name': 'smiles_start_stop_token',
-     'type': bool,
-     'help': '.....'
-     },
-    {'name': 'number_of_genes',
-     'type': int,
-     'help': 'Number of selected genes'
-     },
-    {'name': 'smiles_padding_length',
-     'type': int,
-     'help': 'Padding length for smiles strings'
-     },
-    {'name': 'filters',
-     'type': list,
-     'help': 'Size of filters'
-     },
-    {'name': 'multiheads',
-     'type': list,
-     'help': 'Size of multiheads for attention layer'
-     },
-    {'name': 'smiles_embedding_size',
-     'type': int,
-     'help': 'Size of smiles embedding'
-     },
-    {'name': 'kernel_sizes',
-     'type': list,
-     'help': 'Size of the kernels'
-     },
-    {'name': 'smiles_attention_size',
-     'type': int,
-     'help': 'Size of smiles attention'
-     },
-    {'name': 'embed_scale_grad',
-     'type': bool,
-     'help': '.....'
-     },
-    {'name': 'final_activation',
-     'type': bool,
-     'help': 'Is there a final activation?'
-     },
-    {'name': 'gene_to_dense',
-     'type': bool,
-     'help': '.....'
-     },
-    {'name': 'smiles_vocabulary_size',
-     'type': int,
-     'help': 'Size of smiles vocabulary'
-     },
-    {'name': 'number_of_parameters',
-     'type': int,
-     'help': 'Number of parameters'
-     },
-    {'name': 'drug_sensitivity_processing_parameters',
-     'type': dict,
-     'help': 'Parameters for drug sensitivity processing'
-     },
-    {'name': 'gene_expression_processing_parameters',
-     'type': dict,
-     'help': 'Parameters for processing gene expression data'
-     }
-]
-
+filepath = Path(__file__).resolve().parent # [Req]
 
 def run(params):
-    frm.create_outdir(outdir=params["model_outdir"])
-    modelpath = frm.build_model_path(params, model_dir=params["model_outdir"])
-    train_data_fname = frm.build_ml_data_name(params, stage="train")
-    val_data_fname = frm.build_ml_data_name(params, stage="val")
+    # [Req] Build model path
+    modelpath = frm.build_model_path(model_file_name=params["model_file_name"], model_file_format=params["model_file_format"], model_dir=params["output_dir"])
+    # ------------------------------------------------------
+    # [Req] Create data names for train and val sets
+    # ------------------------------------------------------
+    train_data_fname = frm.build_ml_data_file_name(data_format=params["data_format"], stage="train")  # [Req]
+    val_data_fname = frm.build_ml_data_file_name(data_format=params["data_format"], stage="val")  # [Req]
 
-    params['train_data'] = Path(params["ml_data_outdir"]) / str('train_'+params['y_data_suffix']+'.csv')
-    params['val_data'] = Path(params["ml_data_outdir"]) / str('val_'+params['y_data_suffix']+'.csv')
-    params['gep_filepath'] = Path(params["ml_data_outdir"]) / params['gep_filepath']
-    params['smi_filepath'] =Path(params["ml_data_outdir"]) / params['smi_filepath']
-    params['gene_filepath'] = Path(params["ml_data_outdir"]) / params['gene_filepath']
-    params['smiles_language_filepath'] = Path(params["ml_data_outdir"]) / params['smiles_language_filepath']
+
+    params['train_data'] = Path(params["input_dir"]) / str('train_'+params['y_data_suffix']+'.csv')
+    params['val_data'] = Path(params["input_dir"]) / str('val_'+params['y_data_suffix']+'.csv')
+    params['gep_filepath'] = Path(params["input_dir"]) / params['gep_filepath']
+    params['smi_filepath'] =Path(params["input_dir"]) / params['smi_filepath']
+    params['gene_filepath'] = Path(params["input_supp_data_dir"]) / 'Data' / params['gene_filepath']
+    params['smiles_language_filepath'] = Path(params["input_supp_data_dir"]) / 'Data' / params['smiles_language_filepath']
     params['modelpath'] = modelpath
 
 
     val_true, val_pred, params_train = main(params)
     
+    # ------------------------------------------------------
     # [Req] Save raw predictions in dataframe
+    # ------------------------------------------------------
     frm.store_predictions_df(
-        params,
-        y_true=val_true, y_pred=val_pred, stage="val",
-        outdir=params["model_outdir"]
+        y_true=val_true, 
+        y_pred=val_pred, 
+        stage="val",
+        y_col_name=params["y_col_name"],
+        output_dir=params["output_dir"]
     )
-    # -----------------------------
+    # ------------------------------------------------------
     # [Req] Compute performance scores
-    # -----------------------------
-    # import ipdb; ipdb.set_trace()
-    val_scores = frm.compute_performace_scores(
-        params,
-        y_true=val_true, y_pred=val_pred, stage="val",
-        outdir=params["model_outdir"], metrics=metrics_list
+    # ------------------------------------------------------
+    val_scores = frm.compute_performance_scores(
+        y_true=val_true, 
+        y_pred=val_pred, 
+        stage="val",
+        metric_type=params["metric_type"],
+        output_dir=params["output_dir"]
     )
-    # Dump train_params into model outdir
-    with open(os.path.join(params['model_outdir'], 'final_params.pickle'), 'wb') as handle:
-        pickle.dump(params_train, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
+    # Dump train_params into model outdir
+    #Save as json
+    with open(os.path.join(params['output_dir'], 'final_params.json') , "w") as file:
+        json.dump(params_train, file, sort_keys=True, indent=4)
 
     return val_scores
 
 def candle_main():
-    additional_definitions = model_preproc_params + \
-                             model_train_params + \
-                             app_train_params
-    params = frm.initialize_parameters(
-        file_path,
-        default_model="Paccmann_MCA_default_model_csa.txt",
-        additional_definitions=additional_definitions,
-        required=None,
-    )
+    additional_definitions = train_params
+    cfg = DRPTrainConfig()
+    params = cfg.initialize_parameters(
+        pathToModelDir=filepath,
+        default_config="Paccmann_MCA_default_model_csa.txt",
+        additional_definitions=additional_definitions)
+    
     val_scores = run(params)
 
 if __name__ == "__main__":
