@@ -90,7 +90,7 @@ def run(params):
         # [Req] Create data name
         data_fname = frm.build_ml_data_file_name(data_format=params["data_format"], stage=stage)
 
-        frm.save_stage_ydf(ydf=rsp, stage=stage, output_dir=params["output_dir"])
+        frm.save_stage_ydf(ydf=rsp_cut, stage=stage, output_dir=params["output_dir"])
 
     # Save SMILES as .smi format as required by the model (Model specific)
     if os.path.exists(os.path.join(Path(params["output_dir"]),'smiles.smi')): # Remove smiles.smi to prevent duplicates
