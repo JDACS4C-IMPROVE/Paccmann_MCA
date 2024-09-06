@@ -62,11 +62,12 @@ def run(params):
         rsp = drp.DrugResponseLoader(params,
                                      split_file=split_file,
                                      verbose=False).dfs["response.tsv"]
-        print(rsp)
+        
         
         # Retain (canc, drug) responses for which both omics and drug features
         # are available.
         rsp = rsp.merge( ge[params["canc_col_name"]], on=params["canc_col_name"], how="inner")
+        print(rsp)
         rsp = rsp.merge(sm[params["drug_col_name"]], on=params["drug_col_name"], how="inner")
         ge_sub = ge[ge[params["canc_col_name"]].isin(rsp[params["canc_col_name"]])].reset_index(drop=True)
         smi_sub = sm[sm[params["drug_col_name"]].isin(rsp[params["drug_col_name"]])].reset_index(drop=True)
