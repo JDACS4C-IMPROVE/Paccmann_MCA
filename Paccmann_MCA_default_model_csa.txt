@@ -64,5 +64,6 @@ gep_filepath = gene_expression.csv
 smi_filepath = smiles.smi
 gene_filepath = 2128_genes.pkl
 smiles_language_filepath = smiles_language_chembl_gdsc_ccle.pkl
+infer_batch = 32
 
 
