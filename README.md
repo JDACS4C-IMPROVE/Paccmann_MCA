@@ -2,11 +2,10 @@
 [![Build Status](https://github.com/PaccMann/paccmann_predictor/actions/workflows/build.yml/badge.svg)](https://github.com/PaccMann/paccmann_predictor/actions/workflows/build.yml)
 
 # Paccmann_MCA
-This repository demonstrates how to use the [IMPROVE library v0.0.3-beta](https://github.com/JDACS4C-IMPROVE/IMPROVE/tree/v0.0.3-beta) for building a drug response prediction (DRP) model using Paccmann_MCA, and provides examples with the benchmark [cross-study analysis (CSA) dataset](https://web.cels.anl.gov/projects/IMPROVE_FTP/candle/public/improve/benchmarks/single_drug_drp/benchmark-data-pilot1/csa_data/).
+This repository demonstrates how to use the [IMPROVE library v0.1.0-alpha](https://jdacs4c-improve.github.io/docs/v0.1.0-alpha/) for building a drug response prediction (DRP) model using Paccmann_MCA, and provides examples with the benchmark [cross-study analysis (CSA) dataset](https://web.cels.anl.gov/projects/IMPROVE_FTP/candle/public/improve/benchmarks/single_drug_drp/benchmark-data-pilot1/csa_data/).
 
-This version, tagged as `v0.0.3-beta`, is the final release before transitioning to `v0.1.0-alpha`, which introduces a new API. Version `v0.0.3-beta` and all previous releases have served as the foundation for developing essential components of the IMPROVE software stack. Subsequent releases build on this legacy with an updated API, designed to encourage broader adoption of IMPROVE and its curated models by the research community.
+This version, tagged as `v0.1.0-alpha`, introduces a new API which is designed to encourage broader adoption of IMPROVE and its curated models by the research community.
 
-A more detailed tutorial can be found [here](https://jdacs4c-improve.github.io/docs/v0.0.3-beta/content/ModelContributorGuide.html).
 
 **Drug interaction prediction with PaccMann**
 
@@ -35,16 +34,12 @@ Activate the environment:
 conda activate paccmann_predictor
 pip install -e .
 ```
-Install CANDLE library
-```sh
-pip install git+https://github.com/ECP-CANDLE/candle_lib@develop
-```
+
 ML framework:
 + [Torch](https://pytorch.org/) -- deep learning framework for building the prediction model
 
 IMPROVE dependencies:
-+ [IMPROVE v0.0.3-beta](https://github.com/JDACS4C-IMPROVE/IMPROVE/tree/v0.0.3-beta)
-+ [candle_lib](https://github.com/ECP-CANDLE/candle_lib) - IMPROVE dependency (enables various hyperparameter optimization on HPC machines) 
++ [IMPROVE v0.1.0-alpha](https://jdacs4c-improve.github.io/docs/v0.1.0-alpha/)
 
 ## Dataset
 Benchmark data for cross-study analysis (CSA) can be downloaded from this [site](https://web.cels.anl.gov/projects/IMPROVE_FTP/candle/public/improve/benchmarks/single_drug_drp/benchmark-data-pilot1/csa_data/).
@@ -85,6 +80,7 @@ csa_data/raw_data/
 + `Paccmann_MCA_preprocess_improve.py` - takes benchmark data files and transforms into files for training and inference
 + `Paccmann_MCA_train_improve.py` - trains the Paccmann_MCA model
 + `Paccmann_MCA_infer_improve.py` - runs inference with the trained model
++ `model_params_def.py` - definitions of parameters that are specific to the model
 + `Paccmann_MCA_default_model_csa.txt` - default parameter file
 
 # Step-by-step instructions
@@ -93,7 +89,7 @@ csa_data/raw_data/
 ```
 git clone https://github.com/JDACS4C-IMPROVE/Paccmann_MCA.git
 cd Paccmann_MCA
-git checkout v0.0.3-beta
+git checkout framework-api
 ```
 ### 2. Activate environment
 Activate conda env
@@ -106,12 +102,13 @@ source setup_improve.sh
 ```
 This will:
 1. Download cross-study analysis (CSA) benchmark data into `./csa_data/`.
-2. Clone IMPROVE repo (checkout tag `v0.0.3-beta`) outside the Paccmann_MCA model repo
-3. Set up env variables: `IMPROVE_DATA_DIR` (to `./csa_data/`) and `PYTHONPATH` (adds IMPROVE repo).
+2. Clone IMPROVE repo (checkout tag `develop`) outside the Paccmann_MCA model repo
+3. Set up `PYTHONPATH` (adds IMPROVE repo).
 
 ### 4. Preprocess CSA benchmark data (_raw data_) to construct model input data (_ML data_)
+
 ```bash
-python Paccmann_MCA_preprocess_improve.py
+python Paccmann_MCA_preprocess_improve.py --input_dir ./csa_data/raw_data --output_dir exp_result
 ```
 
 Preprocesses the CSA data and creates train, validation (val), and test datasets.
@@ -137,7 +134,7 @@ ml_data
 
 ### 5. Train model
 ```bash
-python Paccmann_MCA_train_improve.py
+python Paccmann_MCA_train_improve.py --input_dir exp_result --output_dir exp_result
 ```
 
 Trains model using the preprocessed model input data.
@@ -156,8 +153,9 @@ out_models
         └── val_y_data_predicted.csv
 ```
 ### 6. Run inference on test data with the trained model
-```python Paccmann_MCA_infer_improve.py```
-
+```bash
+python Paccmann_MCA_infer_improve.py --input_data_dir exp_result --input_model_dir exp_result --output_dir exp_result --calc_infer_score true
+```
 Evaluates the performance on a test dataset with the trained model.
 
 Generates:
