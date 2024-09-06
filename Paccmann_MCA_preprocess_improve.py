@@ -70,16 +70,18 @@ def run(params):
         print(rsp)
         rsp = rsp.merge(sm[params["drug_col_name"]], on=params["drug_col_name"], how="inner")
         ge_sub = ge[ge[params["canc_col_name"]].isin(rsp[params["canc_col_name"]])].reset_index(drop=True)
-        smi_sub = sm[sm[params["drug_col_name"]].isin(rsp[params["drug_col_name"]])].reset_index(drop=True)
+        smi_sub = sm_new[sm_new['DrugID'].isin(rsp[params["drug_col_name"]])].reset_index(drop=True)
 
+        # Sub-select desired response column (y_col_name)
+        # ... and reduce response df to 3 columns: drug_id, cell_id and selected drug_response
+        rsp_cut = rsp[[params["drug_col_name"], params["canc_col_name"], params["y_col_name"]]].copy()
 
+        print(rsp_cut[[params["canc_col_name"], params["drug_col_name"]]].nunique())
 
-        print(rsp[[params["canc_col_name"], params["drug_col_name"]]].nunique())
-
-        rsp = rsp[[params["drug_col_name"], params["canc_col_name"], params["y_col_name"]]]
-        rsp = rsp.rename(columns = {params["drug_col_name"]:'drug', params["canc_col_name"]:'cell_line'}) # Model specfic change in column names
-        rsp[params["y_col_name"]] = rsp['auc']
-        rsp.reset_index(inplace=True)
+        rsp_cut = rsp_cut[[params["drug_col_name"], params["canc_col_name"], params["y_col_name"]]]
+        rsp_cut = rsp_cut.rename(columns = {params["drug_col_name"]:'drug', params["canc_col_name"]:'cell_line'}) # Model specfic change in column names
+        rsp_cut[params["y_col_name"]] = rsp_cut['auc']
+        rsp_cut.reset_index(inplace=True)
 
         # [Req] Create data name
         data_fname = frm.build_ml_data_file_name(data_format=params["data_format"], stage=stage)
@@ -89,7 +91,7 @@ def run(params):
     # Save SMILES as .smi format as required by the model (Model specific)
     if os.path.exists(os.path.join(Path(params["ml_data_outdir"]),'smiles.smi')): # Remove smiles.smi to prevent duplicates
         os.remove(os.path.join(Path(params["ml_data_outdir"]),'smiles.smi'))
-    sm_new.to_csv(Path(params["ml_data_outdir"]) / "smiles.csv", index=False)
+    smi_sub.to_csv(Path(params["ml_data_outdir"]) / "smiles.csv", index=False)
     newfile = os.path.join(Path(params["ml_data_outdir"]),'smiles.smi')
     file = os.path.join(Path(params["ml_data_outdir"]),'smiles.csv')
     with open(file,'r') as csv_file:
