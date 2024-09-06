@@ -20,8 +20,7 @@ def run(params):
     test_data_fname = frm.build_ml_data_file_name(data_format=params["data_format"], stage="test")
     modelpath = frm.build_model_path(model_file_name=params["model_file_name"], model_file_format=params["model_file_format"], model_dir=params["input_model_dir"]) # [Req]
 
-    params['train_data'] = Path(params["input_data_dir"]) / str('train_y_data'+'.csv')
-    params['val_data'] = Path(params["input_data_dir"]) / str('val_y_data'+'.csv')
+    params['test_data'] = Path(params["input_data_dir"]) / str('test_y_data'+'.csv')
     params['gep_filepath'] = Path(params["input_data_dir"]) / params['gep_filepath']
     params['smi_filepath'] =Path(params["input_data_dir"]) / params['smi_filepath']
     params['gene_filepath'] = Path(params["input_supp_data_dir"]) / 'Data' / params['gene_filepath']
