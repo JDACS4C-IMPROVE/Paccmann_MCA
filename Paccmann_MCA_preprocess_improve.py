@@ -45,11 +45,15 @@ def run(params):
     drugs_obj = drugs_utils.DrugsLoader(params)
     sm = drugs_obj.dfs['drug_SMILES.tsv']  # return SMILES data
 
+
     # Modify files to be compatible with Paccmann_MCA (Model specific modification)
     sm_new = pd.DataFrame(columns = ['SMILES', 'DrugID'])
     sm_new['SMILES'] = sm['canSMILES'].values
     sm_new['DrugID'] = sm.index.values
     
+    sm = sm.reset_index()
+    sm.columns = [params["drug_col_name"], "SMILES"]
+
     stages = {"train": params["train_split_file"],
               "val": params["val_split_file"],
               "test": params["test_split_file"]}
@@ -69,7 +73,7 @@ def run(params):
         rsp = rsp.merge( ge[params["canc_col_name"]], on=params["canc_col_name"], how="inner")
         print(rsp)
         print(sm['improve_chem_id'])
-        rsp = rsp.merge(sm_new['DrugID'], on=params["drug_col_name"], how="inner")
+        rsp = rsp.merge(sm['DrugID'], on=params["drug_col_name"], how="inner")
 
         ge_sub = ge[ge[params["canc_col_name"]].isin(rsp[params["canc_col_name"]])].reset_index(drop=True)
         smi_sub = sm_new[sm_new['DrugID'].isin(rsp[params["drug_col_name"]])].reset_index(drop=True)
